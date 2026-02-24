@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================
+   BASE — Premium foundation
+   ========================================= */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-gray-900 antialiased;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+::selection {
+  @apply bg-emerald-500 text-white;
+}
+
+/* Custom scrollbar — minimal */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+}
+
+/* =========================================
+   TYPOGRAPHY — Apple-level precision
+   ========================================= */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  @apply font-black;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+h1 {
+  @apply text-5xl sm:text-6xl md:text-7xl lg:text-8xl;
+  line-height: 0.95;
+}
+
+h2 {
+  @apply text-4xl sm:text-5xl md:text-6xl;
+  line-height: 1;
+}
+
+h3 {
+  @apply text-2xl md:text-3xl;
+}
+
+/* =========================================
+   KEYFRAME ANIMATIONS
+   ========================================= */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-reverse {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(20px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-30px) rotate(1deg); }
+  66% { transform: translateY(10px) rotate(-1deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes gradient-orbit {
+  0% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(60px, -40px) scale(1.15); }
+  50% { transform: translate(-30px, 50px) scale(0.95); }
+  75% { transform: translate(40px, 20px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================
+   ANIMATION UTILITIES
+   ========================================= */
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-reverse { animation: float-reverse 7s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 10s ease-in-out infinite; }
+.animate-float-delay { animation: float 6s ease-in-out 3s infinite; }
+.animate-pulse-glow { animation: pulse-glow 5s ease-in-out infinite; }
+.animate-ticker { animation: ticker 35s linear infinite; }
+.animate-gradient-orbit { animation: gradient-orbit 20s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 60s linear infinite; }
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* =========================================
+   COMPONENTS — Premium
+   ========================================= */
+
+.container {
+  @apply mx-auto px-5 sm:px-8 lg:px-12;
+  max-width: 1280px;
+}
+
+.section-padding {
+  @apply py-24 md:py-32 lg:py-40;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-full transition-all duration-300 text-base;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.25);
+}
+.btn-primary:hover {
+  box-shadow: 0 0 60px rgba(16, 185, 129, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white font-semibold rounded-full transition-all duration-300 text-base;
+}
+.btn-outline:hover {
+  @apply bg-white/5 border-white/40;
+  transform: translateY(-1px);
+}
+
+/* Cards */
+.card {
+  @apply rounded-3xl border border-gray-100 bg-white;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+}
+
+.card-dark {
+  @apply rounded-3xl border border-white/10 bg-white/5;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-dark:hover {
+  @apply bg-white/10 border-white/20;
+  transform: translateY(-8px);
+}
+
+/* Glass morphism */
+.glass {
+  @apply bg-white/[0.06] backdrop-blur-2xl border border-white/[0.08];
+}
+
+.glass-light {
+  @apply bg-black/[0.03] backdrop-blur-xl border border-black/[0.05];
+}
+
+/* Grain texture overlay */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================================
+   MEMBERS AREA / DASHBOARD (kept compatible)
+   ========================================= */
+
+.pdf-viewer {
+  @apply w-full rounded-2xl border border-gray-200 overflow-hidden;
+}
+.pdf-page {
+  @apply flex justify-center bg-gray-100;
+}
+
+.card-padding {
+  @apply p-6 md:p-8;
+}
+
+/* Responsive grid */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* =========================================
+   PRINT
+   ========================================= */
+
+@media print {
+  body { @apply bg-white text-black; }
+}

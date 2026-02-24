@@ -1,0 +1,83 @@
+## PRD: Plataforma Digital EndoStart (V1.0)
+1. Visão Geral e Objetivo
+O projeto consiste na criação de um ecossistema digital para o curso de imersão em endoscopia do Dr. Alessandro. O objetivo central é a captação de leads médicos de alto ticket (R$ 45k+) e a entrega de conteúdo didático conciso para os alunos matriculados.
+
+Público-Alvo: Médicos (regiões N, NE e CO) buscando transição de carreira de plantões para procedimentos.
+
+Referência de Design: loperacademy.com.br.
+
+2. Arquitetura de Informação
+O sistema deve ser dividido em duas grandes frentes:
+
+Área Pública (Landing Page): Focada em autoridade, ROI e conversão via WhatsApp.
+
+Área de Membros (Portal do Aluno): Focada em consumo de material técnico (PDFs) e vídeos.
+
+3. Requisitos Funcionais: Landing Page
+3.1. Seções Obrigatórias (Scroll Vertical)
+Hero Section: * Visual: Imagem/Vídeo de alta qualidade do Dr. Alessandro em situação de aula.
+
+Headline: "Abandone o plantão de 12h. Fature até R$ 2.000 por procedimento de 30 minutos."
+
+CTA: Botão "Falar com Consultor no WhatsApp".
+
+Calculadora de ROI (Diferencial):
+
+Widget interativo onde o médico insere quantos exames faria por semana e vê o faturamento mensal comparado ao plantão.
+
+Vitrine de Cursos: Cards para Imersão em Endoscopia, Colonoscopia, Balão Gástrico e Terapêutica.
+
+Grade Curricular Técnica (Extraída dos Materiais):
+
+Módulos: DRGE (Refluxo), Tumores Gástricos (Classificação de Lauren/Bormann), Hemorragias Digestivas e Afecções Anorretais.
+
+Prova Social: Carrossel de depoimentos e seção "Quem é o Dr. Alessandro" (ênfase nos 12 anos de experiência e ex-RT da SEMA).
+
+3.2. Regras de Negócio (Landing Page)
+Link de WhatsApp: Deve disparar uma mensagem personalizada: "Olá! Sou médico e gostaria de saber mais sobre a Imersão em [Nome do Curso]".
+
+Mobile-First: A navegação deve ser otimizada para médicos que utilizam o celular entre atendimentos.
+
+4. Requisitos Funcionais: Área de Membros (Portal do Aluno)
+4.1. Fluxo de Acesso
+Autenticação: Login via E-mail/Senha ou integração com "Login com Google".
+
+Gestão de Alunos (Admin): O Dr. Alessandro deve conseguir liberar/bloquear acessos manualmente.
+
+4.2. Dashboard do Aluno
+Visualização por Módulos: Cada curso (ex: Endoscopia) dividido em aulas/temas.
+
+Repositório de PDFs: * O aluno deve conseguir visualizar o PDF (7-10 páginas) diretamente no navegador ou fazer o download.
+
+Nota para o Dev: Implementar visualizador de PDF leve para evitar saídas da plataforma.
+
+Biblioteca de Vídeos: Player integrado (vimeo ou youtube unlisted) para os vídeos de IA e aulas gravadas.
+
+4.3. Conteúdo Estruturado (Baseado nos Materiais Técnicos)
+O desenvolvedor deve criar os seguintes módulos padrão no banco de dados:
+
+Módulo de Esôfago: Tumores esofágicos e DRGE.
+
+Módulo de Estômago: Adenocarcinoma gástrico e lesões benignas.
+
+Módulo de Intestino: Doença vascular, diverticular e apendicopatias.
+
+Módulo de Urgências: Manejo de Hemorragia Digestiva Alta e Baixa.
+
+5. Requisitos Técnicos e Stack Sugerida
+Frontend: Next.js ou React (para máxima performance e SEO).
+
+CMS (Opcional): Sanity.io ou Strapi (para o Dr. Alessandro subir novos PDFs e vídeos sem o dev).
+
+Hospedagem: Vercel ou AWS.
+
+Rastreamento: Instalação obrigatória de API de Conversão do Meta e Google Tag Manager.
+
+6. Critérios de Aceite (Definition of Done)
+Fidelidade Visual: O site deve ser indistinguível da referência Loper Academy em termos de qualidade e espaçamentos.
+
+Segurança: Área de membros com proteção de rota (alunos não logados não acessam conteúdo).
+
+Conversão: Teste de clique no WhatsApp funcionando em 100% dos botões.
+
+Performance: Nota > 90 no Google PageSpeed (Mobile).

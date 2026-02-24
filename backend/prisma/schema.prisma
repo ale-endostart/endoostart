@@ -1,0 +1,189 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite Configuration
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User (Students + Admins)
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String?
+  googleId          String?  @unique
+  firstName         String
+  lastName          String
+  crm               String?  @unique
+  phone             String?
+  state             String?  // N, NE, CO, etc
+  role              String   @default("STUDENT") // STUDENT, ADMIN (string instead of enum for SQLite)
+  hasAccess         Boolean  @default(false)
+  accessGrantedAt   DateTime?
+  accessRevokedAt   DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  enrollments       StudentCourse[]
+  downloads         Download[]
+  activityLogs      ActivityLog[]
+  analyticsEvents   Analytics[]
+
+  @@index([email])
+  @@index([role])
+  @@index([hasAccess])
+}
+
+// Courses
+model Course {
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  name              String
+  description       String   // No @db.Text for SQLite
+  shortDescription  String
+  price             Float    // in BRL
+  durationWeeks     Int
+  difficulty        String   // BEGINNER, INTERMEDIATE, ADVANCED
+  imageUrl          String
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  modules           Module[]
+  enrollments       StudentCourse[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+// Modules (DRGE, Tumores Gástricos, etc)
+model Module {
+  id                String   @id @default(cuid())
+  courseId          String
+  name              String
+  description       String   // No @db.Text for SQLite
+  order             Int
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  course            Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons           Lesson[]
+
+  @@index([courseId])
+  @@index([order])
+}
+
+// Lessons (within modules)
+model Lesson {
+  id                String   @id @default(cuid())
+  moduleId          String
+  name              String
+  description       String   // No @db.Text for SQLite
+  order             Int
+  duration          Int?     // in minutes
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  module            Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  contents          Content[]
+
+  @@index([moduleId])
+  @@index([order])
+}
+
+// Content (PDFs, Videos, etc)
+model Content {
+  id                String   @id @default(cuid())
+  lessonId          String
+  type              String   // PDF, VIDEO, TEXT, LINK (string instead of enum for SQLite)
+  title             String
+  description       String   // No @db.Text for SQLite
+  url               String   // S3/Cloudinary URL
+  fileSize          Float?   // in MB
+  mimeType          String?
+  order             Int
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  lesson            Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  downloads         Download[]
+
+  @@index([lessonId])
+  @@index([type])
+}
+
+// Student Enrollments
+model StudentCourse {
+  id                String   @id @default(cuid())
+  studentId         String
+  courseId          String
+  enrolledAt        DateTime @default(now())
+  accessGrantedAt   DateTime?
+  accessRevokedAt   DateTime?
+  isActive          Boolean  @default(true)
+  progress          Int      @default(0) // 0-100
+  completedAt       DateTime?
+
+  student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course            Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+  @@index([studentId])
+  @@index([courseId])
+  @@index([isActive])
+}
+
+// Download Tracking
+model Download {
+  id                String   @id @default(cuid())
+  studentId         String
+  contentId         String
+  downloadedAt      DateTime @default(now())
+  ipAddress         String?
+  userAgent         String?
+
+  student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  content           Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([contentId])
+  @@index([downloadedAt])
+}
+
+// Activity Logging
+model ActivityLog {
+  id                String   @id @default(cuid())
+  studentId         String
+  eventType         String   // LOGIN, COURSE_VIEW, CONTENT_VIEW, DOWNLOAD
+  metadata          String?  // JSON as string for SQLite
+  timestamp         DateTime @default(now())
+
+  student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([eventType])
+  @@index([timestamp])
+}
+
+// Analytics (Landing page conversions)
+model Analytics {
+  id                String   @id @default(cuid())
+  eventType         String   // LANDING_VISIT, CTA_CLICK, WHATSAPP_CLICK
+  studentId         String?
+  metadata          String?  // JSON as string for SQLite
+  timestamp         DateTime @default(now())
+
+  student           User?    @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
+  @@index([eventType])
+  @@index([timestamp])
+  @@index([studentId])
+}
