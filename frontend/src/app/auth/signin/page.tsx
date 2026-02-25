@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import React, { useState, FormEvent } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function SignIn() {
+function SignInForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
@@ -159,5 +159,17 @@ export default function SignIn() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function SignIn() {
+  return (
+    <React.Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-primary-900 to-primary-800 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+      </div>
+    }>
+      <SignInForm />
+    </React.Suspense>
   )
 }
