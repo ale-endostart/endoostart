@@ -34,14 +34,14 @@ export const InstructorsSection: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16"
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16"
         >
           {/* Card Dr. Alessandro */}
           <motion.div
             variants={itemVariants}
             className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-premium group hover:shadow-2xl transition-all duration-500"
           >
-            <div className="w-full aspect-square md:aspect-[4/3] relative overflow-hidden bg-[#01284A]/10">
+            <div className="w-full aspect-[4/3] relative overflow-hidden bg-[#01284A]/10">
               <Image
                 src="/images/doutor-alessandro.webp"
                 alt="Dr. Alessandro"
@@ -83,14 +83,14 @@ export const InstructorsSection: React.FC = () => {
           {/* Card Dra. Tâmara */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-premium group hover:shadow-2xl transition-all duration-500 md:mt-12"
+            className="flex flex-col bg-white rounded-3xl overflow-hidden shadow-premium group hover:shadow-2xl transition-all duration-500 lg:mt-12"
           >
-            <div className="w-full aspect-square md:aspect-[4/3] relative overflow-hidden bg-[#01284A]/10">
+            <div className="w-full aspect-[4/3] relative overflow-hidden bg-[#01284A]/10">
               <Image
                 src="/images/doutora-tamara.webp"
                 alt="Dra. Tâmara Husein Naciff"
                 fill
-                className="object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="object-cover object-[center_30%] filter contrast-105 group-hover:scale-105 transition-transform duration-700 ease-out"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>

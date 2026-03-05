@@ -32,7 +32,7 @@ export const TargetAudienceSection: React.FC = () => {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full border border-brand-lightBlue/10 transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
       <div className="container max-w-[1000px] px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}

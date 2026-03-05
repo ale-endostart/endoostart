@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export const OpportunitySection: React.FC = () => {
     const containerVariants = {
@@ -25,14 +26,14 @@ export const OpportunitySection: React.FC = () => {
             <div className="absolute right-0 top-0 w-1/3 h-full bg-brand-lightGray rounded-l-[100px] opacity-50 hidden lg:block"></div>
 
             <div className="container relative z-10">
-                <div className="max-w-[1000px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="max-w-[1000px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, margin: "-100px" }}
                         variants={containerVariants}
-                        className="order-2 lg:order-1"
+                        className="order-1 lg:order-1"
                     >
                         <motion.h2
                             variants={itemVariants}
@@ -45,7 +46,7 @@ export const OpportunitySection: React.FC = () => {
                             Existe uma realidade simples no mercado.
                         </motion.p>
 
-                        <motion.div variants={itemVariants} className="flex gap-4 mb-8">
+                        <motion.div variants={itemVariants} className="flex flex-wrap gap-3 mb-8">
                             <span className="px-5 py-2 rounded-full border border-brand-lightBlue/20 text-[#4A7CA8] font-medium text-sm">Hospitais precisam</span>
                             <span className="px-5 py-2 rounded-full border border-brand-lightBlue/20 text-[#4A7CA8] font-medium text-sm">Clínicas precisam</span>
                             <span className="px-5 py-2 rounded-full border border-brand-lightBlue/20 text-[#4A7CA8] font-medium text-sm">Pacientes precisam</span>
@@ -77,24 +78,25 @@ export const OpportunitySection: React.FC = () => {
                         </motion.div>
                     </motion.div>
 
-                    {/* Visual Element Placeholder */}
+                    {/* Image Content */}
                     <motion.div
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 1 }}
-                        className="order-1 lg:order-2 w-full h-[400px] lg:h-[600px] rounded-2xl bg-gradient-to-br from-[#01284A] to-[#4A7CA8] relative overflow-hidden shadow-2xl flex items-center justify-center p-8"
+                        className="order-2 lg:order-2 w-full h-[260px] md:h-[400px] lg:h-[600px] rounded-2xl relative overflow-hidden shadow-2xl flex items-center justify-center"
                     >
-                        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
-                        {/* Abstract visual representation of opportunity */}
-                        <div className="relative z-10 w-full max-w-[300px] aspect-square rounded-full border border-white/20 flex items-center justify-center">
-                            <div className="w-[80%] h-[80%] rounded-full border border-white/30 flex items-center justify-center">
-                                <div className="w-[60%] h-[60%] rounded-full bg-brand-gold/90 shadow-[0_0_50px_rgba(184,154,106,0.5)]"></div>
-                            </div>
-                        </div>
+                        <Image
+                            src="/images/doutor-alessandro.webp"
+                            alt="Dr. Alessandro - Especialista em Endoscopia Digestiva"
+                            fill
+                            className="object-cover object-center"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                        <div className="absolute inset-0 bg-[#01284A]/20"></div>
                         {/* Overlay texts to emphasize "demand" */}
-                        <span className="absolute top-12 right-12 text-white/40 text-sm font-bold tracking-widest uppercase">Demanda Alta</span>
-                        <span className="absolute bottom-12 left-12 text-brand-gold/40 text-sm font-bold tracking-widest uppercase">Mercado</span>
+                        <span className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/10 backdrop-blur-sm px-4 py-2 rounded border border-white/20 text-white text-sm font-bold tracking-widest uppercase shadow-lg">Demanda Alta</span>
+                        <span className="absolute bottom-4 left-4 md:bottom-8 md:left-8 bg-[#01284A]/60 backdrop-blur-sm px-4 py-2 rounded border border-brand-gold/30 text-brand-gold text-sm font-bold tracking-widest uppercase shadow-lg">Mercado</span>
                     </motion.div>
 
                 </div>

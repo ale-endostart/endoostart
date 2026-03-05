@@ -18,7 +18,7 @@ export const CtaFinalSection: React.FC = () => {
                     transition={{ duration: 0.8 }}
                     className="text-center"
                 >
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-8 leading-tight">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold mb-8 leading-tight">
                         Fale com nossa equipe
                     </h2>
 
@@ -47,7 +47,7 @@ export const CtaFinalSection: React.FC = () => {
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-brand-gold text-[#01284A] rounded-xl font-bold uppercase tracking-wider text-sm transition-all shadow-[0_4px_20px_rgba(184,154,106,0.4)] hover:shadow-[0_8px_30px_rgba(184,154,106,0.6)]"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 bg-brand-gold text-[#01284A] rounded-xl font-bold uppercase tracking-wider text-sm transition-all shadow-[0_4px_20px_rgba(184,154,106,0.4)] hover:shadow-[0_8px_30px_rgba(184,154,106,0.6)]"
                     >
                         Falar com a equipe no WhatsApp
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

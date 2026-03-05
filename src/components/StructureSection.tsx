@@ -32,7 +32,7 @@ export const StructureSection: React.FC = () => {
     return (
         <section id="formacao" className="py-20 md:py-32 bg-brand-lightGray">
             <div className="container max-w-[1000px] px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
 
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}

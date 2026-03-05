@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
 
   const handleWhatsApp = () => {
     const message = 'Olá! Sou médico e gostaria de saber mais sobre a formação em Endoscopia e Colonoscopia da EndoStart';
-    const whatsappUrl = `https://wa.me/5511999999999?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/5511943375337?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -48,7 +48,7 @@ export const Footer: React.FC = () => {
 
       {/* Main footer content — 4 columns */}
       <div className="container section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 mb-4">

@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
 
 interface HeroSectionProps {
   onWhatsAppClick?: () => void;
@@ -32,32 +31,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
       </motion.div>
 
-      <div className="container relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center section-padding pt-32 pb-20">
-        {/* Mobile image first conceptually */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="lg:hidden relative w-full aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-        >
-          <Image
-            src="/images/doutor-alessandro.webp"
-            alt="Médico realizando procedimento endoscópico"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#01284A] via-[#01284A]/20 to-transparent"></div>
-        </motion.div>
-
+      <div className="container relative z-10 flex flex-col items-center text-center section-padding pt-24 md:pt-32 pb-20">
         {/* Text Content */}
-        <div className="lg:col-span-7 flex flex-col items-start">
+        <div className="flex flex-col items-center max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-wrap gap-3 mb-8"
+            className="flex flex-wrap justify-center gap-3 mb-8"
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded border border-white/20 bg-white/5 backdrop-blur-sm text-sm font-medium">
               <svg className="w-4 h-4 text-brand-gold" fill="currentColor" viewBox="0 0 20 20">
@@ -78,10 +59,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-[36px] sm:text-[48px] lg:text-[64px] leading-[1.1] font-bold text-white mb-6 font-serif tracking-tight"
+            className="text-[26px] sm:text-[48px] lg:text-[64px] leading-[1.15] font-bold text-white mb-6 font-serif tracking-tight"
           >
             Enquanto alguns médicos vivem de plantão…
-            <span className="block text-brand-gold mt-3 text-[28px] sm:text-[36px] lg:text-[48px] font-normal italic">
+            <span className="block text-brand-gold mt-3 text-[20px] sm:text-[36px] lg:text-[48px] font-normal italic">
               outros começam a mudar completamente a própria carreira dominando procedimentos.
             </span>
           </motion.h1>
@@ -90,7 +71,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl text-white/80 max-w-[600px] mb-10 leading-relaxed font-light"
+            className="text-base md:text-lg lg:text-xl text-white/80 max-w-[600px] mb-10 leading-relaxed font-light"
           >
             Formação presencial que ensina médicos a realizar Endoscopia Digestiva Alta e Colonoscopia com segurança e técnica.<br /><br />
             Mesmo sem experiência prévia.
@@ -115,24 +96,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
             </button>
           </motion.div>
         </div>
-
-        {/* Desktop Image Content */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="hidden lg:block lg:col-span-5 relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-        >
-          <Image
-            src="/images/doutor-alessandro.webp"
-            alt="Médico realizando procedimento endoscópico"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="40vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#01284A] via-transparent to-transparent opacity-80"></div>
-        </motion.div>
       </div>
     </section>
   );

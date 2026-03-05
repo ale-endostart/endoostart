@@ -1,0 +1,21 @@
+
+> endostart@1.0.0 dev
+> next dev
+
+ ÔÜá Port 3000 is in use, trying 3001 instead.
+ ÔÜá Port 3001 is in use, trying 3002 instead.
+ ÔÜá Port 3002 is in use, trying 3003 instead.
+  Ôû▓ Next.js 14.2.35
+  - Local:        http://localhost:3003
+
+ Ô£ô Starting...
+ Ô£ô Ready in 2.1s
+ ÔÜá Duplicate page detected. src\pages\_document.jsx and src\pages\_document.tsx resolve to /_document
+ ÔÜá Duplicate page detected. src\pages\_document.jsx and src\pages\_document.tsx resolve to /_document
+ ÔÜá Duplicate page detected. src\pages\_document.jsx and src\pages\_document.tsx resolve to /_document
+ ÔÜá Found a change in next.config.js. Restarting the server to apply the changes...
+  Ôû▓ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ Ô£ô Starting...
+ Ô£ô Ready in 3.7s

@@ -21,10 +21,10 @@ export const DifferentialsSection: React.FC = () => {
     };
 
     const differentials = [
-        { title: "Formação presencial" },
-        { title: "Turmas reduzidas" },
-        { title: "Acompanhamento direto dos professores" },
-        { title: "Foco em prática e raciocínio clínico" }
+        { title: "Formação presencial", description: "Aprendizado prático com contato direto com os pacientes e equipamentos" },
+        { title: "Turmas reduzidas", description: "Máximo de 8 alunos por turma para garantir qualidade de ensino" },
+        { title: "Acompanhamento direto dos professores", description: "Orientação individual durante todos os procedimentos" },
+        { title: "Foco em prática e raciocínio clínico", description: "80% prático, 20% teórico para domínio real da técnica" }
     ];
 
     return (
@@ -62,9 +62,14 @@ export const DifferentialsSection: React.FC = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl md:text-2xl text-[#3C3C3C] font-semibold mt-1">
-                                {diff.title}
-                            </h3>
+                            <div>
+                                <h3 className="text-xl md:text-2xl text-[#3C3C3C] font-semibold mt-1 mb-2">
+                                    {diff.title}
+                                </h3>
+                                <p className="text-[#3C3C3C]/80 font-light text-sm md:text-base">
+                                    {diff.description}
+                                </p>
+                            </div>
                         </motion.div>
                     ))}
                 </motion.div>

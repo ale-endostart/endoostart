@@ -1,0 +1,27 @@
+
+> endostart@1.0.0 lint
+> next lint
+
+
+./src/components/Testimonials.tsx
+107:19  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+107:39  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+204:79  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+204:96  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./src/pages/_document.jsx
+4:18  Error: A `require()` style import is forbidden.  @typescript-eslint/no-require-imports
+10:9  Warning: Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./src/utils/analytics.ts
+6:30  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+8:51  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+9:16  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+42:29  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/utils/whatsapp.ts
+65:81  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+66:51  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+67:16  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

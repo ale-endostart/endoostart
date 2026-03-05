@@ -11,6 +11,7 @@ import StructureSection from '../components/StructureSection';
 import DifferentialsSection from '../components/DifferentialsSection';
 import InstructorsSection from '../components/InstructorsSection';
 import TargetAudienceSection from '../components/TargetAudienceSection';
+import FAQSection from '../components/FAQSection';
 import ScarcitySection from '../components/ScarcitySection';
 import CtaFinalSection from '../components/CtaFinalSection';
 import Footer from '../components/Footer';
@@ -69,9 +70,12 @@ export default function Home() {
           <TargetAudienceSection />
 
           {/* Seção 11 */}
-          <ScarcitySection />
+          <FAQSection />
 
           {/* Seção 12 */}
+          <ScarcitySection />
+
+          {/* Seção 13 */}
           <CtaFinalSection />
 
         </main>

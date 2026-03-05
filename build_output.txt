@@ -1,0 +1,67 @@
+  Ôû▓ Next.js 14.2.35
+
+   Skipping validation of types
+   Skipping linting
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[1]!C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[2]!C:\TurboOps\Code\src\styles\globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+Failed to compile.
+
+./src/styles/globals.css:116:3
+Syntax error: C:\TurboOps\Code\src\styles\globals.css The `shadow-[0_2px_8px_rgba(0,` class does not exist. If `shadow-[0_2px_8px_rgba(0,` is a custom class, make sure it is defined within a `@layer` directive.
+
+  114 | /* Premium card styles */
+  115 | .card-premium {
+> 116 |   @apply bg-white rounded-xl shadow-[0_2px_8px_rgba(0, 0, 0, 0.06)] hover:shadow-[0_12px_32px_rgba(0, 0, 0, 0.1)] hover:-translate-y-1 transition-all duration-500 border border-neutral-100;
+      |   ^
+  117 | }
+  118 | 
+
+./src/styles/globals.css
+Syntax error: C:\TurboOps\Code\src\styles\globals.css The `duration-400` class does not exist. If `duration-400` is a custom class, make sure it is defined within a `@layer` directive. (109:3)
+
+  107 | /* Premium card styles */
+  108 | .card-premium {
+> 109 |   @apply bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-400 border border-neutral-100;
+      |   ^
+  110 | }
+  111 | 
+
+    at tryRunOrWebpackError (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:312989)
+    at __webpack_require_module__ (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:131165)
+    at __nested_webpack_require_153728__ (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:130607)
+    at C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:131454
+    at symbolIterator (C:\TurboOps\Code\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+    at done (C:\TurboOps\Code\node_modules\next\dist\compiled\neo-async\async.js:1:14824)
+    at Hook.eval [as callAsync] (eval at create (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:13:28858), <anonymous>:15:1)
+    at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:13:26012)
+    at C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:130328
+    at symbolIterator (C:\TurboOps\Code\node_modules\next\dist\compiled\neo-async\async.js:1:14402)
+-- inner error --
+Syntax error: C:\TurboOps\Code\src\styles\globals.css The `duration-400` class does not exist. If `duration-400` is a custom class, make sure it is defined within a `@layer` directive. (109:3)
+
+  107 | /* Premium card styles */
+  108 | .card-premium {
+> 109 |   @apply bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-400 border border-neutral-100;
+      |   ^
+  110 | }
+  111 | 
+
+    at Object.<anonymous> (C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[1]!C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[2]!C:\TurboOps\Code\src\styles\globals.css:1:7)
+    at C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:922493
+    at Hook.eval [as call] (eval at create (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:13:28636), <anonymous>:7:1)
+    at Hook.CALL_DELEGATE [as _call] (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:13:25906)
+    at C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:131198
+    at tryRunOrWebpackError (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:312943)
+    at __webpack_require_module__ (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:131165)
+    at __nested_webpack_require_153728__ (C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:130607)
+    at C:\TurboOps\Code\node_modules\next\dist\compiled\webpack\bundle5.js:28:131454
+    at symbolIterator (C:\TurboOps\Code\node_modules\next\dist\compiled\neo-async\async.js:1:14444)
+
+Generated code for C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[1]!C:\TurboOps\Code\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[7].oneOf[14].use[2]!C:\TurboOps\Code\src\styles\globals.css
+
+Import trace for requested module:
+./src/styles/globals.css
+
+
+> Build failed because of webpack errors
