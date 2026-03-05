@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MagneticWrapper } from './ui/MagneticWrapper';
 
 interface HeaderProps {
   onWhatsAppClick?: () => void;
@@ -7,91 +10,157 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: '#formacao', label: 'A Formação' },
+    { href: '#professores', label: 'Professores' },
+    { href: '#inscricao', label: 'Inscrição' },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-neutral-100">
-      <div className="container flex items-center justify-between h-16">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-500 ease-smooth ${scrolled
+        ? 'bg-white/95 backdrop-blur-lg shadow-premium h-16'
+        : 'bg-transparent backdrop-blur-sm h-20'
+        }`}
+    >
+      <div className="container flex items-center justify-between h-full">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">ES</span>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-12 h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+              <Image
+                src="/images/logo_endostart.webp"
+                alt="EndoStart Logo"
+                fill
+                className="object-contain"
+                sizes="48px"
+              />
             </div>
-            <span className="font-bold text-lg text-neutral-900 hidden sm:inline">EndoStart</span>
+            <span className={`font-serif font-bold text-xl hidden sm:inline transition-colors duration-300 ${scrolled ? 'text-brand-blue' : 'text-white'
+              }`}>
+              EndoStart
+            </span>
           </Link>
         </div>
 
         {/* Navigation Links - Desktop */}
         <nav className="hidden md:flex items-center gap-8">
-          <a href="#calculadora" className="text-neutral-600 hover:text-primary-600 transition-colors">
-            ROI Calculator
-          </a>
-          <a href="#cursos" className="text-neutral-600 hover:text-primary-600 transition-colors">
-            Cursos
-          </a>
-          <a href="#curriculum" className="text-neutral-600 hover:text-primary-600 transition-colors">
-            Currículo
-          </a>
-          <a href="#depoimentos" className="text-neutral-600 hover:text-primary-600 transition-colors">
-            Depoimentos
-          </a>
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className={`relative py-1 font-medium text-sm tracking-wide transition-colors duration-300 group ${scrolled ? 'text-neutral-600 hover:text-brand-blue' : 'text-white/80 hover:text-white'
+                }`}
+            >
+              {link.label}
+              <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-gold origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-smooth" />
+            </a>
+          ))}
         </nav>
 
         {/* CTA Button - Desktop */}
         <div className="hidden md:flex items-center gap-4">
-          <button
-            onClick={onWhatsAppClick}
-            className="btn-whatsapp"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-1.558.946-2.846 2.435-3.682 4.142-1.119 2.151-1.187 4.568-.384 6.769 1.012 2.904 3.441 5.363 6.471 6.215 1.71.53 3.542.545 5.315.317l-.001.001c2.252-.311 4.226-1.409 5.66-3.067l.169-.184-.169.184a9.935 9.935 0 002.359-4.579c.44-1.393.597-2.878.472-4.335-.701-8.227-8.038-14.592-16.275-13.891-3.270.285-6.311 1.466-8.743 3.622C2.915 2.883 1.426 4.547.734 6.524c-.31.902-.426 1.867-.333 2.846.198 2.213 1.235 4.291 2.945 5.888 1.319 1.196 3.057 2.034 4.974 2.365 1.917.331 3.900.155 5.657-.529 1.757-.684 3.289-1.767 4.358-3.127.523-.662.997-1.379 1.396-2.133.133-.25.258-.512.374-.78.116-.268.203-.547.258-.83.056-.283.064-.573.024-.86-.04-.287-.143-.568-.305-.828-.162-.26-.387-.486-.655-.665-.268-.179-.576-.304-.897-.368z" />
-            </svg>
-            WhatsApp
-          </button>
+          <MagneticWrapper strength={0.15}>
+            <button
+              onClick={onWhatsAppClick}
+              className="btn-whatsapp text-sm"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004c-1.742-.048-3.437-.5-4.962-1.32l-.356-.19-3.69.968.984-3.595-.21-.334a9.828 9.828 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              </svg>
+              WhatsApp
+            </button>
+          </MagneticWrapper>
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2"
+          className="md:hidden p-2 relative z-50"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d={mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+          <div className="w-6 h-5 flex flex-col justify-between">
+            <motion.span
+              animate={mobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              className={`block h-[2px] w-6 transition-colors ${mobileMenuOpen || scrolled ? 'bg-brand-blue' : 'bg-white'
+                }`}
             />
-          </svg>
+            <motion.span
+              animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+              className={`block h-[2px] w-6 transition-colors ${mobileMenuOpen || scrolled ? 'bg-brand-blue' : 'bg-white'
+                }`}
+            />
+            <motion.span
+              animate={mobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              className={`block h-[2px] w-6 transition-colors ${mobileMenuOpen || scrolled ? 'bg-brand-blue' : 'bg-white'
+                }`}
+            />
+          </div>
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-neutral-100 bg-white animate-slideUp">
-          <nav className="container py-4 space-y-3">
-            <a href="#calculadora" className="block py-2 text-neutral-600 hover:text-primary-600">
-              ROI Calculator
-            </a>
-            <a href="#cursos" className="block py-2 text-neutral-600 hover:text-primary-600">
-              Cursos
-            </a>
-            <a href="#curriculum" className="block py-2 text-neutral-600 hover:text-primary-600">
-              Currículo
-            </a>
-            <a href="#depoimentos" className="block py-2 text-neutral-600 hover:text-primary-600">
-              Depoimentos
-            </a>
-            <button
-              onClick={onWhatsAppClick}
-              className="btn-whatsapp w-full justify-center mt-4"
+      {/* Mobile Menu - Slide in from right */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white z-40 md:hidden shadow-2xl"
             >
-              WhatsApp
-            </button>
-          </nav>
-        </div>
-      )}
+              <nav className="flex flex-col justify-center h-full px-8 space-y-2">
+                {navLinks.map((link, i) => (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-4 text-2xl font-serif font-bold text-brand-blue hover:text-brand-gold transition-colors border-b border-neutral-100"
+                  >
+                    {link.label}
+                  </motion.a>
+                ))}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35, duration: 0.4 }}
+                  className="pt-6"
+                >
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onWhatsAppClick?.();
+                    }}
+                    className="btn-whatsapp w-full justify-center"
+                  >
+                    WhatsApp
+                  </button>
+                </motion.div>
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

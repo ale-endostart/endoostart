@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface Testimonial {
-  id: string;
+  id: string | number;
   name: string;
   specialty: string;
   location: string;
@@ -140,9 +140,8 @@ export const Testimonials: React.FC = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentIndex ? 'bg-primary-600 w-8' : 'bg-neutral-300 w-2'
-                  }`}
+                  className={`h-2 rounded-full transition-all ${index === currentIndex ? 'bg-primary-600 w-8' : 'bg-neutral-300 w-2'
+                    }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
