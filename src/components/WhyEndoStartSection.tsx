@@ -58,7 +58,7 @@ export const WhyEndoStartSection: React.FC = () => {
 
                             <div className="w-full h-full relative rounded-xl overflow-hidden">
                                 <Image
-                                    src="/images/alessandro-home.png"
+                                    src="/images/doutor-alessandro.webp"
                                     alt="Dr. Alessandro"
                                     fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
