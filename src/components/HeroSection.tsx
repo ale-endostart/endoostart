@@ -62,11 +62,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
-          className="max-w-5xl text-4xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] font-bold text-white mb-8 tracking-tight font-serif"
+          className="max-w-5xl text-3xl md:text-5xl lg:text-7xl leading-[1.2] font-bold text-white mb-8 tracking-tight font-serif"
         >
-          Domine Procedimentos.<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-[#E5D3AF] to-brand-gold animate-shimmer" style={{ backgroundSize: '200% auto' }}>
-            Transforme sua Carreira.
+          Enquanto alguns médicos vivem de plantão…<br />
+          <span className="block mt-4 text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-[#E5D3AF] to-brand-gold animate-shimmer" style={{ backgroundSize: '200% auto' }}>
+            Outros mudam completamente a própria carreira dominando procedimentos.
           </span>
         </motion.h1>
 
@@ -77,7 +77,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
           transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-lg md:text-xl lg:text-2xl text-white/70 max-w-3xl mb-12 leading-relaxed font-light"
         >
-          Formações exclusivas de alto padrão para médicos que buscam transição de carreira, excelência técnica e reconhecimento através da Endoscopia e procedimentos avançados.
+          Formação presencial que ensina médicos a realizar Endoscopia Digestiva Alta e Colonoscopia com segurança e técnica.
+          <br /><span className="font-medium text-white/90">Mesmo sem experiência prévia.</span>
         </motion.p>
 
         {/* Call to Action - Glowing Button */}

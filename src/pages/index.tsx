@@ -12,6 +12,8 @@ import CtaFinalSection from '../components/CtaFinalSection';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
+import DoctorRealitySection from '../components/DoctorRealitySection';
+import TwoPathsSection from '../components/TwoPathsSection';
 
 export default function Home() {
   const handleWhatsAppClick = () => {
@@ -40,6 +42,12 @@ export default function Home() {
 
           {/* Seção 2: Brand/Origin Story */}
           <WhyEndoStartSection />
+
+          {/* Seção Nova: A realidade médica */}
+          <DoctorRealitySection />
+
+          {/* Seção Nova: Dois Caminhos */}
+          <TwoPathsSection />
 
           {/* Seção 3: Course Previews */}
           <CoursePreviewSection />
