@@ -5,7 +5,9 @@
 :root {
   --color-primary: #01284A;
   --color-accent: #B89A6A;
-  --color-text: #3C3C3C;
+  --color-text: #E5E7EB; /* Main text is now light for dark cinematic backgrounds */
+  --color-text-muted: #9CA3AF;
+  --color-bg-dark: #020813;
   --color-bg-light: #F3F5F8;
   --color-bg-white: #FFFFFF;
 
@@ -43,7 +45,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg-light);
+  background-color: var(--color-bg-dark); /* Changed to dark */
   color: var(--color-text);
   line-height: 1.6;
 }
@@ -208,10 +210,19 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(2, 8, 19, 0.4);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.glass-panel {
+  background: linear-gradient(135deg, rgba(2, 8, 19, 0.6) 0%, rgba(1, 40, 74, 0.2) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(184, 154, 106, 0.1);
+  border-radius: 20px;
 }
 
 /* ============================

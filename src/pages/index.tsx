@@ -3,11 +3,8 @@ import Head from 'next/head';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import CustomCursor from '../components/CustomCursor';
-import AuthoritySection from '../components/AuthoritySection';
-import RealitySection from '../components/RealitySection';
-import TwoPathsSection from '../components/TwoPathsSection';
-import OpportunitySection from '../components/OpportunitySection';
-import EndoStartSection from '../components/EndoStartSection';
+import { WhyEndoStartSection } from '../components/WhyEndoStartSection';
+import { CoursePreviewSection } from '../components/CoursePreviewSection';
 import StructureSection from '../components/StructureSection';
 import DifferentialsSection from '../components/DifferentialsSection';
 import InstructorsSection from '../components/InstructorsSection';
@@ -40,26 +37,17 @@ export default function Home() {
         <CustomCursor />
         <Header onWhatsAppClick={handleWhatsAppClick} />
 
-        <main className="overflow-hidden">
-          {/* Seção 1 */}
+        <main className="overflow-hidden bg-[#020813]">
+          {/* Seção 1: Cinematic Hero */}
           <HeroSection onWhatsAppClick={handleWhatsAppClick} />
 
-          {/* Seção 2 */}
-          <AuthoritySection />
+          {/* Seção 2: Brand/Origin Story */}
+          <WhyEndoStartSection />
 
-          {/* Seção 3 */}
-          <RealitySection />
+          {/* Seção 3: Course Previews */}
+          <CoursePreviewSection />
 
-          {/* Seção 4 */}
-          <TwoPathsSection />
-
-          {/* Seção 5 */}
-          <OpportunitySection />
-
-          {/* Seção 6 */}
-          <EndoStartSection />
-
-          {/* Seção 7 */}
+          {/* The rest of the legacy layout sections below could also be upgraded later or kept for extra info */}
           <StructureSection />
 
           {/* Seção 8 */}

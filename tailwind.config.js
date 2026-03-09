@@ -9,12 +9,14 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          blue: '#01284A',
+          black: '#020813',     // Cinematic deep space black
+          blue: '#01284A',      // Core brand blue
           lightBlue: '#4A7CA8',
           gold: '#B89A6A',
-          darkGray: '#3C3C3C',
+          darkGray: '#1C1C1C',  // Darker for cinematic
           lightGray: '#F3F5F8',
           goldHover: '#9A7A4A',
+          glowHover: '#D4B87A', // New interactive gold glow
         },
         primary: {
           50: '#f0f9ff',
