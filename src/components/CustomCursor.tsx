@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function CustomCursor() {
@@ -45,16 +45,16 @@ export default function CustomCursor() {
 
   return (
     <>
-      <style>
-        {`
+      <style dangerouslySetInnerHTML={{
+        __html: `
           * {
             cursor: none !important;
           }
           a, button, input[type="submit"], input[type="button"], [role="button"] {
             cursor: none !important;
           }
-        `}
-      </style>
+        `
+      }} />
       <motion.div
         className="pointer-events-none fixed z-50"
         animate={{
@@ -64,11 +64,10 @@ export default function CustomCursor() {
         transition={{ type: 'spring', stiffness: 500, damping: 28 }}
       >
         <div
-          className={`w-4 h-4 rounded-full border-2 transition-all ${
-            isHoveringButton
-              ? 'border-brand-gold bg-brand-gold/20 scale-150'
-              : 'border-brand-gold bg-transparent'
-          }`}
+          className={`w-4 h-4 rounded-full border-2 transition-all ${isHoveringButton
+            ? 'border-brand-gold bg-brand-gold/20 scale-150'
+            : 'border-brand-gold bg-transparent'
+            }`}
         />
       </motion.div>
     </>

@@ -1,5 +1,9 @@
-import { Request, Response } from "express";
+import { Router } from "express"
 
-type AuthRequest = Request & {
-  user?: any;
-};
+const router = Router()
+
+router.get("/", (req, res) => {
+  res.send("students route")
+})
+
+export default router
