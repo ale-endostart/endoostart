@@ -9,6 +9,7 @@ import InstructorsSection from '../components/InstructorsSection';
 import TargetAudienceSection from '../components/TargetAudienceSection';
 import FAQSection from '../components/FAQSection';
 import CtaFinalSection from '../components/CtaFinalSection';
+import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
 
@@ -58,6 +59,8 @@ export default function Home() {
           {/* Seção 12 */}
           <CtaFinalSection />
 
+          {/* Seção 13 */}
+          <ContactSection />
         </main>
 
         <Footer />

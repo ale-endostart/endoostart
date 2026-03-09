@@ -23,7 +23,6 @@ const navLinks = [
     ],
   },
   { href: '/#professores', label: 'Professores' },
-  { href: '/#depoimentos', label: 'Depoimentos' },
   { href: '/#contato', label: 'Contato' },
 ];
 
