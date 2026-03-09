@@ -35,7 +35,7 @@ export default function SignIn() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Erro ao fazer login');
+        throw new Error(data.error || data.message || 'Erro ao fazer login');
       }
 
       const data = await response.json();

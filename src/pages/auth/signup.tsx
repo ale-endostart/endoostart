@@ -39,7 +39,7 @@ export default function SignUp() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Erro ao criar conta');
+        throw new Error(data.error || data.message || 'Erro ao criar conta');
       }
 
       const data = await response.json();
