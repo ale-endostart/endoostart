@@ -1,123 +1,82 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-export const CustomCursor = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [cursorLabel, setCursorLabel] = useState('');
-  const prefersReduced = useReducedMotion();
+export const CustomCursor: React.FC = () => {
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isHovering, setIsHovering] = useState(false);
+    const [hoverText, setHoverText] = useState('');
 
-  useEffect(() => {
-    if (prefersReduced) return;
+    useEffect(() => {
+        const updateMousePosition = (e: MouseEvent) => {
+            setMousePosition({ x: e.clientX, y: e.clientY });
+        };
 
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
-    };
+        const handleMouseOver = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            // Check if hovered element is clickable (a, button, or has custom data attribute)
+            const isClickable = target.closest('a') !== null || target.closest('button') !== null || target.closest('[data-clickable="true"]') !== null;
 
-    const handleMouseLeave = () => setIsVisible(false);
-    const handleMouseEnter = () => setIsVisible(true);
+            if (isClickable) {
+                setIsHovering(true);
+                // Try to get specific text for the cursor, default to 'Clique'
+                const specificText = target.closest('[data-cursor-text]')?.getAttribute('data-cursor-text');
+                setHoverText(specificText || 'Clique');
+            } else {
+                setIsHovering(false);
+                setHoverText('');
+            }
+        };
 
-    const handleElementHover = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactiveEl = target.closest('button, a');
+        window.addEventListener('mousemove', updateMousePosition);
+        window.addEventListener('mouseover', handleMouseOver);
 
-      setIsHovering(!!interactiveEl);
+        return () => {
+            window.removeEventListener('mousemove', updateMousePosition);
+            window.removeEventListener('mouseover', handleMouseOver);
+        };
+    }, []);
 
-      if (interactiveEl) {
-        const customLabel = (interactiveEl as HTMLElement).dataset.cursorLabel;
-        if (customLabel) {
-          setCursorLabel(customLabel);
-        } else if (!target.closest('header')) {
-          setCursorLabel('Clique');
-        } else {
-          setCursorLabel('');
-        }
-      } else {
-        setCursorLabel('');
-      }
-    };
+    // Only show on desktop (fine pointer)
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+        return null;
+    }
 
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleElementHover);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
-
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      window.removeEventListener('mouseover', handleElementHover);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-    };
-  }, [isVisible, prefersReduced]);
-
-  if (prefersReduced) return null;
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
-    return null;
-  }
-
-  return (
-    <>
-      {/* Outer ring */}
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-brand-gold/60 pointer-events-none z-[100] mix-blend-difference hidden md:flex items-center justify-center"
-        animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: isHovering ? 2.2 : 1,
-          opacity: isVisible ? 1 : 0,
-        }}
-        transition={{
-          type: 'spring',
-          mass: 0.1,
-          stiffness: 150,
-          damping: 15,
-        }}
-      >
-        {/* Label inside cursor */}
-        <motion.span
-          className="text-[7px] font-sans font-bold uppercase tracking-wider text-brand-gold"
-          animate={{ opacity: cursorLabel ? 1 : 0, scale: cursorLabel ? 1 : 0.5 }}
-          transition={{ duration: 0.2 }}
-        >
-          {cursorLabel}
-        </motion.span>
-      </motion.div>
-
-      {/* Inner dot */}
-      <motion.div
-        className="fixed top-0 left-0 w-2 h-2 bg-brand-gold rounded-full pointer-events-none z-[100] mix-blend-difference hidden md:block"
-        animate={{
-          x: mousePosition.x - 4,
-          y: mousePosition.y - 4,
-          opacity: isVisible ? (isHovering ? 0 : 1) : 0,
-        }}
-        transition={{
-          type: 'tween',
-          ease: 'linear',
-          duration: 0,
-        }}
-      />
-
-      {/* Trailing ring (third circle) */}
-      <motion.div
-        className="fixed top-0 left-0 w-12 h-12 rounded-full border border-brand-gold/20 pointer-events-none z-[99] mix-blend-difference hidden md:block"
-        animate={{
-          x: mousePosition.x - 24,
-          y: mousePosition.y - 24,
-          scale: isHovering ? 1.5 : 1,
-          opacity: isVisible ? 0.4 : 0,
-        }}
-        transition={{
-          type: 'spring',
-          mass: 0.3,
-          stiffness: 80,
-          damping: 20,
-        }}
-      />
-    </>
-  );
+    return (
+        <>
+            <motion.div
+                className="fixed top-0 left-0 w-4 h-4 rounded-full bg-brand-gold mix-blend-difference pointer-events-none z-[9999] flex items-center justify-center -ml-2 -mt-2"
+                animate={{
+                    x: mousePosition.x,
+                    y: mousePosition.y,
+                    scale: isHovering ? 0 : 1,
+                    opacity: 1
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 700,
+                    damping: 28,
+                    mass: 0.5
+                }}
+            />
+            <motion.div
+                className="fixed top-0 left-0 w-16 h-16 rounded-full border border-brand-gold/50 pointer-events-none z-[9999] flex items-center justify-center -ml-8 -mt-8 backdrop-blur-sm bg-brand-gold/10 text-brand-gold text-xs font-bold tracking-widest uppercase"
+                animate={{
+                    x: mousePosition.x,
+                    y: mousePosition.y,
+                    scale: isHovering ? 1.2 : 0,
+                    opacity: isHovering ? 1 : 0
+                }}
+                transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    mass: 0.5
+                }}
+            >
+                <div className="absolute text-[9px] w-full text-center scale-90 opacity-90">{hoverText}</div>
+            </motion.div>
+        </>
+    );
 };
 
 export default CustomCursor;

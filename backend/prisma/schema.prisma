@@ -1,17 +1,30 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// SQLite Configuration
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// User (Students + Admins)
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum ContentType {
+  PDF
+  VIDEO
+  TEXT
+  LINK
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
@@ -21,8 +34,8 @@ model User {
   lastName          String
   crm               String?  @unique
   phone             String?
-  state             String?  // N, NE, CO, etc
-  role              String   @default("STUDENT") // STUDENT, ADMIN (string instead of enum for SQLite)
+  state             String?
+  role              Role     @default(STUDENT)
   hasAccess         Boolean  @default(false)
   accessGrantedAt   DateTime?
   accessRevokedAt   DateTime?
@@ -33,26 +46,26 @@ model User {
   downloads         Download[]
   activityLogs      ActivityLog[]
   analyticsEvents   Analytics[]
+  completions       LessonCompletion[]
 
   @@index([email])
   @@index([role])
   @@index([hasAccess])
 }
 
-// Courses
 model Course {
-  id                String   @id @default(cuid())
-  slug              String   @unique
+  id                String     @id @default(cuid())
+  slug              String     @unique
   name              String
-  description       String   // No @db.Text for SQLite
+  description       String     @db.Text
   shortDescription  String
-  price             Float    // in BRL
+  price             Float
   durationWeeks     Int
-  difficulty        String   // BEGINNER, INTERMEDIATE, ADVANCED
-  imageUrl          String
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  difficulty        Difficulty
+  imageUrl          String     @default("")
+  isActive          Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
   modules           Module[]
   enrollments       StudentCourse[]
@@ -61,12 +74,11 @@ model Course {
   @@index([isActive])
 }
 
-// Modules (DRGE, Tumores Gástricos, etc)
 model Module {
   id                String   @id @default(cuid())
-  courseId          String
+  courseId           String
   name              String
-  description       String   // No @db.Text for SQLite
+  description       String   @db.Text
   order             Int
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
@@ -79,57 +91,69 @@ model Module {
   @@index([order])
 }
 
-// Lessons (within modules)
 model Lesson {
   id                String   @id @default(cuid())
   moduleId          String
   name              String
-  description       String   // No @db.Text for SQLite
+  description       String   @db.Text
   order             Int
-  duration          Int?     // in minutes
+  duration          Int?
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   module            Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   contents          Content[]
+  completions       LessonCompletion[]
 
   @@index([moduleId])
   @@index([order])
 }
 
-// Content (PDFs, Videos, etc)
 model Content {
-  id                String   @id @default(cuid())
+  id                String      @id @default(cuid())
   lessonId          String
-  type              String   // PDF, VIDEO, TEXT, LINK (string instead of enum for SQLite)
+  type              ContentType
   title             String
-  description       String   // No @db.Text for SQLite
-  url               String   // S3/Cloudinary URL
-  fileSize          Float?   // in MB
+  description       String      @db.Text
+  url               String
+  fileSize          Float?
   mimeType          String?
   order             Int
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  isActive          Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
-  lesson            Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lesson            Lesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   downloads         Download[]
 
   @@index([lessonId])
   @@index([type])
 }
 
-// Student Enrollments
+model LessonCompletion {
+  id          String   @id @default(cuid())
+  studentId   String
+  lessonId    String
+  completedAt DateTime @default(now())
+
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, lessonId])
+  @@index([studentId])
+  @@index([lessonId])
+}
+
 model StudentCourse {
   id                String   @id @default(cuid())
   studentId         String
-  courseId          String
+  courseId           String
   enrolledAt        DateTime @default(now())
   accessGrantedAt   DateTime?
   accessRevokedAt   DateTime?
   isActive          Boolean  @default(true)
-  progress          Int      @default(0) // 0-100
+  progress          Int      @default(0)
   completedAt       DateTime?
 
   student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -141,7 +165,6 @@ model StudentCourse {
   @@index([isActive])
 }
 
-// Download Tracking
 model Download {
   id                String   @id @default(cuid())
   studentId         String
@@ -158,12 +181,11 @@ model Download {
   @@index([downloadedAt])
 }
 
-// Activity Logging
 model ActivityLog {
   id                String   @id @default(cuid())
   studentId         String
-  eventType         String   // LOGIN, COURSE_VIEW, CONTENT_VIEW, DOWNLOAD
-  metadata          String?  // JSON as string for SQLite
+  eventType         String
+  metadata          Json?
   timestamp         DateTime @default(now())
 
   student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -173,12 +195,11 @@ model ActivityLog {
   @@index([timestamp])
 }
 
-// Analytics (Landing page conversions)
 model Analytics {
   id                String   @id @default(cuid())
-  eventType         String   // LANDING_VISIT, CTA_CLICK, WHATSAPP_CLICK
+  eventType         String
   studentId         String?
-  metadata          String?  // JSON as string for SQLite
+  metadata          Json?
   timestamp         DateTime @default(now())
 
   student           User?    @relation(fields: [studentId], references: [id], onDelete: SetNull)

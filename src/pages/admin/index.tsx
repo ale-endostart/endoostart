@@ -1,354 +1,224 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
+import AdminLayout from '../../components/layouts/AdminLayout';
+import { useAuth } from '../../contexts/AuthContext';
+import { api } from '../../utils/api';
 
-interface Student {
+interface DashboardStats {
+  totalStudents: number;
+  activeStudents: number;
+  totalCourses: number;
+  totalContents: number;
+}
+
+interface RecentEnrollment {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  crm?: string;
-  hasAccess: boolean;
+  studentName: string;
+  studentEmail: string;
+  courseName: string;
   enrolledAt: string;
 }
 
-export default function AdminPanel() {
-  const router = useRouter();
-  const [students, setStudents] = useState<Student[]>([]);
-  const [user, setUser] = useState<any>(null);
+interface ActivityItem {
+  id: string;
+  eventType: string;
+  description: string;
+  studentName: string;
+  timestamp: string;
+}
+
+interface DashboardData {
+  stats: DashboardStats;
+  recentEnrollments: RecentEnrollment[];
+  recentActivity: ActivityItem[];
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.4 },
+  }),
+};
+
+export default function AdminDashboard() {
+  const { isLoading: authLoading } = useAuth();
+  const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    if (authLoading) return;
+    fetchDashboard();
+  }, [authLoading]);
 
-    if (!token || !userData) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    const parsedUser = JSON.parse(userData);
-
-    // Check if user is admin
-    if (parsedUser.role !== 'ADMIN') {
-      router.push('/dashboard');
-      return;
-    }
-
-    setUser(parsedUser);
-    fetchStudents(token);
-  }, [router]);
-
-  const fetchStudents = async (token: string) => {
+  const fetchDashboard = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/students', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao buscar alunos');
-      }
-
-      const data = await response.json();
-      setStudents(data.students || []);
+      setError('');
+      const result = await api.get<DashboardData>('/api/admin/dashboard');
+      setData(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
+      setError(err instanceof Error ? err.message : 'Erro ao carregar painel');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGrantAccess = async (studentId: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/admin/students/${studentId}/grant`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro ao conceder acesso');
-      }
-
-      setStudents(prev =>
-        prev.map(s => (s.id === studentId ? { ...s, hasAccess: true } : s))
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleRevokeAccess = async (studentId: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/admin/students/${studentId}/revoke`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro ao revogar acesso');
-      }
-
-      setStudents(prev =>
-        prev.map(s => (s.id === studentId ? { ...s, hasAccess: false } : s))
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    router.push('/');
-  };
-
-  const filteredStudents = students.filter(
-    s =>
-      s.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-brand-lightGray">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-brand-blue font-medium">Carregando...</p>
+      <AdminLayout title="Painel">
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-brand-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-brand-blue font-medium">Carregando...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
+  const stats = data?.stats || { totalStudents: 0, activeStudents: 0, totalCourses: 0, totalContents: 0 };
+
+  const statCards = [
+    { label: 'Total Alunos', value: stats.totalStudents, color: 'text-brand-blue', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
+    { label: 'Alunos Ativos', value: stats.activeStudents, color: 'text-green-600', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { label: 'Total Cursos', value: stats.totalCourses, color: 'text-brand-gold', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+    { label: 'Total Conteudos', value: stats.totalContents, color: 'text-purple-600', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+  ];
+
   return (
-    <div className="min-h-screen bg-brand-lightGray">
-      {/* Header */}
-      <header className="bg-white shadow-premium sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/images/logo_endostart.webp"
-                alt="EndoStart"
-                width={40}
-                height={40}
-                className="object-contain"
-              />
-              <span className="text-xl font-serif font-bold text-brand-blue hidden sm:inline">
-                EndoStart
-              </span>
-              <span className="text-sm font-bold bg-brand-gold text-brand-blue px-3 py-1 rounded-full">
-                ADMIN
-              </span>
-            </Link>
+    <AdminLayout title="Painel">
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 bg-red-50 border border-red-200 rounded-lg mb-6"
+        >
+          <p className="text-red-700 text-sm">{error}</p>
+        </motion.div>
+      )}
 
-            <div className="flex items-center gap-4">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-brand-blue">
-                  {user?.firstName} {user?.lastName}
-                </p>
-                <p className="text-xs text-neutral-600">Administrador</p>
-              </div>
-
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm font-medium hover:bg-brand-blue/90 transition-colors"
-              >
-                Sair
-              </button>
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {statCards.map((card, i) => (
+          <motion.div
+            key={card.label}
+            custom={i}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            className="bg-white rounded-2xl shadow-premium p-6"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-neutral-500 text-sm font-medium">{card.label}</p>
+              <svg className={`w-6 h-6 ${card.color} opacity-60`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={card.icon} />
+              </svg>
             </div>
-          </div>
-        </div>
-      </header>
+            <p className={`text-4xl font-serif font-bold ${card.color}`}>{card.value}</p>
+          </motion.div>
+        ))}
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Title Section */}
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="flex flex-wrap gap-4 mb-8"
+      >
+        <Link
+          href="/admin/courses/new"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-gold text-white font-medium rounded-lg hover:bg-brand-goldHover transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Novo Curso
+        </Link>
+        <Link
+          href="/admin/students"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-blue text-white font-medium rounded-lg hover:bg-brand-blue/90 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Novo Aluno
+        </Link>
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Recent Enrollments */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          transition={{ delay: 0.5 }}
+          className="bg-white rounded-2xl shadow-premium overflow-hidden"
         >
-          <h1 className="text-4xl font-serif font-bold text-brand-blue mb-2">
-            Painel de Administração
-          </h1>
-          <p className="text-lg text-neutral-600">
-            Gerencie o acesso de alunos aos cursos
-          </p>
+          <div className="px-6 py-4 border-b border-neutral-200 bg-brand-lightGray">
+            <h2 className="text-lg font-serif font-bold text-brand-blue">Matr{'\u00ed'}culas Recentes</h2>
+          </div>
+          <div className="divide-y divide-neutral-100">
+            {(!data?.recentEnrollments || data.recentEnrollments.length === 0) ? (
+              <div className="px-6 py-8 text-center text-neutral-500 text-sm">
+                Nenhuma matr{'\u00ed'}cula recente
+              </div>
+            ) : (
+              data.recentEnrollments.slice(0, 10).map((enrollment) => (
+                <div key={enrollment.id} className="px-6 py-3 hover:bg-brand-lightGray/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">{enrollment.studentName}</p>
+                      <p className="text-xs text-neutral-500">{enrollment.courseName}</p>
+                    </div>
+                    <p className="text-xs text-neutral-400">
+                      {new Date(enrollment.enrolledAt).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </motion.div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg mb-8">
-            <p className="text-red-700">{error}</p>
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="bg-white rounded-2xl shadow-premium overflow-hidden"
+        >
+          <div className="px-6 py-4 border-b border-neutral-200 bg-brand-lightGray">
+            <h2 className="text-lg font-serif font-bold text-brand-blue">Atividade Recente</h2>
           </div>
-        )}
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-premium p-6"
-          >
-            <p className="text-neutral-600 text-sm mb-2">Total de Alunos</p>
-            <p className="text-4xl font-serif font-bold text-brand-blue">
-              {students.length}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-premium p-6"
-          >
-            <p className="text-neutral-600 text-sm mb-2">Com Acesso</p>
-            <p className="text-4xl font-serif font-bold text-green-600">
-              {students.filter(s => s.hasAccess).length}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-2xl shadow-premium p-6"
-          >
-            <p className="text-neutral-600 text-sm mb-2">Sem Acesso</p>
-            <p className="text-4xl font-serif font-bold text-red-600">
-              {students.filter(s => !s.hasAccess).length}
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Search */}
-        <div className="bg-white rounded-2xl shadow-premium p-6 mb-8">
-          <input
-            type="text"
-            placeholder="Buscar aluno por nome ou e-mail..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:border-brand-gold focus:ring-2 focus:ring-brand-gold/20 transition-all"
-          />
-        </div>
-
-        {/* Students Table */}
-        <div className="bg-white rounded-2xl shadow-premium overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-neutral-200 bg-brand-lightGray">
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    Nome
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    E-mail
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    CRM
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    Inscrição
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-brand-blue">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudents.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-neutral-600">
-                      Nenhum aluno encontrado
-                    </td>
-                  </tr>
-                ) : (
-                  filteredStudents.map((student) => (
-                    <motion.tr
-                      key={student.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="border-b border-neutral-200 hover:bg-brand-lightGray/50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-neutral-900">
-                          {student.firstName} {student.lastName}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-600">
-                        {student.email}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-600">
-                        {student.crm || '—'}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-600">
-                        {new Date(student.enrolledAt).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
-                            student.hasAccess
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {student.hasAccess ? 'Com Acesso' : 'Sem Acesso'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {student.hasAccess ? (
-                          <button
-                            onClick={() => handleRevokeAccess(student.id)}
-                            className="text-red-600 hover:text-red-700 font-medium text-sm"
-                          >
-                            Revogar
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => handleGrantAccess(student.id)}
-                            className="text-green-600 hover:text-green-700 font-medium text-sm"
-                          >
-                            Conceder
-                          </button>
-                        )}
-                      </td>
-                    </motion.tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className="divide-y divide-neutral-100">
+            {(!data?.recentActivity || data.recentActivity.length === 0) ? (
+              <div className="px-6 py-8 text-center text-neutral-500 text-sm">
+                Nenhuma atividade recente
+              </div>
+            ) : (
+              data.recentActivity.slice(0, 10).map((activity) => (
+                <div key={activity.id} className="px-6 py-3 hover:bg-brand-lightGray/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">{activity.description}</p>
+                      <p className="text-xs text-neutral-500">{activity.studentName}</p>
+                    </div>
+                    <p className="text-xs text-neutral-400">
+                      {new Date(activity.timestamp).toLocaleDateString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        </div>
-      </main>
-    </div>
+        </motion.div>
+      </div>
+    </AdminLayout>
   );
 }
