@@ -66,13 +66,32 @@ router.get('/dashboard', authMiddleware, adminMiddleware, async (req: AuthReques
       }),
     ])
 
+    // Format enrollments and activity for frontend
+    const formattedEnrollments = recentEnrollments.map(e => ({
+      id: e.id,
+      studentName: `${e.student.firstName} ${e.student.lastName}`,
+      studentEmail: e.student.email,
+      courseName: e.course.name,
+      enrolledAt: e.enrolledAt,
+    }))
+
+    const formattedActivity = recentActivity.map(a => ({
+      id: a.id,
+      eventType: a.eventType,
+      description: a.eventType,
+      studentName: `${a.student.firstName} ${a.student.lastName}`,
+      timestamp: a.timestamp,
+    }))
+
     res.json({
-      totalStudents,
-      activeStudents,
-      totalCourses,
-      totalContent,
-      recentEnrollments,
-      recentActivity,
+      stats: {
+        totalStudents,
+        activeStudents,
+        totalCourses,
+        totalContents: totalContent,
+      },
+      recentEnrollments: formattedEnrollments,
+      recentActivity: formattedActivity,
     })
   } catch (error: any) {
     res.status(500).json({ error: error.message })

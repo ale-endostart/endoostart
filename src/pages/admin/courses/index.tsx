@@ -33,8 +33,14 @@ export default function AdminCoursesList() {
   const fetchCourses = async () => {
     try {
       setError('');
-      const result = await api.get<{ courses: Course[] }>('/api/admin/courses');
-      setCourses(result.courses || []);
+      const result = await api.get('/api/admin/courses');
+      const courseList = Array.isArray(result) ? result : (result.courses || []);
+      setCourses(courseList.map((c: any) => ({
+        ...c,
+        modulesCount: c.modulesCount ?? c.totalModules ?? c._count?.modules ?? 0,
+        lessonsCount: c.lessonsCount ?? c.totalLessons ?? 0,
+        studentsEnrolled: c.studentsEnrolled ?? c.totalEnrollments ?? c._count?.enrollments ?? 0,
+      })));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar cursos');
     } finally {

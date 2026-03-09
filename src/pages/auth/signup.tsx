@@ -3,9 +3,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { api } from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function SignUp() {
   const router = useRouter();
+  const { updateUser } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -31,22 +34,12 @@ export default function SignUp() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || data.message || 'Erro ao criar conta');
-      }
-
-      const data = await response.json();
+      const data = await api.post('/api/auth/register', formData);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      updateUser(data.user);
 
-      router.push('/dashboard');
+      router.push(data.user.role === 'ADMIN' ? '/admin' : '/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {

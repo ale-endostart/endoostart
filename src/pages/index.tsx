@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
+import CustomCursor from '../components/CustomCursor';
 import AuthoritySection from '../components/AuthoritySection';
 import RealitySection from '../components/RealitySection';
 import TwoPathsSection from '../components/TwoPathsSection';
@@ -36,6 +37,7 @@ export default function Home() {
       </Head>
 
       <div className="min-h-screen bg-brand-lightGray text-[#3C3C3C] selection:bg-brand-gold/30 selection:text-[#01284A]">
+        <CustomCursor />
         <Header onWhatsAppClick={handleWhatsAppClick} />
 
         <main className="overflow-hidden">
