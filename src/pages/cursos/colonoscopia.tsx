@@ -76,7 +76,7 @@ export default function ColonoscopiaPage() {
                 subtitle="O exame mais demandado na medicina preventiva. Domine a colonoscopia e abra uma agenda que se paga em 2 dias de trabalho."
                 description="Formação presencial intensiva que capacita o médico a navegar todo o cólon com precisão, contornar alças difíceis e identificar lesões precoces — procedimento mais solicitado no rastreamento de câncer colorretal."
                 badge="Formação Avançada · Goiânia GO"
-                backgroundImage="/images/medica-endoscopia.png"
+                backgroundImage="/images/curso-colonoscopia.png"
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}

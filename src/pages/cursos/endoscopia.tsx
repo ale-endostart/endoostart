@@ -76,7 +76,7 @@ export default function EndoscopiaPage() {
                 subtitle="De plantão de 12h a R$ 150 para uma manhã de endoscopias a R$ 4.000. Esse é o impacto real desta formação."
                 description="Imersão presencial VIP com apenas 3 médicos por turma. Em poucos dias você vai tocar o endoscópio, interpretar imagens, laudar com segurança e sair com o protocolo completo para montar sua agenda de exames."
                 badge="Formação VIP · Apenas 3 Alunos"
-                backgroundImage="/images/medica-endoscopia.png"
+                backgroundImage="/images/curso-endoscopia.png"
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}

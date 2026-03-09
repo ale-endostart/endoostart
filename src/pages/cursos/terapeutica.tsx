@@ -76,7 +76,7 @@ export default function TerapeuticaPage() {
                 subtitle="Quem domina a Terapêutica cobra 3x mais pelo mesmo exame. Polipectomias, mucosectomias e hemostasias que transformam seu valor de mercado."
                 description="Para endoscopistas e residentes cirúrgicos que já realizam laudos diagnósticos e querem escalar radicalmente o valor dos seus procedimentos. Aqui você aprende as intervenções que separam o especialista do expert."
                 badge="Formação Masterclass · Pré-requisito: Endoscopia Básica"
-                backgroundImage="/images/medica-endoscopia.png"
+                backgroundImage="/images/curso-terapeutica.png"
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}

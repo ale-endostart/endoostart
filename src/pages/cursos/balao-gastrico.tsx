@@ -76,7 +76,7 @@ export default function BalaoGastricoPage() {
                 subtitle="O procedimento mais demandado no mercado de obesidade. Aprenda em um fim de semana e comece a oferecer na semana seguinte."
                 description="Formação intensiva de 2 dias onde você domina implante e explante de balão intragástrico do zero — indicações, sedação, técnica, manejo dos primeiros dias e critérios de retirada segura. Mercado em alta em todo o Brasil."
                 badge="Formação de Alta Demanda · Menor Ticket de Entrada"
-                backgroundImage="/images/medica-endoscopia.png"
+                backgroundImage="/images/curso-balao-gastrico.png"
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}
