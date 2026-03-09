@@ -34,7 +34,7 @@ export const InstructorsSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-24"
+          className="text-center mb-24 md:mb-32"
         >
           <h2 className="text-3xl md:text-5xl font-serif text-brand-lightGray mb-4">
             Nossos <span className="font-bold">Professores</span>
@@ -63,14 +63,14 @@ export const InstructorsSection: React.FC = () => {
             </div>
 
             {/* Transparent Image Box */}
-            <div className="w-56 h-auto md:w-[280px] shrink-0 relative z-10 flex items-end justify-center drop-shadow-2xl md:-ml-8 md:-mt-12">
+            <div className="w-48 h-auto md:w-[220px] lg:w-[240px] shrink-0 relative z-10 flex items-end justify-center drop-shadow-2xl md:-ml-4 md:-mt-6">
               <Image
                 src="/images/doutor-alessandro-transparente.png"
                 alt="Dr. Alessandro"
-                width={280}
-                height={350}
+                width={240}
+                height={300}
                 className="object-contain object-bottom filter contrast-[1.05] transition-transform duration-700 ease-out origin-bottom group-hover:scale-105"
-                sizes="(max-width: 768px) 224px, 280px"
+                sizes="(max-width: 768px) 192px, 240px"
               />
             </div>
 
@@ -103,14 +103,14 @@ export const InstructorsSection: React.FC = () => {
             </div>
 
             {/* Transparent Image Box */}
-            <div className="w-56 h-auto md:w-[280px] shrink-0 relative z-10 flex items-end justify-center drop-shadow-2xl md:-ml-8 md:-mt-12">
+            <div className="w-48 h-auto md:w-[220px] lg:w-[240px] shrink-0 relative z-10 flex items-end justify-center drop-shadow-2xl md:-ml-4 md:-mt-6">
               <Image
                 src="/images/doutora-tamara-transparente.png"
                 alt="Dra. Tamara Husein"
-                width={280}
-                height={350}
+                width={240}
+                height={300}
                 className="object-contain object-bottom filter contrast-[1.05] transition-transform duration-700 ease-out origin-bottom group-hover:scale-105"
-                sizes="(max-width: 768px) 224px, 280px"
+                sizes="(max-width: 768px) 192px, 240px"
               />
             </div>
 
