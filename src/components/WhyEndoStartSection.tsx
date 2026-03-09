@@ -61,7 +61,7 @@ export const WhyEndoStartSection: React.FC = () => {
                                     src="/images/doutor-alessandro.webp"
                                     alt="Dr. Alessandro"
                                     fill
-                                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                                    className="object-cover object-top transition-transform duration-1000 group-hover:scale-105"
                                     sizes="(max-width: 768px) 100vw, 50vw"
                                 />
                             </div>
