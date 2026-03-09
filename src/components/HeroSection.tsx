@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import ParticleNetwork from './ui/ParticleNetwork';
 
 interface HeroSectionProps {
   onWhatsAppClick?: () => void;
@@ -28,19 +29,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
   return (
     <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-brand-black text-white">
       {/* Cinematic Background Layer */}
-      <motion.div style={{ y: yBg, opacity }} className="absolute inset-0 pointer-events-none z-0">
+      <motion.div style={{ y: yBg, opacity }} className="absolute inset-0 z-0">
+        <ParticleNetwork />
+
         {/* Soft dark gradient vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020813_100%)] z-10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020813_100%)] z-10 pointer-events-none" />
 
         {/* Dramatic Lighting Orbs */}
-        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-brand-lightBlue/20 blur-[120px] mix-blend-screen animate-pulse-slow object-cover" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-brand-gold/15 blur-[150px] mix-blend-screen animate-float-slow" />
-
-        {/* Ambient Noise / Grain */}
-        <div className="noise-overlay z-20 opacity-5"></div>
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-brand-lightBlue/20 blur-[120px] mix-blend-screen animate-pulse-slow object-cover pointer-events-none" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-brand-gold/15 blur-[150px] mix-blend-screen animate-float-slow pointer-events-none" />
 
         {/* Cinematic Grid/Lines for tech feel */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] z-0 opacity-20" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] z-0 opacity-20 pointer-events-none" />
       </motion.div>
 
       <div className="container relative z-30 flex flex-col items-center text-center px-4 pt-32 pb-20">

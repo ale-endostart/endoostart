@@ -5,7 +5,8 @@
 :root {
   --color-primary: #01284A;
   --color-accent: #B89A6A;
-  --color-text: #E5E7EB; /* Main text is now light for dark cinematic backgrounds */
+  --color-text: #E5E7EB;
+  /* Main text is now light for dark cinematic backgrounds */
   --color-text-muted: #9CA3AF;
   --color-bg-dark: #020813;
   --color-bg-light: #F3F5F8;
@@ -45,7 +46,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-bg-dark); /* Changed to dark */
+  background-color: var(--color-bg-dark);
+  /* Changed to dark */
   color: var(--color-text);
   line-height: 1.6;
 }
@@ -193,21 +195,7 @@ body {
   animation: shimmer 4s linear infinite;
 }
 
-.section-blend-top {
-  position: relative;
-}
 
-.section-blend-top::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(to bottom, transparent, var(--color-bg-light));
-  pointer-events: none;
-  z-index: 1;
-}
 
 .glass-card {
   background: rgba(2, 8, 19, 0.4);

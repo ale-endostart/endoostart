@@ -12,7 +12,7 @@ const courses = [
         image: '/images/medica-endoscopia.png',
         link: '/cursos/endoscopia',
         date: '2026',
-        location: 'São Paulo - SP e Curitiba - PR',
+        location: 'Goiânia - GO',
         badge: 'Vagas Limitadas',
     },
     {
@@ -22,7 +22,7 @@ const courses = [
         image: '/images/medica-endoscopia.png',
         link: '/cursos/colonoscopia',
         date: '2026',
-        location: 'São Paulo - SP e Curitiba - PR',
+        location: 'Goiânia - GO',
         badge: 'Avançado',
     },
     {
@@ -32,7 +32,7 @@ const courses = [
         image: '/images/medica-endoscopia.png',
         link: '/cursos/terapeutica',
         date: '2026',
-        location: 'São Paulo - SP e Curitiba - PR',
+        location: 'Goiânia - GO',
         badge: 'Masterclass',
     },
     {
@@ -42,7 +42,7 @@ const courses = [
         image: '/images/medica-endoscopia.png',
         link: '/cursos/balao-gastrico',
         date: 'A combinar',
-        location: 'Online e Presencial',
+        location: 'Goiânia - GO',
         badge: 'Alta Demanda',
     }
 ];

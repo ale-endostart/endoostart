@@ -58,8 +58,8 @@ export const WhyEndoStartSection: React.FC = () => {
 
                             <div className="w-full h-full relative rounded-xl overflow-hidden">
                                 <Image
-                                    src="/images/medica-endoscopia.png"
-                                    alt="Médico realizando procedimento de endoscopia"
+                                    src="/images/alessandro-home.png"
+                                    alt="Dr. Alessandro"
                                     fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-105"
                                     sizes="(max-width: 768px) 100vw, 50vw"
