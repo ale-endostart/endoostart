@@ -1,11 +1,9 @@
-import React from 'react';
 import Head from 'next/head';
 import Header from '../components/Header';
 import HeroSection from '../components/HeroSection';
 import CustomCursor from '../components/CustomCursor';
 import { WhyEndoStartSection } from '../components/WhyEndoStartSection';
 import { CoursePreviewSection } from '../components/CoursePreviewSection';
-import StructureSection from '../components/StructureSection';
 import DifferentialsSection from '../components/DifferentialsSection';
 import InstructorsSection from '../components/InstructorsSection';
 import TargetAudienceSection from '../components/TargetAudienceSection';
@@ -47,10 +45,7 @@ export default function Home() {
           {/* Seção 3: Course Previews */}
           <CoursePreviewSection />
 
-          {/* The rest of the legacy layout sections below could also be upgraded later or kept for extra info */}
-          <StructureSection />
-
-          {/* Seção 8 */}
+          {/* The rest of the legacy layout sections below could also be upgraded later or kept for extra info */}          {/* Seção 8 */}
           <DifferentialsSection />
 
           {/* Seção 9 */}

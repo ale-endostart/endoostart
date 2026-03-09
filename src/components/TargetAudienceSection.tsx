@@ -42,11 +42,11 @@ export const TargetAudienceSection: React.FC = () => {
             className="text-white"
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-6 leading-tight">
-              Para quem é essa formação
+              Para quem é a EndoStart
             </h2>
             <div className="w-16 h-1 bg-brand-gold mb-8 rounded-full"></div>
             <p className="text-lg md:text-xl text-white/80 font-light">
-              Essa formação é estruturada especificamente para <strong className="text-white font-semibold">construir autonomia clínica</strong> em quem deseja diversificar sua carreira.
+              Nossa instituição é estruturada especificamente para <strong className="text-white font-semibold">construir autonomia clínica</strong> em médicos que desejam diversificar suas carreiras com procedimentos de alta demanda.
             </p>
           </motion.div>
 

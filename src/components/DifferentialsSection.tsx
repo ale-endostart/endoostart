@@ -22,7 +22,7 @@ export const DifferentialsSection: React.FC = () => {
 
     const differentials = [
         { title: "Formação presencial", description: "Aprendizado prático com contato direto com os pacientes e equipamentos" },
-        { title: "Turmas reduzidas", description: "Máximo de 8 alunos por turma para garantir qualidade de ensino" },
+        { title: "Turmas hiper reduzidas", description: "Apenas 3 alunos por turma para garantir a máxima atenção e qualidade de ensino prática" },
         { title: "Acompanhamento direto dos professores", description: "Orientação individual durante todos os procedimentos" },
         { title: "Foco em prática e raciocínio clínico", description: "80% prático, 20% teórico para domínio real da técnica" }
     ];

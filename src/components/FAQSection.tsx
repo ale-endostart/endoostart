@@ -7,23 +7,23 @@ export const FAQSection: React.FC = () => {
   const faqs = [
     {
       question: "Preciso ter experiência prévia com endoscopia?",
-      answer: "Não. A formação é estruturada para médicos sem experiência prévia. Começamos desde os fundamentos e evoluímos até procedimentos mais complexos com acompanhamento direto dos professores."
+      answer: "Depende da formação escolhida. Temos imersões que partem do zero (como Endoscopia Digestiva Alta e Colonoscopia) e masterclasses avançadas (como Terapêutica) para quem já atua na área."
     },
     {
-      question: "Qual é a localização da formação?",
-      answer: "A formação presencial acontece em Goiânia, GO. É uma estrutura montada especificamente para o treinamento, com equipamentos modernos e ambiente controlado para máxima segurança durante os procedimentos."
+      question: "Qual é a localização das formações?",
+      answer: "Todas as nossas formações presenciais acontecem em Goiânia, GO. Contamos com um centro de treinamento equipado com tecnologia de ponta para a máxima segurança e imersão durante os procedimentos."
     },
     {
-      question: "Quanto tempo dura a formação?",
-      answer: "A formação tem duração de 4 semanas presenciais, onde você terá contato com os principais pilares da área. Após a formação, há suporte contínuo para dúvidas e orientações."
+      question: "Quanto tempo dura cada formação?",
+      answer: "A duração varia conforme o programa escolhido. Acesse a página específica de cada curso no nosso portfólio para conferir a grade curricular, os dias de imersão presencial e a carga horária detalhada."
     },
     {
       question: "Qualquer especialidade médica pode participar?",
-      answer: "Sim! A formação é aberta para todos os médicos, independentemente da especialidade. Muitos cirurgiões, clínicos e médicos de urgência estão descobrindo novas oportunidades com a endoscopia."
+      answer: "Sim! Nossos treinamentos são abertos para médicos de todas as especialidades. Cirurgiões, clínicos, gastroenterologistas e médicos de urgência estão descobrindo novas oportunidades e elevando o nível de suas carreiras conosco."
     },
     {
       question: "Como são as vagas? Quantas pessoas por turma?",
-      answer: "As vagas são muito limitadas. Cada turma tem no máximo 8 alunos para garantir acompanhamento próximo e personalizado. Por isso, é importante entrar em contato rapidamente para garantir sua vaga na próxima turma."
+      answer: "Nosso maior diferencial é a atenção cirúrgica ao seu aprendizado. Por isso, trabalhamos com turmas hiper reduzidas, chegando a apenas 3 alunos em formações como Endoscopia. As vagas esgotam rapidamente e são muito limitadas."
     }
   ];
 
