@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
-import Header from '../Header';
 import CustomCursor from '../CustomCursor';
 import Footer from '../Footer';
 
@@ -28,6 +27,8 @@ interface CinematicCourseLayoutProps {
     whatsappMessage: string;
     priceDetails?: string;
     exclusiveNote?: string;
+    totalPrice?: string;
+    installmentPrice?: string;
 }
 
 export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
@@ -41,6 +42,8 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
     whatsappMessage,
     priceDetails,
     exclusiveNote,
+    totalPrice,
+    installmentPrice,
 }) => {
     const whatsappUrl = `https://wa.me/5511943375337?text=${encodeURIComponent(whatsappMessage)}`;
 
@@ -53,9 +56,8 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
 
             <div className="min-h-screen bg-brand-black text-[#E5E7EB] selection:bg-brand-gold/30 selection:text-white font-sans">
                 <CustomCursor />
-                <Header onWhatsAppClick={() => window.open(whatsappUrl, '_blank')} />
 
-                <main className="overflow-hidden">
+                <main className="overflow-hidden pt-28">
                     {/* Hero Section */}
                     <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-20 px-4">
                         {/* Background elements */}
@@ -199,7 +201,16 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
                             <h2 className="text-4xl md:text-6xl font-serif font-bold text-white mb-8">
                                 Pronto para se destacar na <span className="text-brand-gold italic">Medicina?</span>
                             </h2>
-                            {priceDetails && (
+                            {installmentPrice && (
+                                <div className="mb-10 inline-block rounded-2xl border border-brand-gold/30 bg-brand-gold/5 backdrop-blur-sm px-10 py-6">
+                                    <p className="text-white/50 text-sm tracking-widest uppercase mb-1">Investimento</p>
+                                    <p className="text-4xl md:text-5xl font-serif font-bold text-brand-gold">{installmentPrice}</p>
+                                    {totalPrice && (
+                                        <p className="text-white/50 text-sm mt-1">ou {totalPrice} à vista</p>
+                                    )}
+                                </div>
+                            )}
+                            {priceDetails && !installmentPrice && (
                                 <p className="text-xl text-white/90 mb-10 font-light p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
                                     {priceDetails}
                                 </p>

@@ -8,15 +8,13 @@ import DifferentialsSection from '../components/DifferentialsSection';
 import InstructorsSection from '../components/InstructorsSection';
 import TargetAudienceSection from '../components/TargetAudienceSection';
 import FAQSection from '../components/FAQSection';
-import ScarcitySection from '../components/ScarcitySection';
 import CtaFinalSection from '../components/CtaFinalSection';
 import Footer from '../components/Footer';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
 
 export default function Home() {
   const handleWhatsAppClick = () => {
-    // Esse handler estava na landing velha. Mantive a prop nos componentes que a recebem se for o caso
-    const message = 'Olá! Sou médico e gostaria de saber mais sobre a formação em Endoscopia e Colonoscopia da EndoStart.';
+    const message = 'Olá! Sou médico e gostaria de saber mais sobre os cursos de formação em Endoscopia da EndoStart.';
     const phoneNumber = '5511943375337';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
@@ -58,9 +56,6 @@ export default function Home() {
           <FAQSection />
 
           {/* Seção 12 */}
-          <ScarcitySection />
-
-          {/* Seção 13 */}
           <CtaFinalSection />
 
         </main>
