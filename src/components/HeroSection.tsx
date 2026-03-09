@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import ParticleNetwork from './ParticleNetwork';
 
 interface HeroSectionProps {
   onWhatsAppClick?: () => void;
@@ -25,10 +26,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
   return (
     <section ref={containerRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[#01284A] text-white">
       {/* Background Decor */}
-      <motion.div style={{ y: yBg, opacity }} className="absolute inset-0 pointer-events-none overflow-hidden">
+      <motion.div style={{ y: yBg, opacity }} className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-0 right-0 w-[80vw] lg:w-[40vw] h-[80vw] lg:h-[40vw] rounded-full bg-brand-lightBlue/10 blur-[100px] transform translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-[60vw] lg:w-[30vw] h-[60vw] lg:h-[30vw] rounded-full bg-brand-gold/10 blur-[100px] transform -translate-x-1/3 translate-y-1/3" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
+        <ParticleNetwork />
       </motion.div>
 
       <div className="container relative z-10 flex flex-col items-center text-center section-padding pt-24 md:pt-32 pb-20">

@@ -87,8 +87,8 @@ export const OpportunitySection: React.FC = () => {
                         className="order-2 lg:order-2 w-full h-[260px] md:h-[400px] lg:h-[600px] rounded-2xl relative overflow-hidden shadow-2xl flex items-center justify-center"
                     >
                         <Image
-                            src="/images/doutora-lattes-blur.webp"
-                            alt="Profissionais em Endoscopia - Oportunidade de Mercado"
+                            src="/images/medica-endoscopia.png"
+                            alt="Médica Endoscopista - Oportunidade de Mercado"
                             fill
                             className="object-cover object-center"
                             sizes="(max-width: 768px) 100vw, 50vw"

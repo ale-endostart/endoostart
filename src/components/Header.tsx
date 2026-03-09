@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-smooth ${scrolled
+      className={`sticky top-0 z-50 transition-all duration-500 ease-smooth ${scrolled || mobileMenuOpen
         ? 'bg-[#01284A]/95 backdrop-blur-lg shadow-premium h-16'
         : 'bg-transparent backdrop-blur-sm h-20'
         }`}
@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
                 sizes="48px"
               />
             </div>
-            <span className={`font-serif font-bold text-xl hidden sm:inline transition-colors duration-300 text-white`}>
+            <span className={`font-serif font-bold text-xl hidden sm:inline transition-colors duration-300 ${scrolled || mobileMenuOpen ? 'text-white' : 'text-[#01284A]'}`}>
               EndoStart
             </span>
           </Link>
@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
             <a
               key={link.href}
               href={link.href}
-              className={`relative py-1 font-medium text-sm tracking-wide transition-colors duration-300 group ${scrolled ? 'text-white/90 hover:text-white' : 'text-white/80 hover:text-white'}`}
+              className={`relative py-1 font-medium text-sm tracking-wide transition-colors duration-300 group ${scrolled || mobileMenuOpen ? 'text-white/90 hover:text-white' : 'text-[#01284A]/80 hover:text-[#01284A]'}`}
             >
               {link.label}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-gold origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-smooth" />
@@ -100,15 +100,15 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
             <div className="w-6 h-5 flex flex-col justify-between">
               <motion.span
                 animate={mobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                className={`block h-[2px] w-6 transition-colors bg-white`}
+                className={`block h-[2px] w-6 transition-colors ${scrolled || mobileMenuOpen ? 'bg-white' : 'bg-[#01284A]'}`}
               />
               <motion.span
                 animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                className={`block h-[2px] w-6 transition-colors bg-white`}
+                className={`block h-[2px] w-6 transition-colors ${scrolled || mobileMenuOpen ? 'bg-white' : 'bg-[#01284A]'}`}
               />
               <motion.span
                 animate={mobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-                className={`block h-[2px] w-6 transition-colors bg-white`}
+                className={`block h-[2px] w-6 transition-colors ${scrolled || mobileMenuOpen ? 'bg-white' : 'bg-[#01284A]'}`}
               />
             </div>
           </button>
@@ -135,25 +135,17 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
               className="fixed top-16 right-0 bottom-0 w-[80%] max-w-sm bg-[#01284A] z-40 md:hidden shadow-2xl overflow-y-auto"
             >
               <nav className="flex flex-col px-8 py-8 space-y-2">
-                {navLinks.map((link, i) => (
-                  <motion.a
+                {navLinks.map((link) => (
+                  <a
                     key={link.href}
                     href={link.href}
-                    initial={{ opacity: 0, x: 40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-4 px-4 text-2xl font-serif font-bold text-white hover:text-brand-gold transition-colors border-b border-white/20 rounded"
                   >
                     {link.label}
-                  </motion.a>
+                  </a>
                 ))}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.4 }}
-                  className="pt-8"
-                >
+                <div className="pt-8">
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
@@ -163,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick }) => {
                   >
                     WhatsApp
                   </button>
-                </motion.div>
+                </div>
               </nav>
             </motion.div>
           </>
