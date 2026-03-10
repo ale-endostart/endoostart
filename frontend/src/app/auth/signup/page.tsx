@@ -48,8 +48,13 @@ export default function SignUp() {
     setIsLoading(true)
 
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      if (!apiUrl) {
+        throw new Error('Erro de configuração do servidor')
+      }
+
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+        `${apiUrl}/api/auth/register`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -66,21 +71,27 @@ export default function SignUp() {
       )
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Erro ao criar conta')
+        const data = await response.json().catch(() => null)
+        throw new Error(data?.error || 'Erro ao criar conta')
       }
 
       setSuccess(true)
 
       // Auto sign-in after successful registration
-      setTimeout(() => {
-        signIn('credentials', {
+      setTimeout(async () => {
+        const result = await signIn('credentials', {
           email: formData.email,
           password: formData.password,
-          redirect: true,
-          callbackUrl: '/dashboard',
+          redirect: false,
         })
-      }, 1000)
+
+        if (result?.ok) {
+          router.push('/dashboard')
+        } else {
+          // If auto-login fails, redirect to signin page
+          router.push('/auth/signin')
+        }
+      }, 1500)
     } catch (err: any) {
       setError(err.message || 'Erro ao criar conta')
     } finally {

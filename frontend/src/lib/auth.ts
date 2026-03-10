@@ -20,12 +20,18 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Invalid credentials')
+          throw new Error('Email e senha são obrigatórios')
+        }
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL
+        if (!apiUrl) {
+          console.error('[Auth Error] NEXT_PUBLIC_API_URL is not configured')
+          throw new Error('Erro de configuração do servidor')
         }
 
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+            `${apiUrl}/api/auth/login`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -37,22 +43,28 @@ export const authOptions: NextAuthOptions = {
           )
 
           if (!response.ok) {
-            throw new Error('Invalid credentials')
+            const errorData = await response.json().catch(() => null)
+            const message = errorData?.error || 'Email ou senha inválidos'
+            throw new Error(message)
           }
 
-          const { user, token } = await response.json()
+          const data = await response.json()
+
+          if (!data.user || !data.token) {
+            throw new Error('Resposta inválida do servidor')
+          }
 
           return {
-            id: user.id,
-            email: user.email,
-            name: `${user.firstName} ${user.lastName}`,
+            id: data.user.id,
+            email: data.user.email,
+            name: `${data.user.firstName} ${data.user.lastName}`,
             image: null,
-            ...user,
-            accessToken: token,
+            role: data.user.role,
+            accessToken: data.token,
           }
-        } catch (error) {
-          console.error('[Auth Error]', error)
-          throw new Error('Authentication failed')
+        } catch (error: any) {
+          console.error('[Auth Error]', error?.message || error)
+          throw new Error(error?.message || 'Falha na autenticação')
         }
       },
     }),
@@ -75,28 +87,39 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
         token.email = user.email
         token.role = (user as any).role
-        if ((user as any).accessToken) {
-          token.accessToken = (user as any).accessToken
-        }
+        token.accessToken = (user as any).accessToken
       }
 
-      if (account?.provider === 'google') {
+      if (account?.provider === 'google' && user) {
         try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL
+          if (!apiUrl) {
+            console.error('[Google Auth Error] NEXT_PUBLIC_API_URL is not configured')
+            return token
+          }
+
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login-google`,
+            `${apiUrl}/api/auth/login-google`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                googleId: user?.id,
-                email: user?.email,
-                name: user?.name,
+                googleId: account.providerAccountId,
+                email: user.email,
+                name: user.name,
               }),
             }
           )
 
-          const { token: accessToken } = await response.json()
-          token.accessToken = accessToken
+          if (response.ok) {
+            const data = await response.json()
+            token.accessToken = data.token
+            if (data.user) {
+              token.role = data.user.role
+            }
+          } else {
+            console.error('[Google Auth Error] Backend returned', response.status)
+          }
         } catch (error) {
           console.error('[Google Auth Error]', error)
         }
@@ -107,11 +130,11 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        session.user.email = token.email as string
-          ; (session.user as any).role = token.role
+        (session.user as any).id = token.id as string
+        ;(session.user as any).email = token.email as string
+        ;(session.user as any).role = token.role
       }
-      ; (session as any).accessToken = token.accessToken
+      ;(session as any).accessToken = token.accessToken
 
       return session
     },

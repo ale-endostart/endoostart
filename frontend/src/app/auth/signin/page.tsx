@@ -28,12 +28,17 @@ function SignInForm() {
       })
 
       if (result?.error) {
-        setError(result.error)
+        // NextAuth wraps the error message from authorize()
+        const errorMessage = result.error === 'CredentialsSignin'
+          ? 'Email ou senha inválidos'
+          : result.error
+        setError(errorMessage)
       } else if (result?.ok) {
         router.push(callbackUrl)
+        router.refresh()
       }
     } catch (err) {
-      setError('Erro ao fazer login')
+      setError('Erro ao fazer login. Verifique sua conexão.')
     } finally {
       setIsLoading(false)
     }

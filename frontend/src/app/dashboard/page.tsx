@@ -26,37 +26,37 @@ export default function Dashboard() {
   useEffect(() => {
     if (!session?.user) return
 
+    const accessToken = (session as any).accessToken
+    if (!accessToken) {
+      setError('Sessão inválida. Faça login novamente.')
+      setIsLoading(false)
+      return
+    }
+
     async function fetchData() {
       try {
-        // Fetch courses
-        const coursesRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`,
-          {
-            headers: {
-              Authorization: `Bearer ${(session as any).accessToken}`,
-            },
-          }
-        )
+        const headers = {
+          Authorization: `Bearer ${accessToken}`,
+        }
 
-        if (!coursesRes.ok) throw new Error('Failed to fetch courses')
-        const coursesData = await coursesRes.json()
-        setCourses(coursesData)
+        // Fetch courses and progress in parallel
+        const [coursesRes, progressRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`, { headers }),
+        ])
 
-        // Fetch progress
-        const progressRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`,
-          {
-            headers: {
-              Authorization: `Bearer ${(session as any).accessToken}`,
-            },
-          }
-        )
+        if (coursesRes.ok) {
+          const coursesData = await coursesRes.json()
+          setCourses(Array.isArray(coursesData) ? coursesData : [])
+        }
 
-        if (!progressRes.ok) throw new Error('Failed to fetch progress')
-        const progressData = await progressRes.json()
-        setProgress(progressData)
+        if (progressRes.ok) {
+          const progressData = await progressRes.json()
+          setProgress(progressData)
+        }
       } catch (err: any) {
-        setError(err.message || 'Erro ao carregar dados')
+        console.error('Dashboard fetch error:', err)
+        setError('Erro ao carregar dados. Verifique sua conexão.')
       } finally {
         setIsLoading(false)
       }

@@ -14,6 +14,7 @@ import Footer from '../components/Footer';
 import FloatingWhatsApp from '../components/FloatingWhatsApp';
 import DoctorRealitySection from '../components/DoctorRealitySection';
 import TwoPathsSection from '../components/TwoPathsSection';
+import VideoTeasersSection from '../components/VideoTeasersSection';
 
 export default function Home() {
   const handleWhatsAppClick = () => {
@@ -48,6 +49,9 @@ export default function Home() {
 
           {/* Seção Nova: Dois Caminhos */}
           <TwoPathsSection />
+
+          {/* Seção Nova: Realidade Prática (Vídeos de Conversão) */}
+          <VideoTeasersSection />
 
           {/* Seção 3: Course Previews */}
           <CoursePreviewSection />

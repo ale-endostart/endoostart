@@ -86,7 +86,7 @@ export class AuthService {
       data: {
         studentId: user.id,
         eventType: 'LOGIN',
-        metadata: JSON.stringify({ timestamp: new Date().toISOString() }),
+        metadata: { timestamp: new Date().toISOString() },
       },
     })
 
@@ -145,7 +145,7 @@ export class AuthService {
       data: {
         studentId: user.id,
         eventType: 'LOGIN',
-        metadata: JSON.stringify({ provider: 'google' }),
+        metadata: { provider: 'google' },
       },
     })
 
