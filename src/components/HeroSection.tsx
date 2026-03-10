@@ -2,11 +2,9 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import ParticleNetwork from './ui/ParticleNetwork';
 
-interface HeroSectionProps {
-  onWhatsAppClick?: () => void;
-}
+interface HeroSectionProps { }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -16,15 +14,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
 
   const yBg = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  const handleCta = (e: React.MouseEvent) => {
-    if (onWhatsAppClick) {
-      e.preventDefault();
-      onWhatsAppClick();
-    } else {
-      window.open('https://wa.me/5511943375337', '_blank');
-    }
-  };
 
   return (
     <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-brand-black text-white">
@@ -90,7 +79,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onWhatsAppClick }) => 
         >
           <a
             href="#cursos-preview"
-            onClick={handleCta}
             className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-brand-gold text-brand-black rounded-lg font-bold uppercase tracking-widest text-sm transition-all shadow-premium hover:shadow-gold-glow hover:-translate-y-1 overflow-hidden"
           >
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-premium" />

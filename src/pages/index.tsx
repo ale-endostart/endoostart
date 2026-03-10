@@ -38,7 +38,7 @@ export default function Home() {
 
         <main className="overflow-hidden bg-[#020813]">
           {/* Seção 1: Cinematic Hero */}
-          <HeroSection onWhatsAppClick={handleWhatsAppClick} />
+          <HeroSection />
 
           {/* Seção 2: Brand/Origin Story */}
           <WhyEndoStartSection />
