@@ -86,12 +86,13 @@ export const CoursePreviewSection: React.FC = () => {
                             className="h-full"
                         >
                             <Link href={course.link} className="group bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col border border-gray-100">
-                                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                                <div className="relative w-full overflow-hidden bg-[#0B0D17]">
                                     <Image
                                         src={course.image}
                                         alt={course.title}
-                                        fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        width={800}
+                                        height={600}
+                                        className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
                                     />
                                     {/* Badge overlay on image */}
                                     <div className="absolute top-3 left-3 bg-[#0B0D17]/80 backdrop-blur text-brand-gold text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full z-10">
