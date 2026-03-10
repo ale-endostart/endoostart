@@ -36,7 +36,7 @@ export const VideoTeasersSection: React.FC = () => {
                         className="group relative"
                     >
                         <div className="absolute -inset-1 bg-gradient-to-r from-brand-gold/20 to-brand-lightBlue/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
-                        <div className="relative aspect-[9/16] md:aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
+                        <div className="relative aspect-[9/16] w-full max-w-[400px] mx-auto rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
                             <video
                                 src="/videos/aula_pratica_curso.MOV"
                                 aria-label="Vídeo Aula Prática do Curso"
@@ -72,7 +72,7 @@ export const VideoTeasersSection: React.FC = () => {
                         className="group relative"
                     >
                         <div className="absolute -inset-1 bg-gradient-to-r from-brand-lightBlue/20 to-brand-gold/20 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
-                        <div className="relative aspect-[9/16] md:aspect-video rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
+                        <div className="relative aspect-[9/16] w-full max-w-[400px] mx-auto rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
                             <video
                                 src="/videos/chamado_curso.MOV"
                                 aria-label="Vídeo Chamada do Curso"
