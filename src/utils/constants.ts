@@ -17,7 +17,7 @@ export const FORMATION = {
 
 // Dr. Alessandro Info
 export const DR_ALESSANDRO = {
-  name: 'Alessandro Rodrigues',
+  name: 'Dr. Alessandro Rodrigues',
   credentials: [
     'Graduação em Medicina pela UNIG',
     'Residência Médica em Cirurgia Geral',
