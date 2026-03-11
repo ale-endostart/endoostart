@@ -66,6 +66,19 @@ export const Footer: React.FC = () => {
             <p className="text-neutral-400 text-sm leading-relaxed">
               Formação presencial em Endoscopia Digestiva Alta e Colonoscopia com segurança e técnica.
             </p>
+            {/* Added Patrocinador */}
+            <div className="mt-8 pt-6 border-t border-white/10">
+              <p className="text-white/40 text-xs mb-3 uppercase tracking-wider font-bold">Patrocínio</p>
+              <div className="relative w-40 h-16">
+                <Image
+                  src="/images/patrocinador_endomarcas_transparent.png"
+                  alt="Patrocinador Endomarcas"
+                  fill
+                  className="object-contain object-left"
+                  sizes="160px"
+                />
+              </div>
+            </div>
             <div className="flex gap-4 pt-4">
               {/* Facebook */}
               <a href="#" className="text-white/40 hover:text-brand-gold hover:rotate-[10deg] transition-all duration-300">

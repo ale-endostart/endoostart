@@ -55,4 +55,30 @@ router.get('/progress', authMiddleware, async (req: AuthRequest, res) => {
   }
 })
 
+// GET /api/students/courses/:courseId/completions - Get lesson completions for a course
+router.get('/courses/:courseId/completions', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const completions = await studentsService.getCourseCompletions(
+      req.user!.id,
+      req.params.courseId
+    )
+    res.json(completions)
+  } catch (error: any) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+// POST /api/students/lessons/:lessonId/complete - Mark a lesson as completed
+router.post('/lessons/:lessonId/complete', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const result = await studentsService.completeLesson(
+      req.user!.id,
+      req.params.lessonId
+    )
+    res.json(result)
+  } catch (error: any) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router

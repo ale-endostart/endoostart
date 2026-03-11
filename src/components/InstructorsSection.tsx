@@ -77,7 +77,7 @@ export const InstructorsSection: React.FC = () => {
             {/* Content Box */}
             <div className="flex flex-col justify-center text-center md:text-left flex-1 p-6 z-10 md:pr-10 pt-4 md:pt-6">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-2 tracking-wide">
-                Dr. Alessandro
+                Alessandro Rodrigues
               </h3>
               <p className="text-white/60 text-[13px] md:text-sm font-light mb-6 leading-relaxed max-w-sm mx-auto md:mx-0">
                 Especialista em Endoscopia Digestiva, com foco em terapêutica e pesquisa clínica. Professor e orientador.

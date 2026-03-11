@@ -108,4 +108,108 @@ export class StudentsService {
       enrolledCoursesCount: enrollments.length,
     }
   }
+
+  async getCourseCompletions(userId: string, courseId: string) {
+    const completions = await prisma.lessonCompletion.findMany({
+      where: {
+        studentId: userId,
+        lesson: {
+          module: {
+            courseId,
+          },
+        },
+      },
+      select: {
+        lessonId: true,
+        completedAt: true,
+      },
+    })
+
+    return {
+      completedLessonIds: completions.map((c) => c.lessonId),
+      completions,
+    }
+  }
+
+  async completeLesson(userId: string, lessonId: string) {
+    // Check if already completed
+    const existing = await prisma.lessonCompletion.findUnique({
+      where: {
+        studentId_lessonId: {
+          studentId: userId,
+          lessonId,
+        },
+      },
+    })
+
+    if (existing) {
+      return { alreadyCompleted: true, completion: existing }
+    }
+
+    // Create completion
+    const completion = await prisma.lessonCompletion.create({
+      data: {
+        studentId: userId,
+        lessonId,
+      },
+    })
+
+    // Update course progress
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId },
+      include: {
+        module: {
+          select: { courseId: true },
+        },
+      },
+    })
+
+    if (lesson) {
+      const courseId = lesson.module.courseId
+
+      // Count total lessons in course
+      const totalLessons = await prisma.lesson.count({
+        where: {
+          module: { courseId },
+          isActive: true,
+        },
+      })
+
+      // Count completed lessons in course
+      const completedLessons = await prisma.lessonCompletion.count({
+        where: {
+          studentId: userId,
+          lesson: {
+            module: { courseId },
+          },
+        },
+      })
+
+      const progress = totalLessons > 0
+        ? Math.round((completedLessons / totalLessons) * 100)
+        : 0
+
+      await prisma.studentCourse.updateMany({
+        where: {
+          studentId: userId,
+          courseId,
+        },
+        data: {
+          progress,
+          ...(progress === 100 ? { completedAt: new Date() } : {}),
+        },
+      })
+    }
+
+    // Log activity
+    await prisma.activityLog.create({
+      data: {
+        studentId: userId,
+        eventType: 'LESSON_COMPLETED',
+        metadata: { lessonId },
+      },
+    })
+
+    return { alreadyCompleted: false, completion }
+  }
 }

@@ -52,13 +52,6 @@ body {
   line-height: 1.6;
 }
 
-@media (pointer: fine) {
-
-  body,
-  body * {
-    cursor: none;
-  }
-}
 
 /* ============================
    PREMIUM KEYFRAMES
@@ -370,8 +363,4 @@ img {
     scroll-behavior: auto !important;
   }
 
-  body,
-  body * {
-    cursor: auto;
-  }
 }

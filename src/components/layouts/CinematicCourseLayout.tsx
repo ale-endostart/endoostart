@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
-import CustomCursor from '../CustomCursor';
 import Footer from '../Footer';
 
 interface Highlight {
@@ -55,7 +54,6 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
             </Head>
 
             <div className="min-h-screen bg-brand-black text-[#E5E7EB] selection:bg-brand-gold/30 selection:text-white font-sans">
-                <CustomCursor />
 
                 <main className="overflow-hidden pt-28">
                     {/* Hero Section */}

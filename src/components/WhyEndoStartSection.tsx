@@ -81,7 +81,7 @@ export const WhyEndoStartSection: React.FC = () => {
                                         </svg>
                                     </div>
                                     <div>
-                                        <h4 className="text-white font-bold text-lg">Dr. Alessandro</h4>
+                                        <h4 className="text-white font-bold text-lg">Alessandro Rodrigues</h4>
                                         <p className="text-brand-gold/80 text-sm">Fundador & Diretor Geral</p>
                                     </div>
                                 </div>
