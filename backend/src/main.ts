@@ -10,6 +10,7 @@ import coursesRoutes from './courses/courses.routes'
 import contentRoutes from './content/content.routes'
 import studentsRoutes from './students/students.routes'
 import analyticsRoutes from './analytics/analytics.routes'
+import commentRoutes from './comments/comment.routes'
 import adminRoutes from './admin/admin.routes'
 
 const prisma = new PrismaClient()
@@ -34,6 +35,7 @@ app.use('/api/courses', coursesRoutes)
 app.use('/api/content', contentRoutes)
 app.use('/api/students', studentsRoutes)
 app.use('/api/analytics', analyticsRoutes)
+app.use('/api/comments', commentRoutes)
 app.use('/api/admin', adminRoutes)
 
 // 404 handler

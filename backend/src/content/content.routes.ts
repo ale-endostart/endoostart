@@ -5,6 +5,25 @@ import { authMiddleware, AuthRequest } from '../common/middleware/auth.middlewar
 const router = Router()
 const contentService = new ContentService()
 
+// GET /api/content/lessons/:lessonId - Get lesson with contents (protected)
+router.get('/lessons/:lessonId', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const lesson = await contentService.getLesson(
+      req.params.lessonId,
+      req.user!.id
+    )
+    res.json(lesson)
+  } catch (error: any) {
+    if (error.message.includes('Access denied')) {
+      res.status(403).json({ error: error.message })
+    } else if (error.message.includes('not found')) {
+      res.status(404).json({ error: error.message })
+    } else {
+      res.status(500).json({ error: error.message })
+    }
+  }
+})
+
 // GET /api/content/:contentId/download - Get signed download URL (protected)
 router.get('/:contentId/download', authMiddleware, async (req: AuthRequest, res) => {
   try {

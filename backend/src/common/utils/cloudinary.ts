@@ -35,6 +35,42 @@ export async function deleteResource(publicId: string): Promise<boolean> {
   }
 }
 
+export async function uploadBuffer(
+  buffer: Buffer,
+  options: {
+    folder?: string
+    resourceType?: 'image' | 'video' | 'raw' | 'auto'
+    publicId?: string
+    originalFilename?: string
+  } = {}
+): Promise<{ url: string; publicId: string; size: number; format: string }> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: options.folder || 'endostart',
+        resource_type: options.resourceType || 'auto',
+        public_id: options.publicId,
+        use_filename: true,
+        unique_filename: true,
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error)
+          reject(new Error('Failed to upload file to cloud storage'))
+        } else if (result) {
+          resolve({
+            url: result.secure_url,
+            publicId: result.public_id,
+            size: result.bytes,
+            format: result.format,
+          })
+        }
+      }
+    )
+    uploadStream.end(buffer)
+  })
+}
+
 export async function getResourceMetadata(publicId: string) {
   try {
     const resource = await cloudinary.api.resource(publicId)

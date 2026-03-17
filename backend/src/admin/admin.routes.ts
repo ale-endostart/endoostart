@@ -5,6 +5,7 @@ import moduleRoutes from './admin-modules.routes'
 import lessonRoutes from './admin-lessons.routes'
 import contentRoutes from './admin-content.routes'
 import studentRoutes from './admin-students.routes'
+import settingsRoutes from './admin-settings.routes'
 
 const router = Router()
 
@@ -16,5 +17,6 @@ router.use('/', moduleRoutes)
 router.use('/', lessonRoutes)
 router.use('/', contentRoutes)
 router.use('/', studentRoutes)
+router.use('/', settingsRoutes)
 
 export default router

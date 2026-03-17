@@ -47,6 +47,7 @@ model User {
   activityLogs      ActivityLog[]
   analyticsEvents   Analytics[]
   completions       LessonCompletion[]
+  comments          Comment[]
 
   @@index([email])
   @@index([role])
@@ -105,6 +106,7 @@ model Lesson {
   module            Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   contents          Content[]
   completions       LessonCompletion[]
+  comments          Comment[]
 
   @@index([moduleId])
   @@index([order])
@@ -207,4 +209,36 @@ model Analytics {
   @@index([eventType])
   @@index([timestamp])
   @@index([studentId])
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  lessonId    String
+  userId      String
+  parentId    String?
+  content     String    @db.Text
+  isResolved  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[] @relation("CommentReplies")
+
+  @@index([lessonId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model PlatformSettings {
+  id          String   @id @default("default")
+  platformName String  @default("EndoStart")
+  logoUrl     String   @default("")
+  faviconUrl  String   @default("")
+  primaryColor String  @default("#16a34a")
+  accentColor  String  @default("#22c55e")
+  footerText  String   @default("")
+  whatsappNumber String @default("")
+  updatedAt   DateTime @updatedAt
 }

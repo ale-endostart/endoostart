@@ -28,78 +28,108 @@ interface Lesson {
   name: string
   description: string
   contents: Content[]
+  module?: {
+    id: string
+    name: string
+    courseId: string
+    course?: {
+      id: string
+      name: string
+      slug: string
+    }
+  }
 }
 
 export default function LessonPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const params = useParams()
   const lessonId = params.lessonId as string
   const router = useRouter()
 
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [activeContent, setActiveContent] = useState<Content | null>(null)
-  const [downloadUrl, setDownloadUrl] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const [isTracking, setIsTracking] = useState(false)
 
-  // Fetch lesson (simulated - in real app would call API)
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin')
+    }
+  }, [status, router])
+
+  // Fetch lesson from API
   useEffect(() => {
     if (!session?.user || !lessonId) return
 
-    // Mock lesson data - in production, fetch from API
-    const mockLesson: Lesson = {
-      id: lessonId,
-      name: 'Técnicas Avançadas de Endoscopia',
-      description: 'Aprenda as técnicas mais avançadas para procedimentos de endoscopia',
-      contents: [
-        {
-          id: '1',
-          type: 'PDF',
-          title: 'Guia Completo - Técnicas Avançadas',
-          url: 'https://example.com/pdf1.pdf',
-          description: 'PDF com instruções passo a passo',
-          order: 1,
-        },
-        {
-          id: '2',
-          type: 'VIDEO',
-          title: 'Demonstração Prática',
-          url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          description: 'Vídeo de demonstração prática',
-          order: 2,
-        },
-      ],
+    async function fetchLesson() {
+      try {
+        setIsLoading(true)
+        setError('')
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/content/lessons/${lessonId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${(session as any).accessToken}`,
+            },
+          }
+        )
+
+        if (res.status === 403) {
+          setError('Você não tem acesso a esta aula. Verifique sua matrícula.')
+          setIsLoading(false)
+          return
+        }
+
+        if (res.status === 404) {
+          setError('Aula não encontrada.')
+          setIsLoading(false)
+          return
+        }
+
+        if (!res.ok) {
+          throw new Error('Erro ao carregar a aula')
+        }
+
+        const data: Lesson = await res.json()
+        setLesson(data)
+
+        if (data.contents && data.contents.length > 0) {
+          setActiveContent(data.contents[0])
+        }
+      } catch (err: any) {
+        setError(err.message || 'Erro ao carregar a aula')
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    setLesson(mockLesson)
-    setActiveContent(mockLesson.contents[0])
-    setIsLoading(false)
-
-    // Track view
-    trackView()
+    fetchLesson()
   }, [session, lessonId])
 
-  async function trackView() {
-    if (!session?.user) return
+  // Track content view when active content changes
+  useEffect(() => {
+    if (!activeContent || !session?.user) return
 
-    try {
-      setIsTracking(true)
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/content/${activeContent?.id}/track-view`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${(session as any).accessToken}`,
-          },
-        }
-      )
-    } catch (err) {
-      console.error('Failed to track view:', err)
-    } finally {
-      setIsTracking(false)
+    async function trackView() {
+      try {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/content/${activeContent!.id}/track-view`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${(session as any).accessToken}`,
+            },
+          }
+        )
+      } catch (err) {
+        console.error('Failed to track view:', err)
+      }
     }
-  }
+
+    trackView()
+  }, [activeContent?.id, session])
 
   async function handleDownload(contentId: string) {
     if (!session?.user) return
@@ -123,6 +153,28 @@ export default function LessonPage() {
     }
   }
 
+  async function handleMarkComplete() {
+    if (!session?.user || !lessonId) return
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/students/lessons/${lessonId}/complete`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${(session as any).accessToken}`,
+          },
+        }
+      )
+
+      if (res.ok) {
+        setError('')
+      }
+    } catch (err) {
+      console.error('Failed to mark complete:', err)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -134,20 +186,49 @@ export default function LessonPage() {
     )
   }
 
+  if (error && !lesson) {
+    return (
+      <div className="max-w-lg mx-auto mt-20 text-center">
+        <div className="p-6 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-700 mb-4">{error}</p>
+          <Link
+            href="/dashboard"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold"
+          >
+            Voltar ao Dashboard
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   if (!lesson) {
     return <div>Aula não encontrada</div>
   }
+
+  // Build back link: go to course page if we have the courseId, otherwise dashboard
+  const backHref = lesson.module?.courseId
+    ? `/dashboard/course/${lesson.module.courseId}`
+    : '/dashboard'
+  const backLabel = lesson.module?.course?.name
+    ? `← Voltar para ${lesson.module.course.name}`
+    : '← Voltar'
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <Link
-          href="/dashboard"
+          href={backHref}
           className="text-primary-600 hover:text-primary-700 mb-4 inline-block"
         >
-          ← Voltar
+          {backLabel}
         </Link>
+        {lesson.module && (
+          <p className="text-sm text-neutral-500 mb-1">
+            {lesson.module.name}
+          </p>
+        )}
         <h1 className="text-3xl font-bold text-primary-900 mb-2">{lesson.name}</h1>
         <p className="text-neutral-600">{lesson.description}</p>
       </div>
@@ -217,7 +298,7 @@ export default function LessonPage() {
         {/* Sidebar - Content List */}
         <div className="md:col-span-1">
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="font-bold text-neutral-900 mb-4">📚 Conteúdo da Aula</h3>
+            <h3 className="font-bold text-neutral-900 mb-4">Conteúdo da Aula</h3>
             <div className="space-y-2">
               {lesson.contents.map((content) => (
                 <button
@@ -241,6 +322,14 @@ export default function LessonPage() {
                 </button>
               ))}
             </div>
+
+            {/* Mark as complete button */}
+            <button
+              onClick={handleMarkComplete}
+              className="w-full mt-6 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm transition"
+            >
+              Marcar aula como concluída
+            </button>
           </div>
         </div>
       </div>

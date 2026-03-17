@@ -5,6 +5,7 @@ import multer from 'multer'
 import { authMiddleware, AuthRequest } from '../common/middleware/auth.middleware'
 import { adminMiddleware } from '../common/middleware/admin.middleware'
 import { validateRequest } from '../common/middleware/validate.middleware'
+import { uploadBuffer } from '../common/utils/cloudinary'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -64,15 +65,20 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, uploa
       contentOrder = lastContent ? lastContent.order + 1 : 0
     }
 
-    // File info (actual cloud upload to be added later)
+    // Upload file to Cloudinary if provided
     let fileInfo: { url: string; fileSize?: number; mimeType?: string } = {
       url: url || '',
     }
 
     if (req.file) {
+      const resourceType = type === 'VIDEO' ? 'video' : type === 'PDF' ? 'raw' : 'auto'
+      const uploaded = await uploadBuffer(req.file.buffer, {
+        folder: `endostart/${type.toLowerCase()}s`,
+        resourceType,
+      })
       fileInfo = {
-        url: url || '', // Placeholder - actual cloud URL will be set after upload integration
-        fileSize: req.file.size,
+        url: uploaded.url,
+        fileSize: uploaded.size,
         mimeType: req.file.mimetype,
       }
     }

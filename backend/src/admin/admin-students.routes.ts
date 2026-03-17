@@ -278,4 +278,70 @@ router.post('/students/:studentId/enroll', authMiddleware, adminMiddleware, vali
   }
 })
 
+// POST /api/admin/students - Create a new student manually
+router.post('/students', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const { email, firstName, lastName, password, crm, phone, state, hasAccess } = req.body
+    if (!email || !firstName || !lastName) {
+      res.status(400).json({ error: 'email, firstName, and lastName are required' })
+      return
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } })
+    if (existing) {
+      res.status(409).json({ error: 'Email already registered' })
+      return
+    }
+
+    let passwordHash: string | null = null
+    if (password) {
+      const bcrypt = require('bcryptjs')
+      passwordHash = await bcrypt.hash(password, 10)
+    }
+
+    const student = await prisma.user.create({
+      data: {
+        email,
+        firstName,
+        lastName,
+        passwordHash,
+        crm: crm || null,
+        phone: phone || null,
+        state: state || null,
+        role: 'STUDENT',
+        hasAccess: hasAccess || false,
+        accessGrantedAt: hasAccess ? new Date() : null,
+      },
+      select: {
+        id: true, email: true, firstName: true, lastName: true,
+        crm: true, phone: true, state: true, hasAccess: true, createdAt: true,
+      },
+    })
+
+    res.status(201).json(student)
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      res.status(409).json({ error: 'Email or CRM already exists' })
+    } else {
+      res.status(500).json({ error: error.message })
+    }
+  }
+})
+
+// DELETE /api/admin/students/:studentId - Delete a student
+router.delete('/students/:studentId', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const student = await prisma.user.findUnique({ where: { id: req.params.studentId } })
+    if (!student) { res.status(404).json({ error: 'Student not found' }); return }
+    if (student.role === 'ADMIN') {
+      res.status(403).json({ error: 'Cannot delete admin users' })
+      return
+    }
+    await prisma.user.delete({ where: { id: req.params.studentId } })
+    res.json({ message: 'Student deleted' })
+  } catch (error: any) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router

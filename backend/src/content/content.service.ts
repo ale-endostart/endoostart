@@ -4,6 +4,48 @@ import { getSignedDownloadUrl } from '../common/utils/cloudinary'
 const prisma = new PrismaClient()
 
 export class ContentService {
+  async getLesson(lessonId: string, userId: string) {
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId, isActive: true },
+      include: {
+        contents: {
+          where: { isActive: true },
+          orderBy: { order: 'asc' },
+        },
+        module: {
+          select: {
+            id: true,
+            name: true,
+            courseId: true,
+            course: {
+              select: { id: true, name: true, slug: true },
+            },
+          },
+        },
+      },
+    })
+
+    if (!lesson) {
+      throw new Error('Lesson not found')
+    }
+
+    // Check if user has access to this course
+    const enrollment = await prisma.studentCourse.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: userId,
+          courseId: lesson.module.courseId,
+        },
+      },
+    })
+
+    if (!enrollment || !enrollment.isActive) {
+      throw new Error('Access denied to this lesson')
+    }
+
+    return lesson
+  }
+
   async getContent(contentId: string) {
     const content = await prisma.content.findUnique({
       where: { id: contentId },
