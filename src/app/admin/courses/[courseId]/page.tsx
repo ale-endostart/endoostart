@@ -178,6 +178,14 @@ export default function CourseEditor() {
   // ---- CONTENT CRUD ----
   async function addContent(e: React.FormEvent, lessonId: string) {
     e.preventDefault()
+    setError('')
+
+    // Validate: PDF needs either a file or a URL
+    if (contentForm.type === 'PDF' && !contentFile && !contentForm.url) {
+      setError('Selecione um arquivo PDF ou forneca uma URL.')
+      return
+    }
+
     setProcessing('content')
     try {
       const formData = new FormData()
@@ -197,7 +205,16 @@ export default function CourseEditor() {
         fetchCourse()
         setSuccess('Conteudo adicionado!')
         setTimeout(() => setSuccess(''), 3000)
-      } else { const d = await res.json(); setError(d.error) }
+      } else {
+        try {
+          const d = await res.json()
+          setError(d.error || `Erro ${res.status}: Falha ao adicionar conteudo`)
+        } catch {
+          setError(`Erro ${res.status}: Falha ao adicionar conteudo`)
+        }
+      }
+    } catch (err: any) {
+      setError(`Erro de conexao: ${err.message || 'Verifique se o backend esta rodando'}`)
     } finally { setProcessing('') }
   }
 
@@ -474,20 +491,35 @@ export default function CourseEditor() {
                         </div>
                         <input type="text" placeholder="Descricao (opcional)" value={contentForm.description} onChange={e => setContentForm({...contentForm, description: e.target.value})}
                           className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+                        {contentForm.type === 'PDF' && (
+                          <div className="space-y-2">
+                            <div>
+                              <label className="block text-xs font-medium text-emerald-700 mb-1">Enviar arquivo PDF</label>
+                              <input type="file" accept=".pdf" onChange={e => setContentFile(e.target.files?.[0] || null)}
+                                className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white" />
+                              {contentFile && <p className="text-xs text-emerald-600 mt-1">Arquivo: {contentFile.name} ({(contentFile.size / 1024 / 1024).toFixed(1)}MB)</p>}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-neutral-400">
+                              <div className="flex-1 h-px bg-neutral-200" />
+                              <span>OU</span>
+                              <div className="flex-1 h-px bg-neutral-200" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-emerald-700 mb-1">Cole a URL do PDF (Google Drive, Dropbox, etc.)</label>
+                              <input type="url" placeholder="https://..." value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
+                                className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+                            </div>
+                          </div>
+                        )}
                         {(contentForm.type === 'VIDEO' || contentForm.type === 'LINK') && (
                           <input type="url" placeholder="URL do video ou link" value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
                             className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
                         )}
-                        {contentForm.type === 'PDF' && (
-                          <div>
-                            <input type="file" accept=".pdf" onChange={e => setContentFile(e.target.files?.[0] || null)}
-                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white" />
-                            <p className="text-xs text-neutral-500 mt-1">Maximo 50MB. O PDF sera enviado para o Cloudinary.</p>
-                          </div>
-                        )}
                         <div className="flex gap-2">
-                          <button type="submit" disabled={processing === 'content'} className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">{processing === 'content' ? 'Enviando...' : 'Adicionar'}</button>
-                          <button type="button" onClick={() => { setAddingContentTo(null); setContentFile(null) }} className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
+                          <button type="submit" disabled={processing === 'content'} className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                            {processing === 'content' ? (contentFile ? `Enviando ${contentFile.name}...` : 'Salvando...') : 'Adicionar'}
+                          </button>
+                          <button type="button" onClick={() => { setAddingContentTo(null); setContentFile(null); setError('') }} className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
                         </div>
                       </form>
                     )}

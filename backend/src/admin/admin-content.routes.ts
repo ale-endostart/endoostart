@@ -71,15 +71,35 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, uploa
     }
 
     if (req.file) {
-      const resourceType = type === 'VIDEO' ? 'video' : type === 'PDF' ? 'raw' : 'auto'
-      const uploaded = await uploadBuffer(req.file.buffer, {
-        folder: `endostart/${type.toLowerCase()}s`,
-        resourceType,
-      })
-      fileInfo = {
-        url: uploaded.url,
-        fileSize: uploaded.size,
-        mimeType: req.file.mimetype,
+      // Check if Cloudinary is configured
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME
+      const apiKey = process.env.CLOUDINARY_API_KEY
+      const apiSecret = process.env.CLOUDINARY_API_SECRET
+
+      if (!cloudName || !apiKey || !apiSecret || cloudName === 'demo' || apiSecret === 'your-cloudinary-secret') {
+        res.status(400).json({
+          error: 'Cloudinary nao esta configurado. Configure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET no arquivo .env do backend, ou use o campo URL para fornecer um link direto ao arquivo.'
+        })
+        return
+      }
+
+      try {
+        const resourceType = type === 'VIDEO' ? 'video' : type === 'PDF' ? 'raw' : 'auto'
+        const uploaded = await uploadBuffer(req.file.buffer, {
+          folder: `endostart/${type.toLowerCase()}s`,
+          resourceType,
+        })
+        fileInfo = {
+          url: uploaded.url,
+          fileSize: uploaded.size,
+          mimeType: req.file.mimetype,
+        }
+      } catch (uploadError: any) {
+        console.error('File upload failed:', uploadError)
+        res.status(500).json({
+          error: `Falha no upload do arquivo: ${uploadError.message}. Verifique as credenciais do Cloudinary ou use o campo URL para fornecer um link direto.`
+        })
+        return
       }
     }
 
