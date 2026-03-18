@@ -1,12 +1,14 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { PrismaClient } from '@prisma/client'
+import multer from 'multer'
 import { authMiddleware, AuthRequest } from '../common/middleware/auth.middleware'
 import { adminMiddleware } from '../common/middleware/admin.middleware'
 import { validateRequest } from '../common/middleware/validate.middleware'
 
 const router = Router()
 const prisma = new PrismaClient()
+const upload = multer() // para parsear multipart/form-data sem arquivos
 
 // Validation schemas
 const updateContentSchema = z.object({
@@ -19,11 +21,9 @@ const updateContentSchema = z.object({
 })
 
 // POST /api/admin/lessons/:lessonId/content - Create content with URL
-router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
+// upload.none() parseia multipart/form-data sem arquivos (campos de texto)
+router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, upload.none(), async (req: AuthRequest, res) => {
   try {
-    console.log('[Content Create] req.body:', JSON.stringify(req.body))
-    console.log('[Content Create] Content-Type:', req.headers['content-type'])
-
     // Verify lesson exists
     const lesson = await prisma.lesson.findUnique({
       where: { id: req.params.lessonId },
@@ -37,7 +37,7 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, async
     const { title, description, type, url, order } = req.body || {}
 
     if (!title || !type) {
-      res.status(400).json({ error: `title and type are required. Received body: ${JSON.stringify(req.body)}` })
+      res.status(400).json({ error: 'title and type are required' })
       return
     }
 
