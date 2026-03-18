@@ -26,7 +26,7 @@ async function main() {
       firstName: 'Alessandro',
       lastName: 'Médico',
       crm: 'SP123456',
-      phone: '+5585988888888',
+      phone: '+5562991980100',
       state: 'SP',
       role: 'ADMIN',
       hasAccess: true,

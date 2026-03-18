@@ -87,7 +87,7 @@ export default function AdminSettings() {
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Numero WhatsApp</label>
             <input type="text" value={settings.whatsappNumber} onChange={e => setSettings({...settings, whatsappNumber: e.target.value})}
-              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="5511999999999" />
+              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="5562991980100" />
             <p className="text-xs text-neutral-400 mt-1">Formato: codigo do pais + DDD + numero (sem espacos ou tracos)</p>
           </div>
           <div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const CtaFinalSection: React.FC = () => {
-    const whatsappUrl = 'https://wa.me/5511943375337';
+    const whatsappUrl = 'https://wa.me/5562991980100';
 
     return (
         <section id="inscricao" className="py-24 md:py-32 bg-[#01284A] text-white relative overflow-hidden">

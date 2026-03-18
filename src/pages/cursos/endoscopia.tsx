@@ -6,7 +6,7 @@ export default function EndoscopiaPage() {
     const courseWhatsappMessage = 'Olá Equipe EndoStart! Quero saber os detalhes (valores e datas) sobre a incrível Formação de Endoscopia Digestiva Alta (Vip - 3 Alunos).';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5511943375337';
+        const phoneNumber = '5562991980100';
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     };

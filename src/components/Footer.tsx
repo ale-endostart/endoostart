@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
 
   const handleWhatsApp = () => {
     const message = 'Olá! Sou médico e gostaria de saber mais sobre a formação em Endoscopia e Colonoscopia da EndoStart';
-    const whatsappUrl = `https://wa.me/5511943375337?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/5562991980100?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -122,8 +122,8 @@ export const Footer: React.FC = () => {
             <div className="space-y-3 text-sm">
               <p>
                 <span className="block text-white font-medium mb-1">WhatsApp</span>
-                <a href="https://wa.me/5511943375337" className="text-white/40 hover:text-brand-gold transition-colors duration-300">
-                  (11) 94337-5337
+                <a href="https://wa.me/5562991980100" className="text-white/40 hover:text-brand-gold transition-colors duration-300">
+                  (62) 99198-0100
                 </a>
               </p>
               <p>

@@ -28,7 +28,7 @@ export const ContactSection: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {/* WhatsApp Card */}
                     <motion.a
-                        href="https://wa.me/5511943375337"
+                        href="https://wa.me/5562991980100"
                         target="_blank"
                         rel="noopener noreferrer"
                         initial={{ opacity: 0, x: -30 }}

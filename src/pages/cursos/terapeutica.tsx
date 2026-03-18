@@ -6,7 +6,7 @@ export default function TerapeuticaPage() {
     const courseWhatsappMessage = 'Olá! Gostaria de ter mais informações sobre a Imersão em Endoscopia Terapêutica.';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5511943375337';
+        const phoneNumber = '5562991980100';
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     };

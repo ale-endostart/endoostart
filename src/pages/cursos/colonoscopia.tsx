@@ -6,7 +6,7 @@ export default function ColonoscopiaPage() {
     const courseWhatsappMessage = 'Olá Equipe EndoStart! Quero me especializar em Colonoscopia. Podem me passar mais informações da próxima turma?';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5511943375337';
+        const phoneNumber = '5562991980100';
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     };

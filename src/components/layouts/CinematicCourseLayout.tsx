@@ -44,7 +44,7 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
     totalPrice,
     installmentPrice,
 }) => {
-    const whatsappUrl = `https://wa.me/5511943375337?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/5562991980100?text=${encodeURIComponent(whatsappMessage)}`;
 
     return (
         <>

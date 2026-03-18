@@ -18,7 +18,7 @@ import VideoTeasersSection from '../components/VideoTeasersSection';
 export default function Home() {
   const handleWhatsAppClick = () => {
     const message = 'Olá! Sou médico e gostaria de saber mais sobre os cursos de formação em Endoscopia da EndoStart.';
-    const phoneNumber = '5511943375337';
+    const phoneNumber = '5562991980100';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };

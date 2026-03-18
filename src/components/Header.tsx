@@ -6,7 +6,7 @@ interface HeaderProps {
   whatsappMessage?: string;
 }
 
-const WHATSAPP_NUMBER = '5511943375337';
+const WHATSAPP_NUMBER = '5562991980100';
 
 const navLinks = [
   { href: '/', label: 'Início' },

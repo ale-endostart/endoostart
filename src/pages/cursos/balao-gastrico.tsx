@@ -6,7 +6,7 @@ export default function BalaoGastricoPage() {
     const courseWhatsappMessage = 'Olá! Gostaria de participar da próxima turma de Implante e Retirada de Balão Gástrico.';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5511943375337';
+        const phoneNumber = '5562991980100';
         const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     };

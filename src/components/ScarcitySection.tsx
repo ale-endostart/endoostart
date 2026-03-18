@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const ScarcitySection: React.FC = () => {
-    const whatsappUrl = 'https://wa.me/5511943375337';
+    const whatsappUrl = 'https://wa.me/5562991980100';
 
     return (
         <section className="py-20 md:py-24 bg-white">
