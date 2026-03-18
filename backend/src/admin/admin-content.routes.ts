@@ -21,6 +21,9 @@ const updateContentSchema = z.object({
 // POST /api/admin/lessons/:lessonId/content - Create content with URL
 router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
   try {
+    console.log('[Content Create] req.body:', JSON.stringify(req.body))
+    console.log('[Content Create] Content-Type:', req.headers['content-type'])
+
     // Verify lesson exists
     const lesson = await prisma.lesson.findUnique({
       where: { id: req.params.lessonId },
@@ -31,10 +34,10 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, async
       return
     }
 
-    const { title, description, type, url, order } = req.body
+    const { title, description, type, url, order } = req.body || {}
 
     if (!title || !type) {
-      res.status(400).json({ error: 'title and type are required' })
+      res.status(400).json({ error: `title and type are required. Received body: ${JSON.stringify(req.body)}` })
       return
     }
 
