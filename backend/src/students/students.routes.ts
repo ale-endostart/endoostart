@@ -38,7 +38,7 @@ router.put('/profile', authMiddleware, async (req: AuthRequest, res) => {
 // GET /api/students/courses - Get current student's enrolled courses
 router.get('/courses', authMiddleware, async (req: AuthRequest, res) => {
   try {
-    const courses = await studentsService.getCourses(req.user!.id)
+    const courses = await studentsService.getCourses(req.user!.id, req.user!.role)
     res.json(courses)
   } catch (error: any) {
     res.status(500).json({ error: error.message })
@@ -48,7 +48,7 @@ router.get('/courses', authMiddleware, async (req: AuthRequest, res) => {
 // GET /api/students/progress - Get current student's progress
 router.get('/progress', authMiddleware, async (req: AuthRequest, res) => {
   try {
-    const progress = await studentsService.getProgress(req.user!.id)
+    const progress = await studentsService.getProgress(req.user!.id, req.user!.role)
     res.json(progress)
   } catch (error: any) {
     res.status(500).json({ error: error.message })

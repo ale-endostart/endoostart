@@ -34,7 +34,8 @@ router.get('/:courseId/modules', authMiddleware, async (req: any, res: any) => {
   try {
     const course = await coursesService.findModules(
       req.params.courseId,
-      req.user!.id
+      req.user!.id,
+      req.user!.role
     )
     if (!course) {
       res.status(404).json({ error: 'Course not found' })
@@ -51,7 +52,8 @@ router.get('/:courseId/progress', authMiddleware, async (req: any, res: any) => 
   try {
     const progress = await coursesService.getCourseProgress(
       req.params.courseId,
-      req.user!.id
+      req.user!.id,
+      req.user!.role
     )
     res.json(progress)
   } catch (error: any) {

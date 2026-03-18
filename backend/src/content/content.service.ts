@@ -4,7 +4,7 @@ import { getSignedDownloadUrl } from '../common/utils/cloudinary'
 const prisma = new PrismaClient()
 
 export class ContentService {
-  async getLesson(lessonId: string, userId: string) {
+  async getLesson(lessonId: string, userId: string, role?: string) {
     const lesson = await prisma.lesson.findUnique({
       where: { id: lessonId, isActive: true },
       include: {
@@ -29,18 +29,20 @@ export class ContentService {
       throw new Error('Lesson not found')
     }
 
-    // Check if user has access to this course
-    const enrollment = await prisma.studentCourse.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: userId,
-          courseId: lesson.module.courseId,
+    // Admins have access to all lessons
+    if (role !== 'ADMIN') {
+      const enrollment = await prisma.studentCourse.findUnique({
+        where: {
+          studentId_courseId: {
+            studentId: userId,
+            courseId: lesson.module.courseId,
+          },
         },
-      },
-    })
+      })
 
-    if (!enrollment || !enrollment.isActive) {
-      throw new Error('Access denied to this lesson')
+      if (!enrollment || !enrollment.isActive) {
+        throw new Error('Access denied to this lesson')
+      }
     }
 
     return lesson
@@ -64,7 +66,7 @@ export class ContentService {
     return content
   }
 
-  async getSignedDownloadUrl(contentId: string, userId: string): Promise<string> {
+  async getSignedDownloadUrl(contentId: string, userId: string, role?: string): Promise<string> {
     const content = await prisma.content.findUnique({
       where: { id: contentId },
       include: {
@@ -84,18 +86,20 @@ export class ContentService {
       throw new Error('Content not found')
     }
 
-    // Check if user has access to this course
-    const enrollment = await prisma.studentCourse.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: userId,
-          courseId: content.lesson.module.courseId,
+    // Admins have access to all content
+    if (role !== 'ADMIN') {
+      const enrollment = await prisma.studentCourse.findUnique({
+        where: {
+          studentId_courseId: {
+            studentId: userId,
+            courseId: content.lesson.module.courseId,
+          },
         },
-      },
-    })
+      })
 
-    if (!enrollment || !enrollment.isActive) {
-      throw new Error('Access denied to this content')
+      if (!enrollment || !enrollment.isActive) {
+        throw new Error('Access denied to this content')
+      }
     }
 
     // Record download
@@ -111,7 +115,7 @@ export class ContentService {
     return signedUrl
   }
 
-  async trackView(contentId: string, userId: string): Promise<void> {
+  async trackView(contentId: string, userId: string, role?: string): Promise<void> {
     const content = await prisma.content.findUnique({
       where: { id: contentId },
       include: {
@@ -131,18 +135,20 @@ export class ContentService {
       throw new Error('Content not found')
     }
 
-    // Check if user has access
-    const enrollment = await prisma.studentCourse.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: userId,
-          courseId: content.lesson.module.courseId,
+    // Admins have access to all content
+    if (role !== 'ADMIN') {
+      const enrollment = await prisma.studentCourse.findUnique({
+        where: {
+          studentId_courseId: {
+            studentId: userId,
+            courseId: content.lesson.module.courseId,
+          },
         },
-      },
-    })
+      })
 
-    if (!enrollment || !enrollment.isActive) {
-      throw new Error('Access denied to this content')
+      if (!enrollment || !enrollment.isActive) {
+        throw new Error('Access denied to this content')
+      }
     }
 
     // Log activity

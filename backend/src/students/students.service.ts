@@ -50,7 +50,32 @@ export class StudentsService {
     return user
   }
 
-  async getCourses(userId: string) {
+  async getCourses(userId: string, role?: string) {
+    // Admins see all active courses
+    if (role === 'ADMIN') {
+      const courses = await prisma.course.findMany({
+        where: { isActive: true },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          shortDescription: true,
+          imageUrl: true,
+          difficulty: true,
+          durationWeeks: true,
+          price: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      })
+      return courses.map((c) => ({
+        ...c,
+        progress: 0,
+        enrolledAt: null,
+        accessGrantedAt: null,
+        completedAt: null,
+      }))
+    }
+
     const enrollments = await prisma.studentCourse.findMany({
       where: { studentId: userId, isActive: true },
       include: {
@@ -79,7 +104,24 @@ export class StudentsService {
     }))
   }
 
-  async getProgress(userId: string) {
+  async getProgress(userId: string, role?: string) {
+    // Admins get a summary of all courses
+    if (role === 'ADMIN') {
+      const courses = await prisma.course.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+      })
+      return {
+        overallProgress: 0,
+        courseProgress: courses.map((c) => ({
+          courseId: c.id,
+          courseName: c.name,
+          progress: 0,
+        })),
+        enrolledCoursesCount: courses.length,
+      }
+    }
+
     const enrollments = await prisma.studentCourse.findMany({
       where: { studentId: userId, isActive: true },
       select: {

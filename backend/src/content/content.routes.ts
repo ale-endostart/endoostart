@@ -10,7 +10,8 @@ router.get('/lessons/:lessonId', authMiddleware, async (req: AuthRequest, res) =
   try {
     const lesson = await contentService.getLesson(
       req.params.lessonId,
-      req.user!.id
+      req.user!.id,
+      req.user!.role
     )
     res.json(lesson)
   } catch (error: any) {
@@ -29,7 +30,8 @@ router.get('/:contentId/download', authMiddleware, async (req: AuthRequest, res)
   try {
     const url = await contentService.getSignedDownloadUrl(
       req.params.contentId,
-      req.user!.id
+      req.user!.id,
+      req.user!.role
     )
     res.json({ url, expiresIn: 3600 })
   } catch (error: any) {
@@ -46,7 +48,7 @@ router.get('/:contentId/download', authMiddleware, async (req: AuthRequest, res)
 // POST /api/content/:contentId/track-view - Track content view (protected)
 router.post('/:contentId/track-view', authMiddleware, async (req: AuthRequest, res) => {
   try {
-    await contentService.trackView(req.params.contentId, req.user!.id)
+    await contentService.trackView(req.params.contentId, req.user!.id, req.user!.role)
     res.json({ message: 'View tracked successfully' })
   } catch (error: any) {
     if (error.message.includes('Access denied')) {

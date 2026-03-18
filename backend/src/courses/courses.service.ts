@@ -54,20 +54,22 @@ export class CoursesService {
     return course
   }
 
-  async findModules(courseId: string, userId: string) {
-    // Check if student has access to this course
-    const enrollment = await prisma.studentCourse.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: userId,
-          courseId,
+  async findModules(courseId: string, userId: string, role?: string) {
+    // Admins have access to all courses
+    if (role !== 'ADMIN') {
+      const enrollment = await prisma.studentCourse.findUnique({
+        where: {
+          studentId_courseId: {
+            studentId: userId,
+            courseId,
+          },
         },
-      },
-      select: { isActive: true },
-    })
+        select: { isActive: true },
+      })
 
-    if (!enrollment || !enrollment.isActive) {
-      throw new Error('Access denied to this course')
+      if (!enrollment || !enrollment.isActive) {
+        throw new Error('Access denied to this course')
+      }
     }
 
     const course = await prisma.course.findUnique({
@@ -102,7 +104,18 @@ export class CoursesService {
     return course
   }
 
-  async getCourseProgress(courseId: string, userId: string) {
+  async getCourseProgress(courseId: string, userId: string, role?: string) {
+    // Admins get a default progress response
+    if (role === 'ADMIN') {
+      return {
+        progress: 0,
+        enrolledAt: null,
+        accessGrantedAt: null,
+        completedAt: null,
+        isActive: true,
+      }
+    }
+
     const enrollment = await prisma.studentCourse.findUnique({
       where: {
         studentId_courseId: {
