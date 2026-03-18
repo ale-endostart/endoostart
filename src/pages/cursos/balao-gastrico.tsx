@@ -48,23 +48,13 @@ export default function BalaoGastricoPage() {
         },
         {
             module: 'M2',
-            title: 'Preparo Anestésico e Farmacológico',
-            description: 'Protocolo de resgate anti-emético. A arte de evitar as maiores queixas dos primeiros dias e gerar conforto absoluto pro paciente.',
-        },
-        {
-            module: 'M3',
             title: 'Técnica de Implante',
             description: 'Preenchimento seguro, coloração do líquido e tração controlada. Como verificar a localização exata sem deixar margem a erros.',
         },
         {
-            module: 'M4',
+            module: 'M3',
             title: 'Técnica de Retirada (Explante)',
             description: 'Extração segura. Dificuldades comuns como balão hiperinsuflado, perda da alça e técnica de aprisionamento profundo.',
-        },
-        {
-            module: 'M5',
-            title: 'Avaliação Nutricional Simbiótica',
-            description: 'Visão de equipe multidisciplinar. Quando e como encaminhar o paciente no pós-procedimento.',
         },
     ];
 
@@ -74,7 +64,7 @@ export default function BalaoGastricoPage() {
             <CinematicCourseLayout
                 title="Balão Intragástrico"
                 subtitle="O procedimento mais demandado no mercado de obesidade. Aprenda em um fim de semana e comece a oferecer na semana seguinte."
-                description="Formação intensiva de 2 dias onde você domina implante e explante de balão intragástrico do zero — indicações, sedação, técnica, manejo dos primeiros dias e critérios de retirada segura. Mercado em alta em todo o Brasil."
+                description="Formação intensiva onde você domina implante e explante de balão intragástrico do zero — indicações, sedação, técnica, manejo dos primeiros dias e critérios de retirada segura. Mercado em alta em todo o Brasil."
                 badge="Formação de Alta Demanda · Menor Ticket de Entrada"
                 backgroundImage="/images/curso-balao-gastrico.png"
                 highlights={highlights}

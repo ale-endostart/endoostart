@@ -43,26 +43,16 @@ export default function TerapeuticaPage() {
     const curriculum = [
         {
             module: 'M1',
-            title: 'Física do Eletrocautério',
-            description: 'Entenda os vetores de força, coagulação e corte para máxima eficácia sem riscos colaterais térmicos.',
-        },
-        {
-            module: 'M2',
             title: 'Terapêutica do Trato Superior',
             description: 'Hemostasia de úlceras, ligadura elástica de varizes esofágicas e dilatações e estenoses.',
         },
         {
-            module: 'M3',
+            module: 'M2',
             title: 'Terapêutica do Trato Inferior',
             description: 'Polipectomia com alça quente e fria, Mucosectomia em níveis (EMR) e ressecções avançadas.',
         },
         {
-            module: 'M4',
-            title: 'Manejo e Tratamento de Perfurações',
-            description: 'Treinamento rápido e incisivo no uso de clipes endoscópicos profiláticos e reativos.',
-        },
-        {
-            module: 'M5',
+            module: 'M3',
             title: 'Prática em Simuladores Orgânicos (Estativo Orgânico)',
             description: 'Práticas realistas para desenvolver e automatizar habilidades terapêuticas finas.',
         },

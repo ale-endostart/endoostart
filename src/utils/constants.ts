@@ -49,6 +49,9 @@ export const DRA_TAMARA = {
 // WhatsApp Message Templates
 export const WHATSAPP_MESSAGES = {
   default: 'Olá! Sou médico e gostaria de saber mais sobre a formação em Endoscopia e Colonoscopia da EndoStart',
+  course: (courseName: string) => `Olá! Sou médico e gostaria de saber mais sobre o curso de ${courseName} da EndoStart`,
+  module: (moduleName: string) => `Olá! Sou médico e gostaria de saber mais sobre o módulo ${moduleName} da EndoStart`,
+  consultation: 'Olá! Sou médico e gostaria de agendar uma consulta.'
 };
 
 // Site Config

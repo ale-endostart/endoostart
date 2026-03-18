@@ -14,15 +14,6 @@ export default function ColonoscopiaPage() {
         {
             icon: (
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            ),
-            title: 'Até R$ 2.500 por Procedimento',
-            description: 'Colonoscopia diagnóstica com polipectomia gera entre R$ 1.200 e R$ 2.500 no setor privado. A agenda se autofinancia em semanas.',
-        },
-        {
-            icon: (
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             ),

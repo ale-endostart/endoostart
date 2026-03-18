@@ -19,7 +19,12 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react', '@radix-ui/react-primitive'],
+  },
+  webpack: (config) => {
+    // react-pdf / pdfjs-dist needs canvas polyfill suppressed in browser builds
+    config.resolve.alias.canvas = false
+    return config
   },
 };
 

@@ -278,6 +278,49 @@ router.post('/students/:studentId/enroll', authMiddleware, adminMiddleware, vali
   }
 })
 
+// PUT /api/admin/students/:studentId - Update student profile
+router.put('/students/:studentId', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const { email, firstName, lastName, password, crm, phone, state } = req.body
+    const data: any = {}
+    if (email !== undefined) data.email = email
+    if (firstName !== undefined) data.firstName = firstName
+    if (lastName !== undefined) data.lastName = lastName
+    if (crm !== undefined) data.crm = crm || null
+    if (phone !== undefined) data.phone = phone || null
+    if (state !== undefined) data.state = state || null
+
+    if (password) {
+      const bcrypt = require('bcryptjs')
+      data.passwordHash = await bcrypt.hash(password, 10)
+    }
+
+    if (Object.keys(data).length === 0) {
+      res.status(400).json({ error: 'No fields to update' })
+      return
+    }
+
+    const student = await prisma.user.update({
+      where: { id: req.params.studentId },
+      data,
+      select: {
+        id: true, email: true, firstName: true, lastName: true,
+        crm: true, phone: true, state: true, hasAccess: true, createdAt: true,
+      },
+    })
+
+    res.json(student)
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      res.status(404).json({ error: 'Student not found' })
+    } else if (error.code === 'P2002') {
+      res.status(409).json({ error: 'Email or CRM already exists' })
+    } else {
+      res.status(500).json({ error: error.message })
+    }
+  }
+})
+
 // POST /api/admin/students - Create a new student manually
 router.post('/students', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
   try {

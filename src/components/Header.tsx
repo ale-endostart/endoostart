@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 interface HeaderProps {
-  onWhatsAppClick?: () => void;
   whatsappMessage?: string;
 }
 
@@ -27,7 +26,7 @@ const navLinks = [
   { href: '/#contato', label: 'Contato' },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ onWhatsAppClick, whatsappMessage }) => {
+export const Header: React.FC<HeaderProps> = ({ whatsappMessage }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [coursesExpanded, setCoursesExpanded] = useState(false);

@@ -65,7 +65,7 @@ export const variants = {
 
 interface UseScrollRevealOptions {
   once?: boolean;
-  margin?: string;
+  margin?: any;
   amount?: number;
 }
 
