@@ -1,22 +1,12 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { PrismaClient } from '@prisma/client'
-import multer from 'multer'
 import { authMiddleware, AuthRequest } from '../common/middleware/auth.middleware'
 import { adminMiddleware } from '../common/middleware/admin.middleware'
 import { validateRequest } from '../common/middleware/validate.middleware'
-import { uploadBuffer } from '../common/utils/cloudinary'
 
 const router = Router()
 const prisma = new PrismaClient()
-
-// Multer with memory storage (file kept in buffer, not saved to disk)
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB max
-  },
-})
 
 // Validation schemas
 const updateContentSchema = z.object({
@@ -28,8 +18,8 @@ const updateContentSchema = z.object({
   isActive: z.boolean().optional(),
 })
 
-// POST /api/admin/lessons/:lessonId/content - Create content with optional file upload
-router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, upload.single('file'), async (req: AuthRequest, res) => {
+// POST /api/admin/lessons/:lessonId/content - Create content with URL
+router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, async (req: AuthRequest, res) => {
   try {
     // Verify lesson exists
     const lesson = await prisma.lesson.findUnique({
@@ -54,6 +44,11 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, uploa
       return
     }
 
+    if ((type === 'PDF' || type === 'VIDEO' || type === 'LINK') && !url) {
+      res.status(400).json({ error: 'URL e obrigatoria para conteudo do tipo PDF, VIDEO ou LINK' })
+      return
+    }
+
     // Auto-assign order if not provided
     let contentOrder = order ? parseInt(order, 10) : undefined
     if (contentOrder === undefined || isNaN(contentOrder)) {
@@ -65,67 +60,18 @@ router.post('/lessons/:lessonId/content', authMiddleware, adminMiddleware, uploa
       contentOrder = lastContent ? lastContent.order + 1 : 0
     }
 
-    // Upload file to Cloudinary if provided
-    let fileInfo: { url: string; fileSize?: number; mimeType?: string } = {
-      url: url || '',
-    }
-
-    if (req.file) {
-      // Check if Cloudinary is configured
-      const cloudName = process.env.CLOUDINARY_CLOUD_NAME
-      const apiKey = process.env.CLOUDINARY_API_KEY
-      const apiSecret = process.env.CLOUDINARY_API_SECRET
-
-      if (!cloudName || !apiKey || !apiSecret || cloudName === 'demo' || apiSecret === 'your-cloudinary-secret') {
-        res.status(400).json({
-          error: 'Cloudinary nao esta configurado. Configure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET no arquivo .env do backend, ou use o campo URL para fornecer um link direto ao arquivo.'
-        })
-        return
-      }
-
-      try {
-        const resourceType = type === 'VIDEO' ? 'video' : type === 'PDF' ? 'raw' : 'auto'
-        const uploaded = await uploadBuffer(req.file.buffer, {
-          folder: `endostart/${type.toLowerCase()}s`,
-          resourceType,
-        })
-        fileInfo = {
-          url: uploaded.url,
-          fileSize: uploaded.size,
-          mimeType: req.file.mimetype,
-        }
-      } catch (uploadError: any) {
-        console.error('File upload failed:', uploadError)
-        res.status(500).json({
-          error: `Falha no upload do arquivo: ${uploadError.message}. Verifique as credenciais do Cloudinary ou use o campo URL para fornecer um link direto.`
-        })
-        return
-      }
-    }
-
     const content = await prisma.content.create({
       data: {
         lessonId: req.params.lessonId,
         title,
         description: description || '',
         type,
-        url: fileInfo.url,
-        fileSize: fileInfo.fileSize || null,
-        mimeType: fileInfo.mimeType || null,
+        url: url || '',
         order: contentOrder,
       },
     })
 
-    res.status(201).json({
-      ...content,
-      ...(req.file && {
-        uploadedFile: {
-          originalName: req.file.originalname,
-          size: req.file.size,
-          mimeType: req.file.mimetype,
-        },
-      }),
-    })
+    res.status(201).json(content)
   } catch (error: any) {
     res.status(500).json({ error: error.message })
   }

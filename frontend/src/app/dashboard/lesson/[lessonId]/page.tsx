@@ -1,18 +1,32 @@
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-
-// Dynamically import PDF viewer to avoid server-side issues
-const PDFViewer = dynamic(
-  () => import('@/components/members/PDFViewer').then((mod) => mod.PDFViewer),
-  { ssr: false, loading: () => <div>Carregando visualizador de PDF...</div> }
-)
-
 import { VideoEmbed } from '@/components/members/VideoEmbed'
+
+/**
+ * Converts a Google Drive share link to an embeddable preview URL.
+ * Supports formats:
+ *   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+ *   https://drive.google.com/open?id=FILE_ID
+ */
+function getGoogleDriveEmbedUrl(url: string): string {
+  // Extract file ID from various Google Drive URL formats
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+  ]
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) {
+      return `https://drive.google.com/file/d/${match[1]}/preview`
+    }
+  }
+  // If it's not a recognizable Google Drive link, return as-is
+  return url
+}
 
 interface Content {
   id: string
@@ -246,15 +260,25 @@ export default function LessonPage() {
           {activeContent && (
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {activeContent.type === 'PDF' && (
-                <Suspense fallback={<div>Carregando PDF...</div>}>
-                  <div className="h-96 md:h-[600px]">
-                    <PDFViewer
-                      url={activeContent.url}
-                      title={activeContent.title}
-                      onDownload={() => handleDownload(activeContent.id)}
-                    />
+                <div className="flex flex-col">
+                  <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
+                    <h3 className="font-semibold text-neutral-900">{activeContent.title}</h3>
+                    <a
+                      href={activeContent.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded text-sm font-semibold"
+                    >
+                      Abrir no Google Drive
+                    </a>
                   </div>
-                </Suspense>
+                  <iframe
+                    src={getGoogleDriveEmbedUrl(activeContent.url)}
+                    className="w-full h-96 md:h-[600px] border-0"
+                    allow="autoplay"
+                    allowFullScreen
+                  />
+                </div>
               )}
 
               {activeContent.type === 'VIDEO' && (

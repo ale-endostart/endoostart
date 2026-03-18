@@ -25,7 +25,6 @@ export default function CourseEditor() {
   const [moduleForm, setModuleForm] = useState({ name: '', description: '' })
   const [lessonForm, setLessonForm] = useState({ name: '', description: '', duration: '' })
   const [contentForm, setContentForm] = useState({ title: '', description: '', type: 'VIDEO', url: '' })
-  const [contentFile, setContentFile] = useState<File | null>(null)
   const [processing, setProcessing] = useState('')
   const [error, setError] = useState('')
 
@@ -80,17 +79,12 @@ export default function CourseEditor() {
     e.preventDefault()
     setProcessing('content')
     try {
-      const formData = new FormData()
-      formData.append('title', contentForm.title)
-      formData.append('description', contentForm.description)
-      formData.append('type', contentForm.type)
-      if (contentForm.url) formData.append('url', contentForm.url)
-      if (contentFile) formData.append('file', contentFile)
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}/content`, {
-        method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(contentForm),
       })
-      if (res.ok) { setAddingContentTo(null); setContentForm({ title: '', description: '', type: 'VIDEO', url: '' }); setContentFile(null); fetchCourse() }
+      if (res.ok) { setAddingContentTo(null); setContentForm({ title: '', description: '', type: 'VIDEO', url: '' }); fetchCourse() }
       else { const d = await res.json(); setError(d.error) }
     } finally { setProcessing('') }
   }
@@ -250,8 +244,11 @@ export default function CourseEditor() {
                             className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
                         )}
                         {contentForm.type === 'PDF' && (
-                          <input type="file" accept=".pdf" onChange={e => setContentFile(e.target.files?.[0] || null)}
-                            className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white" />
+                          <div>
+                            <input type="url" placeholder="Link do Google Drive (ex: https://drive.google.com/file/d/.../view)" value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
+                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+                            <p className="text-xs text-neutral-500 mt-1">Suba o PDF no Google Drive, compartilhe como &quot;Qualquer pessoa com o link&quot; e cole aqui.</p>
+                          </div>
                         )}
                         <div className="flex gap-2">
                           <button type="submit" disabled={processing === 'content'} className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">{processing === 'content' ? 'Enviando...' : 'Adicionar'}</button>
