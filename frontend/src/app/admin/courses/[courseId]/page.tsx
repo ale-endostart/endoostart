@@ -239,16 +239,9 @@ export default function CourseEditor() {
                         </div>
                         <input type="text" placeholder="Descricao (opcional)" value={contentForm.description} onChange={e => setContentForm({...contentForm, description: e.target.value})}
                           className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
-                        {(contentForm.type === 'VIDEO' || contentForm.type === 'LINK') && (
-                          <input type="url" placeholder="URL do video ou link" value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
+                        {contentForm.type !== 'TEXT' && (
+                          <input type="url" placeholder={contentForm.type === 'PDF' ? 'Link do Google Drive' : 'URL do video ou link'} value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
                             className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
-                        )}
-                        {contentForm.type === 'PDF' && (
-                          <div>
-                            <input type="url" placeholder="Link do Google Drive (ex: https://drive.google.com/file/d/.../view)" value={contentForm.url} onChange={e => setContentForm({...contentForm, url: e.target.value})}
-                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
-                            <p className="text-xs text-neutral-500 mt-1">Suba o PDF no Google Drive, compartilhe como &quot;Qualquer pessoa com o link&quot; e cole aqui.</p>
-                          </div>
                         )}
                         <div className="flex gap-2">
                           <button type="submit" disabled={processing === 'content'} className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">{processing === 'content' ? 'Enviando...' : 'Adicionar'}</button>

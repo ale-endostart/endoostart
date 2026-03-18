@@ -12,7 +12,7 @@ html {
 
 body {
   @apply bg-white text-gray-900 antialiased;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 ::selection {
@@ -36,7 +36,7 @@ body {
    ========================================= */
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   @apply font-black;
   letter-spacing: -0.035em;
   text-wrap: balance;
@@ -181,27 +181,15 @@ h3 {
   transform: translateY(-8px);
 }
 
-/* Glass morphism */
-.glass {
-  @apply bg-white/[0.06] backdrop-blur-2xl border border-white/[0.08];
+/* Glass morphism — lightweight (no backdrop-blur on mobile) */
+.header-glass {
+  @apply bg-black/70 border border-white/[0.08];
 }
-
-.glass-light {
-  @apply bg-black/[0.03] backdrop-blur-xl border border-black/[0.05];
-}
-
-/* Grain texture overlay */
-.grain {
-  position: relative;
-}
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
+@media (min-width: 768px) {
+  .header-glass {
+    @apply backdrop-blur-lg;
+    background: rgba(0,0,0,0.6);
+  }
 }
 
 /* =========================================
@@ -229,6 +217,15 @@ h3 {
 /* =========================================
    PRINT
    ========================================= */
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 @media print {
   body { @apply bg-white text-black; }

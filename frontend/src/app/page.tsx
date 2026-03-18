@@ -1,116 +1,10 @@
-'use client'
-
-import { useState, useEffect, useRef, ReactNode } from 'react'
 import Link from 'next/link'
+import Header from '@/components/landing/Header'
+import Reveal from '@/components/landing/Reveal'
+import Counter from '@/components/landing/Counter'
 
 // ============================================================
-// ANIMATION COMPONENTS
-// ============================================================
-
-function Reveal({
-  children,
-  delay = 0,
-  className = '',
-  direction = 'up',
-}: {
-  children: ReactNode
-  delay?: number
-  className?: string
-  direction?: 'up' | 'down' | 'left' | 'right' | 'scale'
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observer.unobserve(el)
-        }
-      },
-      { threshold: 0.12, rootMargin: '-30px' }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  const transforms: Record<string, string> = {
-    up: 'translateY(60px)',
-    down: 'translateY(-60px)',
-    left: 'translateX(60px)',
-    right: 'translateX(-60px)',
-    scale: 'scale(0.92)',
-  }
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'none' : transforms[direction],
-        transition: `opacity 1s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
-        willChange: 'opacity, transform',
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-function Counter({
-  target,
-  suffix = '',
-  prefix = '',
-  className = '',
-}: {
-  target: number
-  suffix?: string
-  prefix?: string
-  className?: string
-}) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLSpanElement>(null)
-  const started = useRef(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true
-          const duration = 2200
-          const startTime = performance.now()
-          const tick = (now: number) => {
-            const p = Math.min((now - startTime) / duration, 1)
-            const eased = 1 - Math.pow(1 - p, 4)
-            setCount(Math.round(target * eased))
-            if (p < 1) requestAnimationFrame(tick)
-          }
-          requestAnimationFrame(tick)
-        }
-      },
-      { threshold: 0.5 }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [target])
-
-  return (
-    <span ref={ref} className={className}>
-      {prefix}
-      {count.toLocaleString('pt-BR')}
-      {suffix}
-    </span>
-  )
-}
-
-// ============================================================
-// CONSTANTS
+// CONSTANTS (server-side — zero JS sent to client)
 // ============================================================
 
 const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5562999999999'
@@ -120,199 +14,73 @@ const whatsapp = (msg: string) =>
 const WA_SVG =
   'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z'
 
-const NAV = [
-  { label: 'Curso', href: '#curso' },
-  { label: 'Professor', href: '#professor' },
-  { label: 'Investimento', href: '#investimento' },
-  { label: 'Depoimentos', href: '#depoimentos' },
-]
-
 const CURRICULUM = [
   {
-    title: 'Endoscopia Diagnóstica',
-    desc: 'Do manuseio do aparelho ao exame completo, com interpretação de achados em tempo real.',
+    title: 'Endoscopia Diagnostica',
+    desc: 'Do manuseio do aparelho ao exame completo, com interpretacao de achados em tempo real.',
     icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
   },
   {
-    title: 'Sedação e Anestesia',
-    desc: 'Técnicas seguras de sedação para realizar procedimentos com autonomia total.',
+    title: 'Sedacao e Anestesia',
+    desc: 'Tecnicas seguras de sedacao para realizar procedimentos com autonomia total.',
     icon: 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
   },
   {
     title: 'Anatomia Digestiva',
-    desc: 'Esôfago, estômago, duodeno — anatomia aplicada à prática endoscópica.',
+    desc: 'Esofago, estomago, duodeno — anatomia aplicada a pratica endoscopica.',
     icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
   },
   {
     title: 'Equipamentos',
-    desc: 'Configuração, manutenção, limpeza e operação completa do aparelho endoscópico.',
+    desc: 'Configuracao, manutencao, limpeza e operacao completa do aparelho endoscopico.',
     icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
   },
   {
-    title: 'Protocolos Clínicos',
-    desc: 'DRGE, tumores, hérnias, úlceras — conduta baseada em evidências.',
+    title: 'Protocolos Clinicos',
+    desc: 'DRGE, tumores, hernias, ulceras — conduta baseada em evidencias.',
     icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
   },
   {
-    title: 'Procedimentos Terapêuticos',
-    desc: 'Polipectomia, gastrostomia, ligadura elástica — valor agregado ao seu currículo.',
+    title: 'Procedimentos Terapeuticos',
+    desc: 'Polipectomia, gastrostomia, ligadura elastica — valor agregado ao seu curriculo.',
     icon: 'M13 10V3L4 14h7v7l9-11h-7z',
   },
 ]
 
 const TIMELINE = [
-  {
-    week: '01',
-    title: 'Fundamentos',
-    desc: 'Anatomia, manuseio do aparelho, configuração do equipamento, processamento e primeiras práticas em simulador.',
-  },
-  {
-    week: '02',
-    title: 'Prática Supervisionada',
-    desc: 'Exames em pacientes reais com supervisão direta. Sedação, diagnóstico e interpretação de achados.',
-  },
-  {
-    week: '03',
-    title: 'Procedimentos Avançados',
-    desc: 'Endoscopia terapêutica, biópsias, polipectomia, hemostasia. Autonomia crescente com mentoria.',
-  },
-  {
-    week: '04',
-    title: 'Autonomia e Avaliação',
-    desc: 'Prática autônoma supervisionada, avaliação teórica e prática. Certificação de 200+ horas.',
-  },
+  { week: '01', title: 'Fundamentos', desc: 'Anatomia, manuseio do aparelho, configuracao do equipamento, processamento e primeiras praticas em simulador.' },
+  { week: '02', title: 'Pratica Supervisionada', desc: 'Exames em pacientes reais com supervisao direta. Sedacao, diagnostico e interpretacao de achados.' },
+  { week: '03', title: 'Procedimentos Avancados', desc: 'Endoscopia terapeutica, biopsias, polipectomia, hemostasia. Autonomia crescente com mentoria.' },
+  { week: '04', title: 'Autonomia e Avaliacao', desc: 'Pratica autonoma supervisionada, avaliacao teorica e pratica. Certificacao de 200+ horas.' },
 ]
 
 const TESTIMONIALS = [
-  {
-    name: 'Dr. Rafael Moreira',
-    location: 'Marabá, PA',
-    quote: 'Saí do plantão de UPA e hoje tenho meu próprio serviço de endoscopia. Em 3 meses já tinha recuperado o investimento do curso.',
-    initial: 'R',
-  },
-  {
-    name: 'Dra. Camila Torres',
-    location: 'Cuiabá, MT',
-    quote: 'A imersão é intensa mas extremamente bem conduzida. Dr. Alessandro tem uma didática excepcional e te dá segurança para operar.',
-    initial: 'C',
-  },
-  {
-    name: 'Dr. Henrique Bastos',
-    location: 'Natal, RN',
-    quote: 'Hoje faço 8 endoscopias por dia no interior. Ganhei qualidade de vida e triplicou minha renda mensal.',
-    initial: 'H',
-  },
+  { name: 'Dr. Rafael Moreira', location: 'Maraba, PA', quote: 'Sai do plantao de UPA e hoje tenho meu proprio servico de endoscopia. Em 3 meses ja tinha recuperado o investimento do curso.', initial: 'R' },
+  { name: 'Dra. Camila Torres', location: 'Cuiaba, MT', quote: 'A imersao e intensa mas extremamente bem conduzida. Dr. Alessandro tem uma didatica excepcional e te da seguranca para operar.', initial: 'C' },
+  { name: 'Dr. Henrique Bastos', location: 'Natal, RN', quote: 'Hoje faco 8 endoscopias por dia no interior. Ganhei qualidade de vida e triplicou minha renda mensal.', initial: 'H' },
 ]
 
 const OTHER_COURSES = [
-  { name: 'Colonoscopia', desc: 'Diagnóstico e terapêutica do intestino grosso', status: 'Em breve' },
-  { name: 'Balão Gástrico', desc: 'Protocolo completo de emagrecimento endoscópico', status: 'Em breve' },
-  { name: 'Terapêutica Digestiva', desc: 'Procedimentos avançados de alta complexidade', status: 'Em breve' },
+  { name: 'Colonoscopia', desc: 'Diagnostico e terapeutica do intestino grosso', status: 'Em breve' },
+  { name: 'Balao Gastrico', desc: 'Protocolo completo de emagrecimento endoscopico', status: 'Em breve' },
+  { name: 'Terapeutica Digestiva', desc: 'Procedimentos avancados de alta complexidade', status: 'Em breve' },
 ]
 
 // ============================================================
-// PAGE
+// PAGE — Server Component (HTML renderizado no servidor)
 // ============================================================
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <>
-      {/* ==================================================
-          HEADER — Glass morphism on scroll
-      ================================================== */}
-      <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-          scrolled ? 'glass py-3' : 'bg-transparent py-5'
-        }`}
-        style={scrolled ? { backgroundColor: 'rgba(0,0,0,0.6)' } : undefined}
-      >
-        <div className="container flex items-center justify-between">
-          <a href="#inicio" className="text-xl font-black text-white tracking-tight">
-            endo<span className="text-emerald-400">start</span>
-          </a>
+      <Header waUrl={whatsapp('Ola! Sou medico e tenho interesse na Imersao em Endoscopia.')} />
 
-          <nav className="hidden md:flex items-center gap-8">
-            {NAV.map((n) => (
-              <a
-                key={n.label}
-                href={n.href}
-                className="text-[13px] font-medium text-white/70 hover:text-white transition-colors tracking-wide uppercase"
-              >
-                {n.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="hidden sm:inline-flex text-[13px] font-semibold text-white/70 hover:text-white transition-colors"
-            >
-              Entrar
-            </Link>
-            <a
-              href={whatsapp('Olá! Sou médico e tenho interesse na Imersão em Endoscopia.')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-white text-[13px] font-bold rounded-full transition-all"
-            >
-              Falar com Dr. Alessandro
-            </a>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-white"
-              aria-label="Menu"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {menuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div className="md:hidden mt-4 mx-4 glass rounded-2xl p-5 space-y-3">
-            {NAV.map((n) => (
-              <a
-                key={n.label}
-                href={n.href}
-                onClick={() => setMenuOpen(false)}
-                className="block text-sm text-white/80 hover:text-white py-2"
-              >
-                {n.label}
-              </a>
-            ))}
-            <Link
-              href="/auth/signin"
-              className="block text-sm text-white/60 hover:text-white py-2"
-            >
-              Entrar na Área de Membros
-            </Link>
-          </div>
-        )}
-      </header>
-
-      {/* ==================================================
-          HERO — Cinematic, Apple-level
-      ================================================== */}
+      {/* HERO */}
       <section
         id="inicio"
-        className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black grain"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
       >
-        {/* Animated gradient orbs */}
+        {/* Gradient orbs - CSS only, no JS */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div
             className="absolute w-[800px] h-[800px] rounded-full animate-gradient-orbit"
@@ -331,15 +99,6 @@ export default function Home() {
               animationDelay: '-8s',
             }}
           />
-          <div
-            className="absolute w-[400px] h-[400px] rounded-full animate-pulse-glow"
-            style={{
-              top: '40%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%)',
-            }}
-          />
           {/* Subtle grid */}
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -352,42 +111,37 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 container text-center pt-32 pb-24">
-          {/* Badge */}
           <Reveal delay={0}>
-            <div className="inline-flex items-center gap-2 glass rounded-full px-5 py-2.5 mb-10">
+            <div className="inline-flex items-center gap-2 header-glass rounded-full px-5 py-2.5 mb-10">
               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
               <span className="text-[13px] text-white/70 font-medium tracking-wide">
-                Goiânia, GO · Turmas Abertas 2025
+                Goiania, GO &middot; Turmas Abertas 2025
               </span>
             </div>
           </Reveal>
 
-          {/* Headline */}
           <Reveal delay={0.1}>
             <p className="text-emerald-400 text-sm font-bold uppercase tracking-[0.2em] mb-6">
-              Imersão Presencial
+              Imersao Presencial
             </p>
           </Reveal>
 
           <Reveal delay={0.2}>
-            <h1 className="text-white mb-8 max-w-5xl mx-auto">
-              ENDOSCOPIA
-            </h1>
+            <h1 className="text-white mb-8 max-w-5xl mx-auto">ENDOSCOPIA</h1>
           </Reveal>
 
           <Reveal delay={0.35}>
             <p className="text-lg sm:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed font-light mb-12">
-              Do plantão de 12 horas ao procedimento de 30 minutos.
+              Do plantao de 12 horas ao procedimento de 30 minutos.
               <br className="hidden sm:block" />
               Transforme sua carreira. Transforme sua renda. Transforme sua vida.
             </p>
           </Reveal>
 
-          {/* CTAs */}
           <Reveal delay={0.5}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <a
-                href={whatsapp('Olá! Sou médico e gostaria de garantir minha vaga na Imersão em Endoscopia em Goiânia.')}
+                href={whatsapp('Ola! Sou medico e gostaria de garantir minha vaga na Imersao em Endoscopia em Goiania.')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary text-base"
@@ -406,15 +160,14 @@ export default function Home() {
             </div>
           </Reveal>
 
-          {/* Bottom details */}
           <Reveal delay={0.65}>
             <div className="flex flex-wrap justify-center gap-8 text-[13px] text-white/30 uppercase tracking-[0.15em] font-medium">
               <span>4 Semanas</span>
-              <span className="text-emerald-500/50">·</span>
+              <span className="text-emerald-500/50">&middot;</span>
               <span>100% Presencial</span>
-              <span className="text-emerald-500/50">·</span>
+              <span className="text-emerald-500/50">&middot;</span>
               <span>Hands-on</span>
-              <span className="text-emerald-500/50">·</span>
+              <span className="text-emerald-500/50">&middot;</span>
               <span>Turmas Reduzidas</span>
             </div>
           </Reveal>
@@ -428,20 +181,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          TICKER — Scrolling marquee
-      ================================================== */}
+      {/* TICKER */}
       <div className="bg-emerald-500 py-3 overflow-hidden">
         <div className="animate-ticker whitespace-nowrap">
-          {[...Array(2)].map((_, i) => (
+          {[0, 1].map((i) => (
             <span key={i} className="inline-block">
               {[
-                '+500 Médicos Formados',
-                '12 Anos de Experiência',
-                'Speaker Balão Gástrico',
+                '+500 Medicos Formados',
+                '12 Anos de Experiencia',
+                'Speaker Balao Gastrico',
                 'Ex-RT SEMA',
                 'Turmas Reduzidas',
-                'Goiânia, GO',
+                'Goiania, GO',
                 'Certificado 200+ Horas',
                 '94% Taxa de Sucesso',
               ].map((item, j) => (
@@ -455,9 +206,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ==================================================
-          THE TRANSFORMATION — Large statement
-      ================================================== */}
+      {/* THE TRANSFORMATION */}
       <section className="section-padding bg-white overflow-hidden">
         <div className="container">
           <div className="max-w-5xl mx-auto">
@@ -466,32 +215,30 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="text-gray-900 mb-8">
-                Você ainda troca{' '}
+                Voce ainda troca{' '}
                 <span className="text-gray-300">12 horas da sua vida</span>{' '}
                 por R$&nbsp;1.200?
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
               <p className="text-xl sm:text-2xl text-gray-400 leading-relaxed max-w-3xl font-light">
-                Um turno de 7 a 10 endoscopias leva 2-3 horas e gera o mesmo valor que um plantão de 12 horas
-                na UPA. Com a demanda reprimida no interior do Brasil, médicos que dominam endoscopia
-                se tornam <strong className="text-gray-700">a referência da região</strong>.
+                Um turno de 7 a 10 endoscopias leva 2-3 horas e gera o mesmo valor que um plantao de 12 horas
+                na UPA. Com a demanda reprimida no interior do Brasil, medicos que dominam endoscopia
+                se tornam <strong className="text-gray-700">a referencia da regiao</strong>.
               </p>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ==================================================
-          NUMBERS — Animated counters
-      ================================================== */}
-      <section className="py-20 md:py-28 bg-black grain overflow-hidden">
+      {/* NUMBERS */}
+      <section className="py-20 md:py-28 bg-black overflow-hidden">
         <div className="container relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-0 md:divide-x md:divide-white/10 max-w-4xl mx-auto">
             {[
-              { prefix: 'R$ ', target: 2000, suffix: '+', label: 'por procedimento', sublabel: 'Valor médio no interior' },
-              { prefix: '', target: 3, suffix: 'h', label: 'de trabalho', sublabel: 'Para faturar o mesmo que 12h de plantão' },
-              { prefix: '', target: 94, suffix: '%', label: 'taxa de sucesso', sublabel: 'Dos nossos alunos atuam na área' },
+              { prefix: 'R$ ', target: 2000, suffix: '+', label: 'por procedimento', sublabel: 'Valor medio no interior' },
+              { prefix: '', target: 3, suffix: 'h', label: 'de trabalho', sublabel: 'Para faturar o mesmo que 12h de plantao' },
+              { prefix: '', target: 94, suffix: '%', label: 'taxa de sucesso', sublabel: 'Dos nossos alunos atuam na area' },
             ].map((n, i) => (
               <Reveal key={i} delay={i * 0.15} className="text-center px-8">
                 <p className="text-5xl sm:text-6xl md:text-7xl font-black text-white mb-3" style={{ letterSpacing: '-0.04em' }}>
@@ -505,9 +252,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          CURRICULUM — What you'll master
-      ================================================== */}
+      {/* CURRICULUM */}
       <section id="curso" className="section-padding bg-white overflow-hidden">
         <div className="container">
           <div className="text-center mb-20">
@@ -516,12 +261,12 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="text-gray-900 mb-6">
-                O que você vai<br />dominar.
+                O que voce vai<br />dominar.
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
               <p className="text-gray-400 text-lg max-w-xl mx-auto">
-                Do manuseio do aparelho ao procedimento completo. Uma formação prática e intensiva.
+                Do manuseio do aparelho ao procedimento completo. Uma formacao pratica e intensiva.
               </p>
             </Reveal>
           </div>
@@ -549,9 +294,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          METHODOLOGY — Timeline
-      ================================================== */}
+      {/* METHODOLOGY */}
       <section className="section-padding bg-gray-50 overflow-hidden">
         <div className="container">
           <div className="max-w-3xl mx-auto">
@@ -566,7 +309,7 @@ export default function Home() {
               </Reveal>
               <Reveal delay={0.2}>
                 <p className="text-gray-400 text-lg max-w-xl mx-auto">
-                  Flexível: 1 semana por mês durante 4 meses ou 4 semanas corridas. Você escolhe.
+                  Flexivel: 1 semana por mes durante 4 meses ou 4 semanas corridas. Voce escolhe.
                 </p>
               </Reveal>
             </div>
@@ -575,7 +318,6 @@ export default function Home() {
               {TIMELINE.map((step, i) => (
                 <Reveal key={i} delay={i * 0.12}>
                   <div className="flex gap-6 md:gap-10 pb-12 last:pb-0 group">
-                    {/* Timeline line + dot */}
                     <div className="flex flex-col items-center">
                       <div className="w-14 h-14 rounded-2xl bg-white border-2 border-gray-200 group-hover:border-emerald-500 group-hover:bg-emerald-500 flex items-center justify-center transition-all duration-500 shadow-sm">
                         <span className="text-sm font-black text-gray-400 group-hover:text-white transition-colors duration-500">
@@ -586,7 +328,6 @@ export default function Home() {
                         <div className="w-px flex-1 bg-gray-200 mt-3" />
                       )}
                     </div>
-                    {/* Content */}
                     <div className="pt-2 pb-4">
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
                       <p className="text-gray-500 leading-relaxed">{step.desc}</p>
@@ -599,13 +340,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          DR. ALESSANDRO — Professor profile
-      ================================================== */}
-      <section id="professor" className="section-padding bg-black grain overflow-hidden">
+      {/* DR. ALESSANDRO */}
+      <section id="professor" className="section-padding bg-black overflow-hidden">
         <div className="container relative z-10">
           <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center max-w-5xl mx-auto">
-            {/* Photo */}
             <Reveal direction="left">
               <div className="relative">
                 <div
@@ -617,8 +355,6 @@ export default function Home() {
                   </svg>
                   <p className="text-white/10 text-sm mt-4">Dr. Alessandro</p>
                 </div>
-
-                {/* Floating stat */}
                 <div className="absolute -bottom-4 -right-4 bg-emerald-500 text-white rounded-2xl px-5 py-4 text-center shadow-xl animate-float-delay">
                   <p className="text-3xl font-black leading-none">12+</p>
                   <p className="text-[11px] text-emerald-100 mt-1 uppercase tracking-wider font-semibold">Anos</p>
@@ -626,29 +362,26 @@ export default function Home() {
               </div>
             </Reveal>
 
-            {/* Bio */}
             <div>
               <Reveal>
                 <p className="text-emerald-400 text-sm font-bold uppercase tracking-[0.2em] mb-4">Seu Professor</p>
               </Reveal>
               <Reveal delay={0.1}>
-                <h2 className="text-white mb-8">
-                  Dr. Alessandro
-                </h2>
+                <h2 className="text-white mb-8">Dr. Alessandro</h2>
               </Reveal>
               <Reveal delay={0.2}>
                 <div className="space-y-4 text-white/50 leading-relaxed mb-10">
                   <p>
-                    Cirurgião geral formado há 12 anos com residência concluída. Atuou como{' '}
-                    <strong className="text-white/80">responsável técnico do curso SEMA</strong>,
+                    Cirurgiao geral formado ha 12 anos com residencia concluida. Atuou como{' '}
+                    <strong className="text-white/80">responsavel tecnico do curso SEMA</strong>,
                     por onde passaram mais de 80 alunos.
                   </p>
                   <p>
-                    <strong className="text-white/80">Speaker da marca de balão gástrico</strong>{' '}
-                    na região Centro-Oeste, desenvolveu protocolo próprio de emagrecimento com resultados comprovados.
+                    <strong className="text-white/80">Speaker da marca de balao gastrico</strong>{' '}
+                    na regiao Centro-Oeste, desenvolveu protocolo proprio de emagrecimento com resultados comprovados.
                   </p>
                   <p>
-                    Sua missão: dar a médicos do interior do Brasil a expertise para abrir serviços de
+                    Sua missao: dar a medicos do interior do Brasil a expertise para abrir servicos de
                     endoscopia e <strong className="text-white/80">transformar suas carreiras</strong>.
                   </p>
                 </div>
@@ -658,10 +391,10 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-3 mb-10">
                   {[
                     { val: '500+', label: 'Alunos' },
-                    { val: 'Speaker', label: 'Balão Gástrico' },
+                    { val: 'Speaker', label: 'Balao Gastrico' },
                     { val: 'Ex-RT', label: 'SEMA' },
                   ].map((s, i) => (
-                    <div key={i} className="glass rounded-2xl p-4 text-center">
+                    <div key={i} className="bg-white/[0.06] border border-white/[0.08] rounded-2xl p-4 text-center">
                       <p className="text-lg font-black text-emerald-400">{s.val}</p>
                       <p className="text-[11px] text-white/30 mt-1 uppercase tracking-wider">{s.label}</p>
                     </div>
@@ -671,7 +404,7 @@ export default function Home() {
 
               <Reveal delay={0.4}>
                 <a
-                  href={whatsapp('Olá Dr. Alessandro! Gostaria de saber mais sobre a Imersão em Endoscopia.')}
+                  href={whatsapp('Ola Dr. Alessandro! Gostaria de saber mais sobre a Imersao em Endoscopia.')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary"
@@ -687,9 +420,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          INVESTMENT — Premium pricing
-      ================================================== */}
+      {/* INVESTMENT */}
       <section id="investimento" className="section-padding bg-white overflow-hidden">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
@@ -698,29 +429,26 @@ export default function Home() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="text-gray-900 mb-6">
-                Invista na sua<br />transformação.
+                Invista na sua<br />transformacao.
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
               <p className="text-gray-400 text-lg max-w-xl mx-auto mb-16">
-                O retorno vem rápido. Faça as contas.
+                O retorno vem rapido. Faca as contas.
               </p>
             </Reveal>
 
-            {/* Pricing card */}
             <Reveal delay={0.3} direction="scale">
               <div className="relative max-w-lg mx-auto">
                 <div className="card p-10 md:p-14 text-center border-2 border-gray-100 relative overflow-hidden">
-                  {/* Subtle gradient accent */}
                   <div
                     className="absolute top-0 inset-x-0 h-1"
                     style={{ background: 'linear-gradient(90deg, #10b981, #34d399, #10b981)' }}
                   />
-
                   <p className="text-sm text-gray-400 uppercase tracking-[0.15em] font-bold mb-2">
-                    Imersão em Endoscopia
+                    Imersao em Endoscopia
                   </p>
-                  <p className="text-sm text-gray-300 mb-8">4 semanas · Goiânia, GO</p>
+                  <p className="text-sm text-gray-300 mb-8">4 semanas &middot; Goiania, GO</p>
 
                   <div className="mb-8">
                     <span className="text-sm text-gray-400 mr-2">R$</span>
@@ -731,13 +459,13 @@ export default function Home() {
 
                   <div className="space-y-3 text-sm text-gray-500 mb-10 text-left max-w-xs mx-auto">
                     {[
-                      'Simuladores de última geração',
-                      'Prática com pacientes reais',
-                      'Treinamento em sedação',
-                      'Material didático completo',
-                      'Acesso à plataforma de conteúdo',
+                      'Simuladores de ultima geracao',
+                      'Pratica com pacientes reais',
+                      'Treinamento em sedacao',
+                      'Material didatico completo',
+                      'Acesso a plataforma de conteudo',
                       'Certificado de 200+ horas',
-                      'Suporte pós-curso',
+                      'Suporte pos-curso',
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <svg className="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -749,7 +477,7 @@ export default function Home() {
                   </div>
 
                   <a
-                    href={whatsapp('Olá! Tenho interesse na Imersão em Endoscopia. Gostaria de saber sobre formas de pagamento.')}
+                    href={whatsapp('Ola! Tenho interesse na Imersao em Endoscopia. Gostaria de saber sobre formas de pagamento.')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary w-full justify-center text-base"
@@ -760,14 +488,13 @@ export default function Home() {
                     Quero Garantir Minha Vaga
                   </a>
 
-                  <p className="text-xs text-gray-300 mt-4">Condições especiais de pagamento via WhatsApp</p>
+                  <p className="text-xs text-gray-300 mt-4">Condicoes especiais de pagamento via WhatsApp</p>
                 </div>
               </div>
             </Reveal>
 
-            {/* ROI section */}
             <Reveal delay={0.4}>
-              <div className="mt-16 glass-light rounded-3xl p-8 md:p-12 max-w-lg mx-auto text-left">
+              <div className="mt-16 bg-black/[0.03] border border-black/[0.05] rounded-3xl p-8 md:p-12 max-w-lg mx-auto text-left">
                 <p className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-6">Retorno do Investimento</p>
                 <div className="space-y-4 text-sm text-gray-600">
                   <div className="flex justify-between items-center pb-4 border-b border-gray-100">
@@ -775,11 +502,11 @@ export default function Home() {
                     <span className="font-bold text-gray-900">R$ 1.200</span>
                   </div>
                   <div className="flex justify-between items-center pb-4 border-b border-gray-100">
-                    <span>Exames por dia (média)</span>
+                    <span>Exames por dia (media)</span>
                     <span className="font-bold text-gray-900">7-10</span>
                   </div>
                   <div className="flex justify-between items-center pb-4 border-b border-gray-100">
-                    <span>Faturamento diário</span>
+                    <span>Faturamento diario</span>
                     <span className="font-bold text-emerald-600">R$ 8.400 - 12.000</span>
                   </div>
                   <div className="flex justify-between items-center pt-2">
@@ -793,10 +520,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          TESTIMONIALS
-      ================================================== */}
-      <section id="depoimentos" className="section-padding bg-black grain overflow-hidden">
+      {/* TESTIMONIALS */}
+      <section id="depoimentos" className="section-padding bg-black overflow-hidden">
         <div className="container relative z-10">
           <div className="text-center mb-20">
             <Reveal>
@@ -813,7 +538,6 @@ export default function Home() {
             {TESTIMONIALS.map((t, i) => (
               <Reveal key={i} delay={i * 0.12}>
                 <div className="card-dark rounded-3xl p-8 h-full flex flex-col">
-                  {/* Stars */}
                   <div className="flex gap-1 mb-6">
                     {[1, 2, 3, 4, 5].map((s) => (
                       <svg key={s} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
@@ -842,17 +566,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          OTHER COURSES — Brief mention
-      ================================================== */}
+      {/* OTHER COURSES */}
       <section className="py-20 md:py-28 bg-white overflow-hidden">
         <div className="container">
           <div className="text-center mb-14">
             <Reveal>
-              <p className="text-emerald-600 text-sm font-bold uppercase tracking-[0.2em] mb-4">Também oferecemos</p>
+              <p className="text-emerald-600 text-sm font-bold uppercase tracking-[0.2em] mb-4">Tambem oferecemos</p>
             </Reveal>
             <Reveal delay={0.1}>
-              <h2 className="text-gray-900 text-3xl md:text-4xl">Outras Imersões</h2>
+              <h2 className="text-gray-900 text-3xl md:text-4xl">Outras Imersoes</h2>
             </Reveal>
           </div>
 
@@ -870,10 +592,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ==================================================
-          FINAL CTA
-      ================================================== */}
-      <section className="py-32 md:py-44 bg-black grain overflow-hidden">
+      {/* FINAL CTA */}
+      <section className="py-32 md:py-44 bg-black overflow-hidden">
         <div className="container relative z-10 text-center">
           <Reveal>
             <p className="text-emerald-400 text-sm font-bold uppercase tracking-[0.2em] mb-8">
@@ -882,17 +602,17 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.15}>
             <h2 className="text-white max-w-4xl mx-auto mb-8">
-              A próxima turma começa em breve.
+              A proxima turma comeca em breve.
             </h2>
           </Reveal>
           <Reveal delay={0.3}>
             <p className="text-xl text-white/40 max-w-xl mx-auto mb-12 font-light">
-              Vagas limitadas. Turmas reduzidas para atenção individualizada.
+              Vagas limitadas. Turmas reduzidas para atencao individualizada.
             </p>
           </Reveal>
           <Reveal delay={0.45}>
             <a
-              href={whatsapp('Olá! Sou médico e quero garantir minha vaga na Imersão em Endoscopia em Goiânia.')}
+              href={whatsapp('Ola! Sou medico e quero garantir minha vaga na Imersao em Endoscopia em Goiania.')}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary text-lg px-12 py-5"
@@ -905,15 +625,13 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.55}>
             <p className="text-white/20 text-sm mt-8">
-              Resposta em até 2 horas · Sem compromisso
+              Resposta em ate 2 horas &middot; Sem compromisso
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* ==================================================
-          FOOTER — Minimal
-      ================================================== */}
+      {/* FOOTER */}
       <footer className="bg-black border-t border-white/[0.06] py-12">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -922,7 +640,7 @@ export default function Home() {
                 endo<span className="text-emerald-400">start</span>
               </p>
               <p className="text-[13px] text-white/20">
-                Imersão em Endoscopia · Goiânia, GO
+                Imersao em Endoscopia &middot; Goiania, GO
               </p>
             </div>
 
@@ -930,21 +648,19 @@ export default function Home() {
               <a href="#curso" className="hover:text-white/60 transition-colors">Curso</a>
               <a href="#professor" className="hover:text-white/60 transition-colors">Professor</a>
               <a href="#investimento" className="hover:text-white/60 transition-colors">Investimento</a>
-              <Link href="/auth/signin" className="hover:text-white/60 transition-colors">Área de Membros</Link>
+              <Link href="/auth/signin" className="hover:text-white/60 transition-colors">Area de Membros</Link>
             </div>
 
             <p className="text-[12px] text-white/15">
-              © 2025 EndoStart
+              &copy; 2025 EndoStart
             </p>
           </div>
         </div>
       </footer>
 
-      {/* ==================================================
-          FLOATING WHATSAPP BUTTON
-      ================================================== */}
+      {/* FLOATING WHATSAPP */}
       <a
-        href={whatsapp('Olá! Gostaria de saber mais sobre a Imersão em Endoscopia.')}
+        href={whatsapp('Ola! Gostaria de saber mais sobre a Imersao em Endoscopia.')}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 animate-float-delay"
