@@ -16,10 +16,37 @@ import adminRoutes from './admin/admin.routes'
 const prisma = new PrismaClient()
 const app = express()
 
-// Middleware
+// Middleware - CORS com múltiplas origens
+const allowedOrigins = [
+  'https://www.endostart.app.br',
+  'https://endostart.app.br',
+  'https://endostart-qg53.vercel.app',
+  'http://localhost:3000',
+]
+
+// Adiciona origens extras da variável de ambiente (separadas por vírgula)
+if (process.env.CORS_ORIGIN) {
+  process.env.CORS_ORIGIN.split(',').forEach(origin => {
+    const trimmed = origin.trim()
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed)
+    }
+  })
+}
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
+  origin: (origin, callback) => {
+    // Permite requests sem origin (mobile apps, Postman, health checks)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      console.warn(`CORS blocked: ${origin}`)
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
