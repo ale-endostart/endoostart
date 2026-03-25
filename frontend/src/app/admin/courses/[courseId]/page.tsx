@@ -27,6 +27,12 @@ export default function CourseEditor() {
   const [contentForm, setContentForm] = useState({ title: '', description: '', type: 'VIDEO', url: '' })
   const [processing, setProcessing] = useState('')
   const [error, setError] = useState('')
+  const [editingModule, setEditingModule] = useState<string | null>(null)
+  const [editingLesson, setEditingLesson] = useState<string | null>(null)
+  const [editingContent, setEditingContent] = useState<string | null>(null)
+  const [editModuleForm, setEditModuleForm] = useState({ name: '', description: '' })
+  const [editLessonForm, setEditLessonForm] = useState({ name: '', description: '', duration: '' })
+  const [editContentForm, setEditContentForm] = useState({ title: '', description: '', type: 'VIDEO', url: '' })
 
   useEffect(() => {
     if (status === 'loading') return
@@ -90,21 +96,69 @@ export default function CourseEditor() {
   }
 
   async function deleteModule(moduleId: string) {
-    if (!confirm('Desativar este modulo?')) return
+    if (!confirm('Desativar este módulo? As aulas ficarão inacessíveis para os alunos.')) return
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/modules/${moduleId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
     fetchCourse()
   }
 
   async function deleteLesson(lessonId: string) {
-    if (!confirm('Desativar esta aula?')) return
+    if (!confirm('Desativar esta aula? O conteúdo ficará inacessível para os alunos.')) return
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
     fetchCourse()
   }
 
   async function deleteContent(contentId: string) {
-    if (!confirm('Excluir este conteudo?')) return
+    if (!confirm('Excluir este conteúdo permanentemente? Esta ação não pode ser desfeita.')) return
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/content/${contentId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
     fetchCourse()
+  }
+
+  async function updateModule(e: React.FormEvent, moduleId: string) {
+    e.preventDefault()
+    setProcessing('editmodule-' + moduleId)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/modules/${moduleId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        body: JSON.stringify(editModuleForm),
+      })
+      if (res.ok) { setEditingModule(null); fetchCourse() }
+      else { const d = await res.json(); setError(d.error || 'Erro ao atualizar módulo') }
+    } catch { setError('Erro de conexão') }
+    finally { setProcessing('') }
+  }
+
+  async function updateLesson(e: React.FormEvent, lessonId: string) {
+    e.preventDefault()
+    setProcessing('editlesson-' + lessonId)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        body: JSON.stringify({
+          ...editLessonForm,
+          duration: editLessonForm.duration ? parseInt(editLessonForm.duration, 10) : null,
+        }),
+      })
+      if (res.ok) { setEditingLesson(null); fetchCourse() }
+      else { const d = await res.json(); setError(d.error || 'Erro ao atualizar aula') }
+    } catch { setError('Erro de conexão') }
+    finally { setProcessing('') }
+  }
+
+  async function updateContent(e: React.FormEvent, contentId: string) {
+    e.preventDefault()
+    setProcessing('editcontent-' + contentId)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/content/${contentId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        body: JSON.stringify(editContentForm),
+      })
+      if (res.ok) { setEditingContent(null); fetchCourse() }
+      else { const d = await res.json(); setError(d.error || 'Erro ao atualizar conteúdo') }
+    } catch { setError('Erro de conexão') }
+    finally { setProcessing('') }
   }
 
   function toggleModule(id: string) {
@@ -179,10 +233,56 @@ export default function CourseEditor() {
                 <p className="font-semibold text-neutral-900 text-sm">{mod.name}</p>
                 <p className="text-xs text-neutral-500">{mod.lessons.length} aula(s)</p>
               </div>
+              <button
+                onClick={e => {
+                  e.stopPropagation()
+                  setEditingModule(editingModule === mod.id ? null : mod.id)
+                  setEditModuleForm({ name: mod.name, description: mod.description || '' })
+                }}
+                className="p-1.5 text-neutral-400 hover:text-blue-500 rounded transition-colors"
+                title="Editar módulo"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                </svg>
+              </button>
               <button onClick={e => { e.stopPropagation(); deleteModule(mod.id) }} className="p-1.5 text-neutral-400 hover:text-red-500 rounded transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
               </button>
             </div>
+
+            {editingModule === mod.id && (
+              <form
+                onSubmit={e => updateModule(e, mod.id)}
+                onClick={e => e.stopPropagation()}
+                className="mx-4 mt-2 mb-3 p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3"
+              >
+                <p className="text-sm font-semibold text-blue-800">Editar módulo</p>
+                <input
+                  type="text" required value={editModuleForm.name}
+                  onChange={e => setEditModuleForm({ ...editModuleForm, name: e.target.value })}
+                  placeholder="Nome do módulo"
+                  className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <textarea
+                  value={editModuleForm.description}
+                  onChange={e => setEditModuleForm({ ...editModuleForm, description: e.target.value })}
+                  placeholder="Descrição (opcional)"
+                  rows={2}
+                  className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <div className="flex gap-2">
+                  <button type="submit" disabled={processing.startsWith('editmodule')}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                    {processing.startsWith('editmodule') ? 'Salvando...' : 'Salvar'}
+                  </button>
+                  <button type="button" onClick={e => { e.stopPropagation(); setEditingModule(null) }}
+                    className="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-800">
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
 
             {/* Lessons */}
             {expandedModules.has(mod.id) && (
@@ -200,23 +300,125 @@ export default function CourseEditor() {
                       <button onClick={e => { e.stopPropagation(); setAddingContentTo(addingContentTo === lesson.id ? null : lesson.id) }} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded transition-colors" title="Adicionar conteudo">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                       </button>
+                      <button
+                        onClick={e => {
+                          e.stopPropagation()
+                          setEditingLesson(editingLesson === lesson.id ? null : lesson.id)
+                          setEditLessonForm({
+                            name: lesson.name,
+                            description: lesson.description || '',
+                            duration: lesson.duration ? String(lesson.duration) : '',
+                          })
+                        }}
+                        className="p-1 text-neutral-400 hover:text-blue-500 rounded transition-colors"
+                        title="Editar aula"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                        </svg>
+                      </button>
                       <button onClick={e => { e.stopPropagation(); deleteLesson(lesson.id) }} className="p-1.5 text-neutral-400 hover:text-red-500 rounded transition-colors">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                       </button>
                     </div>
 
+                    {editingLesson === lesson.id && (
+                      <form
+                        onSubmit={e => updateLesson(e, lesson.id)}
+                        onClick={e => e.stopPropagation()}
+                        className="mx-4 mt-2 mb-3 p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-3"
+                      >
+                        <p className="text-sm font-semibold text-blue-800">Editar aula</p>
+                        <input type="text" required value={editLessonForm.name}
+                          onChange={e => setEditLessonForm({ ...editLessonForm, name: e.target.value })}
+                          placeholder="Nome da aula"
+                          className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                        <textarea value={editLessonForm.description}
+                          onChange={e => setEditLessonForm({ ...editLessonForm, description: e.target.value })}
+                          placeholder="Descrição (opcional)" rows={2}
+                          className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                        <input type="number" value={editLessonForm.duration}
+                          onChange={e => setEditLessonForm({ ...editLessonForm, duration: e.target.value })}
+                          placeholder="Duração em minutos (opcional)"
+                          className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                        <div className="flex gap-2">
+                          <button type="submit" disabled={processing.startsWith('editlesson')}
+                            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                            {processing.startsWith('editlesson') ? 'Salvando...' : 'Salvar'}
+                          </button>
+                          <button type="button" onClick={e => { e.stopPropagation(); setEditingLesson(null) }}
+                            className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
+                        </div>
+                      </form>
+                    )}
+
                     {/* Content items */}
                     {expandedLessons.has(lesson.id) && lesson.contents.length > 0 && (
                       <div className="pl-20 pr-5 pb-2 space-y-1">
                         {lesson.contents.map(c => (
-                          <div key={c.id} className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-sm">
-                            <span>{typeIcon[c.type] || '\u{1F4CE}'}</span>
-                            <span className="flex-1 text-neutral-700">{c.title}</span>
-                            <span className="text-[10px] text-neutral-400 uppercase">{typeLabel[c.type]}</span>
-                            {c.fileSize && <span className="text-[10px] text-neutral-400">{(c.fileSize / 1024 / 1024).toFixed(1)}MB</span>}
-                            <button onClick={() => deleteContent(c.id)} className="p-1 text-neutral-400 hover:text-red-500">
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
+                          <div key={c.id}>
+                            <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-sm">
+                              <span>{typeIcon[c.type] || '\u{1F4CE}'}</span>
+                              <span className="flex-1 text-neutral-700">{c.title}</span>
+                              <span className="text-[10px] text-neutral-400 uppercase">{typeLabel[c.type]}</span>
+                              {c.fileSize && <span className="text-[10px] text-neutral-400">{(c.fileSize / 1024 / 1024).toFixed(1)}MB</span>}
+                              <button
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  setEditingContent(editingContent === c.id ? null : c.id)
+                                  setEditContentForm({ title: c.title, description: c.description || '', type: c.type, url: c.url || '' })
+                                }}
+                                className="p-1 text-neutral-400 hover:text-blue-500 rounded transition-colors"
+                                title="Editar conteúdo"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                                </svg>
+                              </button>
+                              <button onClick={e => { e.stopPropagation(); deleteContent(c.id) }} className="p-1 text-neutral-400 hover:text-red-500">
+                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                              </button>
+                            </div>
+                            {editingContent === c.id && (
+                              <div
+                                onClick={e => e.stopPropagation()}
+                                className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-xl"
+                              >
+                                <form onSubmit={e => updateContent(e, c.id)} className="space-y-3">
+                                  <p className="text-sm font-semibold text-blue-800">Editar conteúdo</p>
+                                  <input type="text" required value={editContentForm.title}
+                                    onChange={e => setEditContentForm({ ...editContentForm, title: e.target.value })}
+                                    placeholder="Título"
+                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                                  <select value={editContentForm.type}
+                                    onChange={e => setEditContentForm({ ...editContentForm, type: e.target.value })}
+                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm">
+                                    <option value="VIDEO">Vídeo</option>
+                                    <option value="PDF">PDF</option>
+                                    <option value="TEXT">Texto</option>
+                                    <option value="LINK">Link</option>
+                                  </select>
+                                  {editContentForm.type !== 'TEXT' && (
+                                    <input type="text" value={editContentForm.url}
+                                      onChange={e => setEditContentForm({ ...editContentForm, url: e.target.value })}
+                                      placeholder="URL"
+                                      className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                                  )}
+                                  <textarea value={editContentForm.description}
+                                    onChange={e => setEditContentForm({ ...editContentForm, description: e.target.value })}
+                                    placeholder="Descrição (opcional)" rows={2}
+                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                                  <div className="flex gap-2">
+                                    <button type="submit" disabled={processing.startsWith('editcontent')}
+                                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                                      {processing.startsWith('editcontent') ? 'Salvando...' : 'Salvar'}
+                                    </button>
+                                    <button type="button" onClick={() => setEditingContent(null)}
+                                      className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
+                                  </div>
+                                </form>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
