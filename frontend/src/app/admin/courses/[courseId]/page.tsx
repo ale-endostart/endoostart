@@ -97,20 +97,29 @@ export default function CourseEditor() {
 
   async function deleteModule(moduleId: string) {
     if (!confirm('Desativar este módulo? As aulas ficarão inacessíveis para os alunos.')) return
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/modules/${moduleId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
-    fetchCourse()
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/modules/${moduleId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+      if (res.ok) fetchCourse()
+      else { const d = await res.json(); setError(d.error || 'Erro ao desativar módulo') }
+    } catch { setError('Erro de conexão') }
   }
 
   async function deleteLesson(lessonId: string) {
     if (!confirm('Desativar esta aula? O conteúdo ficará inacessível para os alunos.')) return
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
-    fetchCourse()
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+      if (res.ok) fetchCourse()
+      else { const d = await res.json(); setError(d.error || 'Erro ao desativar aula') }
+    } catch { setError('Erro de conexão') }
   }
 
   async function deleteContent(contentId: string) {
     if (!confirm('Excluir este conteúdo permanentemente? Esta ação não pode ser desfeita.')) return
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/content/${contentId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
-    fetchCourse()
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/content/${contentId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+      if (res.ok) fetchCourse()
+      else { const d = await res.json(); setError(d.error || 'Erro ao excluir conteúdo') }
+    } catch { setError('Erro de conexão') }
   }
 
   async function updateModule(e: React.FormEvent, moduleId: string) {
@@ -272,9 +281,9 @@ export default function CourseEditor() {
                   className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <div className="flex gap-2">
-                  <button type="submit" disabled={processing.startsWith('editmodule')}
+                  <button type="submit" disabled={processing === 'editmodule-' + mod.id}
                     className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
-                    {processing.startsWith('editmodule') ? 'Salvando...' : 'Salvar'}
+                    {processing === 'editmodule-' + mod.id ? 'Salvando...' : 'Salvar'}
                   </button>
                   <button type="button" onClick={e => { e.stopPropagation(); setEditingModule(null) }}
                     className="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-800">
@@ -342,9 +351,9 @@ export default function CourseEditor() {
                           placeholder="Duração em minutos (opcional)"
                           className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
                         <div className="flex gap-2">
-                          <button type="submit" disabled={processing.startsWith('editlesson')}
+                          <button type="submit" disabled={processing === 'editlesson-' + lesson.id}
                             className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
-                            {processing.startsWith('editlesson') ? 'Salvando...' : 'Salvar'}
+                            {processing === 'editlesson-' + lesson.id ? 'Salvando...' : 'Salvar'}
                           </button>
                           <button type="button" onClick={e => { e.stopPropagation(); setEditingLesson(null) }}
                             className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
@@ -352,7 +361,7 @@ export default function CourseEditor() {
                       </form>
                     )}
 
-                    {/* Content items */}
+                    {/* Content items - visible only when expanded */}
                     {expandedLessons.has(lesson.id) && lesson.contents.length > 0 && (
                       <div className="pl-20 pr-5 pb-2 space-y-1">
                         {lesson.contents.map(c => (
@@ -379,50 +388,55 @@ export default function CourseEditor() {
                                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                               </button>
                             </div>
-                            {editingContent === c.id && (
-                              <div
-                                onClick={e => e.stopPropagation()}
-                                className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-xl"
-                              >
-                                <form onSubmit={e => updateContent(e, c.id)} className="space-y-3">
-                                  <p className="text-sm font-semibold text-blue-800">Editar conteúdo</p>
-                                  <input type="text" required value={editContentForm.title}
-                                    onChange={e => setEditContentForm({ ...editContentForm, title: e.target.value })}
-                                    placeholder="Título"
-                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                                  <select value={editContentForm.type}
-                                    onChange={e => setEditContentForm({ ...editContentForm, type: e.target.value })}
-                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm">
-                                    <option value="VIDEO">Vídeo</option>
-                                    <option value="PDF">PDF</option>
-                                    <option value="TEXT">Texto</option>
-                                    <option value="LINK">Link</option>
-                                  </select>
-                                  {editContentForm.type !== 'TEXT' && (
-                                    <input type="text" value={editContentForm.url}
-                                      onChange={e => setEditContentForm({ ...editContentForm, url: e.target.value })}
-                                      placeholder="URL"
-                                      className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                                  )}
-                                  <textarea value={editContentForm.description}
-                                    onChange={e => setEditContentForm({ ...editContentForm, description: e.target.value })}
-                                    placeholder="Descrição (opcional)" rows={2}
-                                    className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
-                                  <div className="flex gap-2">
-                                    <button type="submit" disabled={processing.startsWith('editcontent')}
-                                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
-                                      {processing.startsWith('editcontent') ? 'Salvando...' : 'Salvar'}
-                                    </button>
-                                    <button type="button" onClick={() => setEditingContent(null)}
-                                      className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
-                                  </div>
-                                </form>
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
                     )}
+
+                    {/* Content edit forms - rendered outside expansion guard so they survive collapse */}
+                    {lesson.contents.map(c => (
+                      editingContent === c.id ? (
+                        <div
+                          key={c.id}
+                          onClick={e => e.stopPropagation()}
+                          className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-xl"
+                        >
+                          <form onSubmit={e => updateContent(e, c.id)} className="space-y-3">
+                            <p className="text-sm font-semibold text-blue-800">Editar conteúdo</p>
+                            <input type="text" required value={editContentForm.title}
+                              onChange={e => setEditContentForm({ ...editContentForm, title: e.target.value })}
+                              placeholder="Título"
+                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                            <select value={editContentForm.type}
+                              onChange={e => setEditContentForm({ ...editContentForm, type: e.target.value })}
+                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm">
+                              <option value="VIDEO">Vídeo</option>
+                              <option value="PDF">PDF</option>
+                              <option value="TEXT">Texto</option>
+                              <option value="LINK">Link</option>
+                            </select>
+                            {editContentForm.type !== 'TEXT' && (
+                              <input type="text" value={editContentForm.url}
+                                onChange={e => setEditContentForm({ ...editContentForm, url: e.target.value })}
+                                placeholder="URL"
+                                className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                            )}
+                            <textarea value={editContentForm.description}
+                              onChange={e => setEditContentForm({ ...editContentForm, description: e.target.value })}
+                              placeholder="Descrição (opcional)" rows={2}
+                              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+                            <div className="flex gap-2">
+                              <button type="submit" disabled={processing === 'editcontent-' + c.id}
+                                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                                {processing === 'editcontent-' + c.id ? 'Salvando...' : 'Salvar'}
+                              </button>
+                              <button type="button" onClick={() => setEditingContent(null)}
+                                className="px-4 py-2 text-sm text-neutral-600">Cancelar</button>
+                            </div>
+                          </form>
+                        </div>
+                      ) : null
+                    ))}
 
                     {/* Add Content Form */}
                     {addingContentTo === lesson.id && (
