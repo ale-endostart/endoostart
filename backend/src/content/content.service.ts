@@ -110,8 +110,16 @@ export class ContentService {
       },
     })
 
-    // Generate signed URL (1 hour expiry)
-    const signedUrl = getSignedDownloadUrl(content.url.split('/').pop()!, 3600)
+    // Local file: return a backend-served URL
+    if (content.url.startsWith('/cursos/')) {
+      const apiBase = process.env.API_URL || 'http://localhost:3001'
+      // /cursos/slug/file.pdf → /api/content/files/slug/file.pdf
+      const servePath = content.url.replace('/cursos/', '/api/content/files/')
+      return `${apiBase}${servePath}`
+    }
+
+    // Cloudinary: generate signed URL (1 hour expiry)
+    const signedUrl = await getSignedDownloadUrl(content.url.split('/').pop()!, 3600)
     return signedUrl
   }
 

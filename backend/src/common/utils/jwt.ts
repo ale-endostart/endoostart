@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-key-change-in-production'
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('CRITICAL: JWT_SECRET environment variable must be set')
+}
 const JWT_EXPIRY = process.env.JWT_EXPIRY || process.env.JWT_EXPIRATION || '7d'
 
 export interface TokenPayload {
@@ -10,14 +13,14 @@ export interface TokenPayload {
 }
 
 export function signToken(payload: TokenPayload): string {
-  return jwt.sign(payload, JWT_SECRET as string, {
+  return jwt.sign(payload, JWT_SECRET!, {
     expiresIn: JWT_EXPIRY as string,
   } as any)
 }
 
 export function verifyToken(token: string): TokenPayload | null {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as TokenPayload
+    const payload = jwt.verify(token, JWT_SECRET!) as TokenPayload
     return payload
   } catch (error) {
     return null

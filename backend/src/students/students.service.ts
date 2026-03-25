@@ -151,7 +151,17 @@ export class StudentsService {
     }
   }
 
-  async getCourseCompletions(userId: string, courseId: string) {
+  async getCourseCompletions(userId: string, courseId: string, role?: string) {
+    // Verify enrollment (admins bypass)
+    if (role !== 'ADMIN') {
+      const enrollment = await prisma.studentCourse.findUnique({
+        where: { studentId_courseId: { studentId: userId, courseId } },
+      })
+      if (!enrollment || !enrollment.isActive) {
+        throw new Error('Access denied: not enrolled in this course')
+      }
+    }
+
     const completions = await prisma.lessonCompletion.findMany({
       where: {
         studentId: userId,
@@ -174,6 +184,28 @@ export class StudentsService {
   }
 
   async completeLesson(userId: string, lessonId: string) {
+    // Verify lesson exists and get courseId
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId, isActive: true },
+      include: { module: { select: { courseId: true } } },
+    })
+    if (!lesson) {
+      throw new Error('Lesson not found')
+    }
+
+    // Verify enrollment before marking complete
+    const enrollment = await prisma.studentCourse.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: userId,
+          courseId: lesson.module.courseId,
+        },
+      },
+    })
+    if (!enrollment || !enrollment.isActive) {
+      throw new Error('Access denied: not enrolled in this course')
+    }
+
     // Check if already completed
     const existing = await prisma.lessonCompletion.findUnique({
       where: {
@@ -196,16 +228,7 @@ export class StudentsService {
       },
     })
 
-    // Update course progress
-    const lesson = await prisma.lesson.findUnique({
-      where: { id: lessonId },
-      include: {
-        module: {
-          select: { courseId: true },
-        },
-      },
-    })
-
+    // Update course progress (lesson already fetched above)
     if (lesson) {
       const courseId = lesson.module.courseId
 

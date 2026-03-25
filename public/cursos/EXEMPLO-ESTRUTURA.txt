@@ -1,0 +1,142 @@
+═══════════════════════════════════════════════════════════════════════════════
+  EXEMPLO DE ESTRUTURA - Como Organizar seus PDFs
+═══════════════════════════════════════════════════════════════════════════════
+
+ESTRUTURA ESPERADA:
+public/
+└── cursos/
+    ├── endoscopia/
+    │   ├── 01-Anatomia-do-Esofago.pdf
+    │   ├── 02-DRGE-e-Acalasia.pdf
+    │   ├── 03-Cancer-de-Esofago.pdf
+    │   └── 04-Polipectomia.pdf
+    │
+    ├── endoscopia-terapeutica/
+    │   ├── 01-Introducao-a-Terapeutica.pdf
+    │   ├── 02-Tecnicas-Avancadas.pdf
+    │   └── 03-Manejo-de-Complicacoes.pdf
+    │
+    ├── balao-gastrico/
+    │   ├── 01-Introducao.pdf
+    │   ├── 02-Criterios-de-Selecao-de-Pacientes.pdf
+    │   ├── 03-Tecnica-de-Colocacao.pdf
+    │   ├── 04-Acompanhamento-Pos-Operatorio.pdf
+    │   └── 05-Casos-Clinicos.pdf
+    │
+    └── colonoscopia/
+        ├── 01-Rastreamento-de-Cancer-Colorretal.pdf
+        ├── 02-Polipectomia-Basica.pdf
+        ├── 03-Polipectomia-Avancada.pdf
+        └── 04-Manejo-de-Complicacoes.pdf
+
+═══════════════════════════════════════════════════════════════════════════════
+
+REGRAS IMPORTANTES:
+
+1. PADRÃO DE NOME:
+   [NÚMERO]-[DESCRIÇÃO].pdf
+
+   Exemplos CORRETOS:
+   ✓ 01-Anatomia.pdf
+   ✓ 02-Fisiologia.pdf
+   ✓ 03-Patologia.pdf
+   ✓ 01-Introducao-ao-Curso.pdf
+   ✓ 02-Tecnicas-Basicas.pdf
+
+   Exemplos INCORRETOS:
+   ✗ Anatomia.pdf (falta número)
+   ✗ 1-Anatomia.pdf (número com 1 dígito)
+   ✗ A-Anatomia.pdf (letra ao invés de número)
+
+2. ORDEM DAS AULAS:
+   O número (01, 02, 03, etc.) define a ordem em que as aulas aparecerão
+   - 01 = Primeira aula
+   - 02 = Segunda aula
+   - 03 = Terceira aula
+
+3. NOMES DESCRITIVOS:
+   Após o número, use um nome que descreva o conteúdo
+   Use hífens (-) para separar palavras: "Anatomia-do-Esofago"
+
+4. SUPORTE A CARACTERES:
+   ✓ Aceita: A-Z, a-z, 0-9, hífens (-), underscores (_)
+   ✗ Evite: acentuação (á, é, í, ó, ú), caracteres especiais (!@#$%)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PASSO A PASSO:
+
+1. Você coloca os PDFs nomeados:
+   public/cursos/endoscopia/
+   ├── 01-Anatomia-do-Esofago.pdf
+   ├── 02-DRGE-e-Acalasia.pdf
+   └── 03-Cancer-de-Esofago.pdf
+
+2. Executa o script:
+   npx ts-node prisma/seed-courses.ts
+
+3. O script:
+   ✓ Lê os PDFs da pasta
+   ✓ Extrai o número (01, 02, 03)
+   ✓ Extrai o nome (Anatomia do Esôfago, DRGE e Acalasia, etc)
+   ✓ Cria as aulas na ordem correta
+   ✓ Registra no banco de dados
+
+4. Resultado no Portal:
+   Curso: Imersão em Endoscopia
+   │
+   ├── Módulo: Imersão em Endoscopia
+   │   ├── Aula 1: Anatomia do Esófago
+   │   │   └── 📄 PDF: 01-Anatomia-do-Esofago.pdf (X.X MB)
+   │   │
+   │   ├── Aula 2: DRGE e Acalasia
+   │   │   └── 📄 PDF: 02-DRGE-e-Acalasia.pdf (X.X MB)
+   │   │
+   │   └── Aula 3: Cancer de Esôfago
+   │       └── 📄 PDF: 03-Cancer-de-Esofago.pdf (X.X MB)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DICAS:
+
+1. MÚLTIPLOS PDFs POR AULA:
+   Se uma aula tiver vários PDFs, coloque no mesmo número:
+   01-Anatomia.pdf
+   01-Anatomia-Figuras.pdf
+   01-Anatomia-Imagens.pdf
+   (Todos serão adicionados à Aula 1)
+
+2. ATUALIZANDO PDFs:
+   Se precisar atualizar:
+   a) Coloque o novo PDF na pasta
+   b) Execute o script novamente
+   c) O sistema atualiza automaticamente
+
+3. REMOVENDO PDFs:
+   Se precisar remover:
+   a) Delete o arquivo PDF da pasta
+   b) Execute o script novamente
+   c) O sistema remove automaticamente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+COMANDO PARA EXECUTAR:
+
+$ cd /c/TurboOps/Code/backend
+$ npx ts-node prisma/seed-courses.ts
+
+OUTPUT ESPERADO:
+
+🌱 Seeding 4 new courses with PDF support...
+
+✅ Course created: "Endoscopia Terapêutica"
+   📄 Aula criada: "Introducao a Terapeutica" (2.50 MB)
+   📄 Aula criada: "Tecnicas Avancadas" (3.10 MB)
+
+✅ Course created: "Balão Gástrico"
+   📄 Aula criada: "Introducao" (1.80 MB)
+   📄 Aula criada: "Criterios de Selecao" (2.20 MB)
+
+✅ Course seeding completed!
+
+═══════════════════════════════════════════════════════════════════════════════

@@ -3,7 +3,10 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 if (!process.env.NEXTAUTH_SECRET) {
-  console.warn('NEXTAUTH_SECRET is not defined. Using a generated one for build purposes.')
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('CRITICAL: NEXTAUTH_SECRET must be set in production')
+  }
+  console.warn('⚠️  NEXTAUTH_SECRET not set. Sessions will not persist across restarts.')
 }
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
@@ -70,9 +73,9 @@ export const authOptions: NextAuthOptions = {
     }),
 
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || 'dummy_client_id_for_build',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy_client_secret_for_build',
-      allowDangerousEmailAccountLinking: true,
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      allowDangerousEmailAccountLinking: false,
     }),
   ],
 
@@ -152,7 +155,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET || "fallback_secret_for_vercel_builds_123",
+    secret: process.env.NEXTAUTH_SECRET,
     maxAge: 7 * 24 * 60 * 60,
   },
 }
