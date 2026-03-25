@@ -18,7 +18,7 @@ export default function BalaoGastricoPage() {
                 </svg>
             ),
             title: 'ROI em 2 Procedimentos',
-            description: 'Com ticket médio de R$ 5.000 por implante, o investimento da formação se paga nos primeiros 2 pacientes. Margem líquida excepcional.',
+            description: 'Com ticket médio de R$ 8.000 por implante, o investimento da formação se paga nos primeiros 2 pacientes. Margem líquida excepcional.',
         },
         {
             icon: (
@@ -70,9 +70,9 @@ export default function BalaoGastricoPage() {
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}
-                totalPrice="R$ 10.000"
-                installmentPrice="12x de R$ 833,33"
-                exclusiveNote="Procedimento privado. Ticket médio de R$ 4.000 a R$ 8.000 por implante."
+                totalPrice="R$ 13.000"
+                installmentPrice="12x de R$ 1.083,33"
+                exclusiveNote="Procedimento privado. Ticket médio de R$ 8.000 a R$ 12.000 por implante."
             />
         </>
     );

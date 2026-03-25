@@ -54,11 +54,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@radix-ui/react-primitive'],
   },
-  webpack: (config) => {
-    // react-pdf / pdfjs-dist needs canvas polyfill suppressed in browser builds
-    config.resolve.alias.canvas = false
-    return config
-  },
 }
 
 module.exports = nextConfig

@@ -54,7 +54,7 @@ export default function EndoscopiaPage() {
         },
         {
             module: 'M5',
-            title: 'Hands-on e Prática em Cenários Reais',
+            title: 'Hands-on e prática com pacientes reais sob supervisão!',
             description: 'A hora da verdade. Sob supervisão constante, você assumirá a ponta do endoscópio, ganhando confiança a cada laudo.',
         },
     ];
@@ -64,7 +64,7 @@ export default function EndoscopiaPage() {
             <Header onWhatsAppClick={handleWhatsAppClick} whatsappMessage={courseWhatsappMessage} />
             <CinematicCourseLayout
                 title="Endoscopia Digestiva Alta"
-                subtitle="De plantão de 12h a R$ 150 para uma manhã de endoscopias a R$ 4.000. Esse é o impacto real desta formação."
+                subtitle="De plantão de 12h a 1200 reais, para uma manhã de endoscopia com melhor remuneração e tempo hábil para outras atividades"
                 description="Imersão presencial VIP com apenas 3 médicos por turma. Em poucos dias você vai tocar o endoscópio, interpretar imagens, laudar com segurança e sair com o protocolo completo para montar sua agenda de exames."
                 badge="Formação VIP · Apenas 3 Alunos"
                 backgroundImage="/images/curso-endoscopia.png"
