@@ -1,9 +1,18 @@
 import { Router } from 'express'
 import { authMiddleware, AuthRequest } from '../common/middleware/auth.middleware'
 import { StudentsService } from './students.service'
+import { z } from 'zod'
+import { validateRequest } from '../common/middleware/validate.middleware'
 
 const router = Router()
 const studentsService = new StudentsService()
+
+const updateProfileSchema = z.object({
+  firstName: z.string().min(1).max(100).optional(),
+  lastName: z.string().min(1).max(100).optional(),
+  phone: z.string().max(20).optional(),
+  state: z.string().max(50).optional(),
+})
 
 // GET /api/students/profile - Get current student's profile
 router.get('/profile', authMiddleware, async (req: AuthRequest, res) => {
@@ -15,12 +24,12 @@ router.get('/profile', authMiddleware, async (req: AuthRequest, res) => {
     }
     res.json(profile)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
 // PUT /api/students/profile - Update current student's profile
-router.put('/profile', authMiddleware, async (req: AuthRequest, res) => {
+router.put('/profile', authMiddleware, validateRequest(updateProfileSchema), async (req: AuthRequest, res) => {
   try {
     const { firstName, lastName, phone, state } = req.body
     const profile = await studentsService.updateProfile(req.user!.id, {
@@ -31,7 +40,7 @@ router.put('/profile', authMiddleware, async (req: AuthRequest, res) => {
     })
     res.json(profile)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
@@ -41,7 +50,7 @@ router.get('/courses', authMiddleware, async (req: AuthRequest, res) => {
     const courses = await studentsService.getCourses(req.user!.id, req.user!.role)
     res.json(courses)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
@@ -51,7 +60,7 @@ router.get('/progress', authMiddleware, async (req: AuthRequest, res) => {
     const progress = await studentsService.getProgress(req.user!.id, req.user!.role)
     res.json(progress)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
@@ -60,11 +69,16 @@ router.get('/courses/:courseId/completions', authMiddleware, async (req: AuthReq
   try {
     const completions = await studentsService.getCourseCompletions(
       req.user!.id,
-      req.params.courseId
+      req.params.courseId,
+      req.user!.role
     )
     res.json(completions)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    if (error.message.includes('Access denied')) {
+      res.status(403).json({ error: error.message })
+    } else {
+      res.status(500).json({ error: 'Internal server error' })
+    }
   }
 })
 
@@ -77,7 +91,11 @@ router.post('/lessons/:lessonId/complete', authMiddleware, async (req: AuthReque
     )
     res.json(result)
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    if (error.message.includes('Access denied') || error.message.includes('not found')) {
+      res.status(403).json({ error: error.message })
+    } else {
+      res.status(500).json({ error: 'Internal server error' })
+    }
   }
 })
 
