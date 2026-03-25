@@ -54,6 +54,14 @@ interface Lesson {
   }
 }
 
+function flattenLessons(
+  modules: Array<{ order: number; lessons: Array<{ id: string; order: number }> }>
+) {
+  return [...modules]
+    .sort((a, b) => a.order - b.order)
+    .flatMap(m => [...m.lessons].sort((a, b) => a.order - b.order))
+}
+
 export default function LessonPage() {
   const { data: session, status } = useSession()
   const params = useParams()
@@ -64,6 +72,11 @@ export default function LessonPage() {
   const [activeContent, setActiveContent] = useState<Content | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isCompleting, setIsCompleting] = useState(false)
+  const [isCompleted, setIsCompleted] = useState(false)
+  const [completeError, setCompleteError] = useState('')
+  const [prevLessonId, setPrevLessonId] = useState<string | null>(null)
+  const [nextLessonId, setNextLessonId] = useState<string | null>(null)
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -111,6 +124,25 @@ export default function LessonPage() {
 
         if (data.contents && data.contents.length > 0) {
           setActiveContent(data.contents[0])
+        }
+
+        // Compute prev/next navigation
+        if (data.module?.courseId) {
+          try {
+            const courseRes = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${data.module.courseId}/modules`,
+              { headers: { Authorization: `Bearer ${(session as any).accessToken}` } }
+            )
+            if (courseRes.ok) {
+              const courseData = await courseRes.json()
+              const allLessons = flattenLessons(courseData.modules || [])
+              const idx = allLessons.findIndex(l => l.id === lessonId)
+              setPrevLessonId(idx > 0 ? allLessons[idx - 1].id : null)
+              setNextLessonId(idx !== -1 && idx < allLessons.length - 1 ? allLessons[idx + 1].id : null)
+            }
+          } catch {
+            // Navigation is non-critical, ignore errors
+          }
         }
       } catch (err: any) {
         setError(err.message || 'Erro ao carregar a aula')
@@ -168,8 +200,10 @@ export default function LessonPage() {
   }
 
   async function handleMarkComplete() {
-    if (!session?.user || !lessonId) return
+    if (!session?.user || !lessonId || isCompleted || isCompleting) return
 
+    setIsCompleting(true)
+    setCompleteError('')
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/students/lessons/${lessonId}/complete`,
@@ -182,10 +216,15 @@ export default function LessonPage() {
       )
 
       if (res.ok) {
-        setError('')
+        setIsCompleted(true)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setCompleteError(data.error || 'Erro ao marcar como concluída')
       }
-    } catch (err) {
-      console.error('Failed to mark complete:', err)
+    } catch {
+      setCompleteError('Erro de conexão')
+    } finally {
+      setIsCompleting(false)
     }
   }
 
@@ -245,6 +284,30 @@ export default function LessonPage() {
         )}
         <h1 className="text-3xl font-bold text-primary-900 mb-2">{lesson.name}</h1>
         <p className="text-neutral-600">{lesson.description}</p>
+        {(prevLessonId || nextLessonId) && (
+          <div className="flex items-center justify-between gap-4">
+            {prevLessonId ? (
+              <Link
+                href={`/dashboard/lesson/${prevLessonId}`}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition"
+              >
+                ← Aula anterior
+              </Link>
+            ) : (
+              <div />
+            )}
+            {nextLessonId ? (
+              <Link
+                href={`/dashboard/lesson/${nextLessonId}`}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition"
+              >
+                Próxima aula →
+              </Link>
+            ) : (
+              <div />
+            )}
+          </div>
+        )}
       </div>
 
       {error && (
@@ -263,17 +326,19 @@ export default function LessonPage() {
                 <div className="flex flex-col">
                   <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
                     <h3 className="font-semibold text-neutral-900">{activeContent.title}</h3>
-                    <a
-                      href={activeContent.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={() => handleDownload(activeContent.id)}
                       className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded text-sm font-semibold"
                     >
-                      Abrir no Google Drive
-                    </a>
+                      ⬇️ Baixar PDF
+                    </button>
                   </div>
                   <iframe
-                    src={getGoogleDriveEmbedUrl(activeContent.url)}
+                    src={
+                      activeContent.url.startsWith('/cursos/')
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${activeContent.url.replace('/cursos/', '/api/content/files/')}?token=${(session as any)?.accessToken}`
+                        : getGoogleDriveEmbedUrl(activeContent.url)
+                    }
                     className="w-full h-96 md:h-[600px] border-0"
                     allow="autoplay"
                     allowFullScreen
@@ -348,11 +413,19 @@ export default function LessonPage() {
             </div>
 
             {/* Mark as complete button */}
+            {completeError && (
+              <p className="mt-4 text-xs text-red-600">{completeError}</p>
+            )}
             <button
               onClick={handleMarkComplete}
-              className="w-full mt-6 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm transition"
+              disabled={isCompleting || isCompleted}
+              className={`w-full mt-4 px-4 py-2 rounded-lg font-semibold text-sm transition ${
+                isCompleted
+                  ? 'bg-green-100 text-green-700 cursor-default border border-green-300'
+                  : 'bg-green-600 hover:bg-green-700 text-white disabled:opacity-60'
+              }`}
             >
-              Marcar aula como concluída
+              {isCompleting ? 'Salvando...' : isCompleted ? '✓ Aula concluída' : 'Marcar aula como concluída'}
             </button>
           </div>
         </div>
