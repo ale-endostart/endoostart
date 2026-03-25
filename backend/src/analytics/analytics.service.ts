@@ -12,7 +12,7 @@ export class AnalyticsService {
       data: {
         eventType,
         studentId,
-        metadata: metadata ? JSON.stringify(metadata) : null,
+        metadata: metadata ?? null,
       },
     })
     return event
@@ -23,12 +23,11 @@ export class AnalyticsService {
     eventType: string,
     metadata?: Record<string, any>
   ) {
-    const metadataStr = metadata ? JSON.stringify(metadata) : null
     const event = await prisma.analytics.create({
       data: {
         eventType: eventType || 'CONVERSION',
         studentId,
-        metadata: metadataStr,
+        metadata: metadata ?? null,
       },
     })
 
@@ -38,7 +37,7 @@ export class AnalyticsService {
         data: {
           studentId,
           eventType: 'CONVERSION',
-          metadata: metadataStr,
+          metadata: metadata ?? null,
         },
       })
     }
