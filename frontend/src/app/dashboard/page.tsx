@@ -191,7 +191,10 @@ export default function Dashboard() {
                   </div>
 
                   {/* Button */}
-                  <button className="w-full mt-6 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold transition">
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/dashboard/course/${course.id}`) }}
+                    className="w-full mt-6 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold transition"
+                  >
                     Continuar
                   </button>
                 </div>
