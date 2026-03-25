@@ -128,7 +128,7 @@ export default function CourseEditor() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/modules/${moduleId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(editModuleForm),
       })
       if (res.ok) { setEditingModule(null); fetchCourse() }
@@ -143,7 +143,7 @@ export default function CourseEditor() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/lessons/${lessonId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           ...editLessonForm,
           duration: editLessonForm.duration ? parseInt(editLessonForm.duration, 10) : null,
@@ -161,7 +161,7 @@ export default function CourseEditor() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/content/${contentId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any).accessToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify(editContentForm),
       })
       if (res.ok) { setEditingContent(null); fetchCourse() }
