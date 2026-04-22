@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Header from '../components/Header';
+import { WHATSAPP_URL } from '../utils/constants';
 import HeroSection from '../components/HeroSection';
 import { WhyEndoStartSection } from '../components/WhyEndoStartSection';
 import { CoursePreviewSection } from '../components/CoursePreviewSection';
@@ -17,10 +18,7 @@ import VideoTeasersSection from '../components/VideoTeasersSection';
 
 export default function Home() {
   const handleWhatsAppClick = () => {
-    const message = 'Olá! Sou médico e gostaria de saber mais sobre os cursos de formação em Endoscopia da EndoStart.';
-    const phoneNumber = '5562991980100';
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (

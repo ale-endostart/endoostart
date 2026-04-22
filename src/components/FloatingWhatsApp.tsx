@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { WHATSAPP_URL } from '../utils/constants';
 
 export const FloatingWhatsApp: React.FC = () => {
-    const whatsappUrl = 'https://wa.me/5562991980100';
+    const whatsappUrl = WHATSAPP_URL;
 
     return (
         <motion.a

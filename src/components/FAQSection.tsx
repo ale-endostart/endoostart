@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { WHATSAPP_URL } from '../utils/constants';
 
 export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -137,7 +138,7 @@ export const FAQSection: React.FC = () => {
             Ainda tem dúvidas?
           </p>
           <a
-            href="https://wa.me/5562991980100"
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-gold text-[#01284A] rounded-lg font-bold uppercase tracking-wider text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-1"

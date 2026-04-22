@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { WHATSAPP_URL } from '../utils/constants';
 
 export const ScarcitySection: React.FC = () => {
-    const whatsappUrl = 'https://wa.me/5562991980100';
+    const whatsappUrl = WHATSAPP_URL;
 
     return (
         <section className="py-20 md:py-24 bg-white">

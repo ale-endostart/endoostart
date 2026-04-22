@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { WHATSAPP_URL } from '../utils/constants';
 
 interface HeaderProps {
   whatsappMessage?: string;
 }
-
-const WHATSAPP_NUMBER = '5562991980100';
 
 const navLinks = [
   { href: '/', label: 'Início' },
@@ -50,9 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ whatsappMessage }) => {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  const whatsappHref = whatsappMessage
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`
-    : `https://wa.me/${WHATSAPP_NUMBER}`;
+  const whatsappHref = WHATSAPP_URL;
 
   return (
     <>
