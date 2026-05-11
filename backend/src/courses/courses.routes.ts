@@ -43,7 +43,8 @@ router.get('/:courseId/modules', authMiddleware, async (req: any, res: any) => {
     }
     res.json(course)
   } catch (error: any) {
-    res.status(403).json({ error: error.message })
+    const isAccessDenied = error.message === 'Access denied to this course'
+    res.status(isAccessDenied ? 403 : 500).json({ error: error.message })
   }
 })
 

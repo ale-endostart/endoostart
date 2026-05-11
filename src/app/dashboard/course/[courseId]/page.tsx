@@ -60,7 +60,10 @@ export default function CoursePage() {
           }
         )
 
-        if (!res.ok) throw new Error('Failed to fetch course')
+        if (!res.ok) {
+          const errData = await res.json().catch(() => null)
+          throw new Error(errData?.error || 'Erro ao carregar curso')
+        }
         const data = await res.json()
         setCourse(data)
       } catch (err: any) {
