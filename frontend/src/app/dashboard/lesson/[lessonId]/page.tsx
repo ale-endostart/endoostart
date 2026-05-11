@@ -87,7 +87,22 @@ export default function LessonPage() {
 
   // Fetch lesson from API
   useEffect(() => {
-    if (!session?.user || !lessonId) return
+    if (status === 'loading') return
+
+    if (status === 'unauthenticated' || !session?.user) {
+      setError('Sessão inválida. Faça login novamente.')
+      setIsLoading(false)
+      return
+    }
+
+    if (!lessonId) {
+      setError('Aula não encontrada.')
+      setIsLoading(false)
+      return
+    }
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 20000)
 
     async function fetchLesson() {
       try {
@@ -100,11 +115,13 @@ export default function LessonPage() {
             headers: {
               Authorization: `Bearer ${(session as any).accessToken}`,
             },
+            signal: controller.signal,
           }
         )
 
         if (res.status === 403) {
-          setError('Você não tem acesso a esta aula. Verifique sua matrícula.')
+          const errData = await res.json().catch(() => null)
+          setError(errData?.error || 'Você não tem acesso a esta aula. Verifique sua matrícula.')
           setIsLoading(false)
           return
         }
@@ -116,7 +133,8 @@ export default function LessonPage() {
         }
 
         if (!res.ok) {
-          throw new Error('Erro ao carregar a aula')
+          const errData = await res.json().catch(() => null)
+          throw new Error(errData?.error || 'Erro ao carregar a aula')
         }
 
         const data: Lesson = await res.json()
@@ -145,14 +163,20 @@ export default function LessonPage() {
           }
         }
       } catch (err: any) {
-        setError(err.message || 'Erro ao carregar a aula')
+        if (err.name === 'AbortError') {
+          setError('Tempo limite excedido. Verifique sua conexão ou tente novamente.')
+        } else {
+          setError(err.message || 'Erro ao carregar a aula')
+        }
       } finally {
+        clearTimeout(timeout)
         setIsLoading(false)
       }
     }
 
     fetchLesson()
-  }, [session, lessonId])
+    return () => { controller.abort() }
+  }, [session, lessonId, status])
 
   // Track content view when active content changes
   useEffect(() => {

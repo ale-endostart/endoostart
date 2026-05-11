@@ -16,7 +16,7 @@ interface Course {
 }
 
 export default function Dashboard() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
   const [courses, setCourses] = useState<Course[]>([])
   const [progress, setProgress] = useState<any>(null)
@@ -24,7 +24,12 @@ export default function Dashboard() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!session?.user) return
+    if (status === 'loading') return
+
+    if (status === 'unauthenticated' || !session?.user) {
+      setIsLoading(false)
+      return
+    }
 
     const accessToken = (session as any).accessToken
     if (!accessToken) {
@@ -33,16 +38,17 @@ export default function Dashboard() {
       return
     }
 
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 20000)
+
     async function fetchData() {
       try {
-        const headers = {
-          Authorization: `Bearer ${accessToken}`,
-        }
+        const headers = { Authorization: `Bearer ${accessToken}` }
+        const opts = { headers, signal: controller.signal }
 
-        // Fetch courses and progress in parallel
         const [coursesRes, progressRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`, { headers }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`, opts),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`, opts),
         ])
 
         if (coursesRes.ok) {
@@ -55,15 +61,19 @@ export default function Dashboard() {
           setProgress(progressData)
         }
       } catch (err: any) {
-        console.error('Dashboard fetch error:', err)
-        setError('Erro ao carregar dados. Verifique sua conexão.')
+        if (err.name !== 'AbortError') {
+          console.error('Dashboard fetch error:', err)
+          setError('Erro ao carregar dados. Verifique sua conexão.')
+        }
       } finally {
+        clearTimeout(timeout)
         setIsLoading(false)
       }
     }
 
     fetchData()
-  }, [session])
+    return () => { controller.abort() }
+  }, [session, status])
 
   if (isLoading) {
     return (
