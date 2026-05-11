@@ -38,7 +38,7 @@ interface Course {
 }
 
 export default function CoursePage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const params = useParams()
   const courseId = params?.courseId as string || ''
 
@@ -47,7 +47,22 @@ export default function CoursePage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!session?.user || !courseId) return
+    if (status === 'loading') return
+
+    if (status === 'unauthenticated' || !session?.user) {
+      setError('Sessão inválida. Faça login novamente.')
+      setIsLoading(false)
+      return
+    }
+
+    if (!courseId) {
+      setError('Curso não encontrado.')
+      setIsLoading(false)
+      return
+    }
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 20000)
 
     async function fetchCourse() {
       try {
@@ -57,6 +72,7 @@ export default function CoursePage() {
             headers: {
               Authorization: `Bearer ${(session as any).accessToken}`,
             },
+            signal: controller.signal,
           }
         )
 
@@ -67,14 +83,20 @@ export default function CoursePage() {
         const data = await res.json()
         setCourse(data)
       } catch (err: any) {
-        setError(err.message || 'Erro ao carregar curso')
+        if (err.name === 'AbortError') {
+          setError('Tempo limite excedido. Verifique sua conexão ou tente novamente.')
+        } else {
+          setError(err.message || 'Erro ao carregar curso')
+        }
       } finally {
+        clearTimeout(timeout)
         setIsLoading(false)
       }
     }
 
     fetchCourse()
-  }, [session, courseId])
+    return () => { controller.abort() }
+  }, [session, courseId, status])
 
   if (isLoading) {
     return (
