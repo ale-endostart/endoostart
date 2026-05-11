@@ -31,21 +31,6 @@ export const DR_ALESSANDRO = {
   ],
 };
 
-// Dra. Tâmara Info
-export const DRA_TAMARA = {
-  name: 'Dra. Tâmara Husein Naciff',
-  credentials: [
-    'Graduação em Medicina pela PUC Goiás',
-    'Residência em Clínica Médica – Hospital Federal do Andaraí',
-    'Residência em Gastroenterologia – Hospital Universitário Antônio Pedro (UFF)',
-  ],
-  expertise: [
-    'Endoscopia digestiva alta',
-    'Colonoscopia',
-    'Prática clínica gastroenterológica',
-  ],
-};
-
 // WhatsApp Message Templates
 export const WHATSAPP_MESSAGES = {
   default: 'Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART',
