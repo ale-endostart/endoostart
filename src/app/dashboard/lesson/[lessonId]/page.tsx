@@ -63,8 +63,13 @@ export default function LessonPage() {
     if (status === 'loading') return
 
     if (status === 'unauthenticated' || !session?.user) {
-      setError('Sessão inválida. Faça login novamente.')
-      setIsLoading(false)
+      router.push('/auth/signin')
+      return
+    }
+
+    const accessToken = (session as any)?.accessToken
+    if (!accessToken) {
+      router.push('/auth/signin')
       return
     }
 
@@ -86,11 +91,16 @@ export default function LessonPage() {
           `${process.env.NEXT_PUBLIC_API_URL}/api/content/lessons/${lessonId}`,
           {
             headers: {
-              Authorization: `Bearer ${(session as any).accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
             signal: controller.signal,
           }
         )
+
+        if (res.status === 401) {
+          router.push('/auth/signin')
+          return
+        }
 
         if (res.status === 403) {
           const errData = await res.json().catch(() => null)
@@ -140,7 +150,7 @@ export default function LessonPage() {
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${(session as any).accessToken}`,
+              Authorization: `Bearer ${(session as any)?.accessToken}`,
             },
           }
         )
@@ -160,7 +170,7 @@ export default function LessonPage() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/content/${contentId}/download`,
         {
           headers: {
-            Authorization: `Bearer ${(session as any).accessToken}`,
+            Authorization: `Bearer ${(session as any)?.accessToken}`,
           },
         }
       )
@@ -183,7 +193,7 @@ export default function LessonPage() {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${(session as any).accessToken}`,
+            Authorization: `Bearer ${(session as any)?.accessToken}`,
           },
         }
       )
