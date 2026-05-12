@@ -7,6 +7,8 @@ interface PDFViewerProps {
 }
 
 export function PDFViewer({ url, title, onDownload }: PDFViewerProps) {
+  const encodedUrl = url.split('/').map((part, i) => i === 0 ? part : encodeURIComponent(part)).join('/')
+
   return (
     <div className="flex flex-col h-full bg-neutral-100">
       {/* Header */}
@@ -20,14 +22,14 @@ export function PDFViewer({ url, title, onDownload }: PDFViewerProps) {
             onClick={onDownload}
             className="px-3 py-1 bg-accent-600 hover:bg-accent-700 text-white rounded font-semibold text-sm"
           >
-            Baixar
+            Baixar PDF
           </button>
         )}
       </div>
 
       {/* Viewer */}
       <iframe
-        src={url}
+        src={encodedUrl}
         className="flex-1 w-full min-h-[600px] border-0"
         allow="autoplay"
         allowFullScreen

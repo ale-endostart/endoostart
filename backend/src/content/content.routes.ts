@@ -114,10 +114,12 @@ router.get('/lessons/:lessonId', authMiddleware, async (req: AuthRequest, res) =
 // GET /api/content/:contentId/download - Get signed download URL (protected)
 router.get('/:contentId/download', authMiddleware, async (req: AuthRequest, res) => {
   try {
+    const token = req.headers.authorization?.slice(7) || ''
     const url = await contentService.getSignedDownloadUrl(
       req.params.contentId,
       req.user!.id,
-      req.user!.role
+      req.user!.role,
+      token
     )
     res.json({ url, expiresIn: 3600 })
   } catch (error: any) {

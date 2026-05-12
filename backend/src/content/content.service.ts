@@ -66,7 +66,7 @@ export class ContentService {
     return content
   }
 
-  async getSignedDownloadUrl(contentId: string, userId: string, role?: string): Promise<string> {
+  async getSignedDownloadUrl(contentId: string, userId: string, role?: string, token?: string): Promise<string> {
     const content = await prisma.content.findUnique({
       where: { id: contentId },
       include: {
@@ -110,12 +110,14 @@ export class ContentService {
       },
     })
 
-    // Local file: return a backend-served URL
+    // Local file: return a backend-served URL with token for auth
     if (content.url.startsWith('/cursos/')) {
       const apiBase = process.env.API_URL || 'http://localhost:3001'
-      // /cursos/slug/file.pdf → /api/content/files/slug/file.pdf
-      const servePath = content.url.replace('/cursos/', '/api/content/files/')
-      return `${apiBase}${servePath}`
+      const parts = content.url.replace('/cursos/', '').split('/')
+      const encodedPath = parts.map(p => encodeURIComponent(p)).join('/')
+      const servePath = `/api/content/files/${encodedPath}`
+      const tokenParam = token ? `?token=${encodeURIComponent(token)}` : ''
+      return `${apiBase}${servePath}${tokenParam}`
     }
 
     // Cloudinary: generate signed URL (1 hour expiry)
