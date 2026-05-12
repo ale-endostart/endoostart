@@ -83,11 +83,8 @@ export default function CoursePage() {
         const data = await res.json()
         setCourse(data)
       } catch (err: any) {
-        if (err.name === 'AbortError') {
-          setError('Tempo limite excedido. Verifique sua conexão ou tente novamente.')
-        } else {
-          setError(err.message || 'Erro ao carregar curso')
-        }
+        if (err.name === 'AbortError') return
+        setError(err.message || 'Erro ao carregar curso')
       } finally {
         clearTimeout(timeout)
         setIsLoading(false)
