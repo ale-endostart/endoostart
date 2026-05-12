@@ -77,9 +77,9 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">⌛</div>
+          <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-neutral-600">Carregando...</p>
         </div>
       </div>
@@ -98,20 +98,20 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-primary-900 mb-2">
-          Bem-vindo, {session?.user?.name}! 👋
+        <h1 className="text-xl md:text-3xl font-bold text-primary-900 mb-1 md:mb-2">
+          Bem-vindo, {session?.user?.name}!
         </h1>
-        <p className="text-neutral-600">
+        <p className="text-sm md:text-base text-neutral-600">
           Acompanhe seu progresso nos cursos
         </p>
       </div>
 
       {/* Progress Summary */}
       {progress && (
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-neutral-600 text-sm mb-2">Progresso Geral</p>
-            <p className="text-4xl font-bold text-primary-600">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6 col-span-2 md:col-span-1">
+            <p className="text-neutral-600 text-xs md:text-sm mb-1 md:mb-2">Progresso Geral</p>
+            <p className="text-3xl md:text-4xl font-bold text-primary-600">
               {progress.overallProgress}%
             </p>
             <div className="mt-4 h-2 bg-neutral-200 rounded-full overflow-hidden">
@@ -122,17 +122,17 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-neutral-600 text-sm mb-2">Cursos Inscritos</p>
-            <p className="text-4xl font-bold text-accent-600">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <p className="text-neutral-600 text-xs md:text-sm mb-1 md:mb-2">Cursos Inscritos</p>
+            <p className="text-3xl md:text-4xl font-bold text-accent-600">
               {progress.enrolledCoursesCount}
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-neutral-600 text-sm mb-2">Status</p>
-            <p className="text-lg font-semibold text-primary-600">
-              {session?.user?.role === 'ADMIN' ? '🔑 Administrador' : '📚 Aluno'}
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <p className="text-neutral-600 text-xs md:text-sm mb-1 md:mb-2">Status</p>
+            <p className="text-base md:text-lg font-semibold text-primary-600">
+              {session?.user?.role === 'ADMIN' ? 'Administrador' : 'Aluno'}
             </p>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function Dashboard() {
 
       {/* Courses */}
       <div>
-        <h2 className="text-2xl font-bold text-primary-900 mb-6">Meus Cursos</h2>
+        <h2 className="text-lg md:text-2xl font-bold text-primary-900 mb-4 md:mb-6">Meus Cursos</h2>
 
         {courses.length === 0 ? (
           <div className="text-center p-12 bg-white rounded-lg border-2 border-dashed border-neutral-300">

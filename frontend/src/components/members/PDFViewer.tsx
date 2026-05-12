@@ -28,7 +28,8 @@ export function PDFViewer({ url, title, onDownload }: PDFViewerProps) {
       {/* Viewer */}
       <iframe
         src={url}
-        className="flex-1 w-full min-h-[600px] border-0"
+        className="flex-1 w-full border-0"
+        style={{ height: 'max(65vh, 400px)' }}
         allow="autoplay"
         allowFullScreen
       />

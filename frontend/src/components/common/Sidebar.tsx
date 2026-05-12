@@ -48,15 +48,24 @@ export function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static w-64 h-screen bg-primary-900 text-white overflow-y-auto transition-transform ${
+        className={`fixed lg:static w-64 h-screen bg-primary-900 text-white overflow-y-auto transition-transform z-40 ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="p-6">
-          {/* Logo */}
-          <Link href="/dashboard" className="text-2xl font-bold text-accent-400 mb-8 block">
-            EndoStart
-          </Link>
+          {/* Logo + close button on mobile */}
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/dashboard" className="text-2xl font-bold text-accent-400 block" onClick={() => setIsOpen(false)}>
+              EndoStart
+            </Link>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="lg:hidden p-2 rounded-lg text-primary-300 hover:text-white hover:bg-primary-800 transition min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Fechar menu"
+            >
+              ✕
+            </button>
+          </div>
 
           {/* User Info */}
           {session?.user && (

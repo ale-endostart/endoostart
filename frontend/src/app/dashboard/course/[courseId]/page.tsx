@@ -139,8 +139,8 @@ export default function CoursePage() {
         >
           ← Voltar aos Cursos
         </Link>
-        <h1 className="text-3xl font-bold text-primary-900 mb-2">{course.name}</h1>
-        <p className="text-neutral-600">{course.description}</p>
+        <h1 className="text-xl md:text-3xl font-bold text-primary-900 mb-2">{course.name}</h1>
+        <p className="text-sm md:text-base text-neutral-600">{course.description}</p>
       </div>
 
       {/* Modules */}
@@ -154,10 +154,10 @@ export default function CoursePage() {
             <div key={module.id} className="bg-white rounded-lg shadow overflow-hidden">
               {/* Module Header */}
               <div className="bg-primary-50 p-6 border-l-4 border-primary-600">
-                <h2 className="text-xl font-bold text-primary-900 mb-2">
+                <h2 className="text-base md:text-xl font-bold text-primary-900 mb-1 md:mb-2">
                   {module.order}. {module.name}
                 </h2>
-                <p className="text-neutral-600">{module.description}</p>
+                <p className="text-sm md:text-base text-neutral-600">{module.description}</p>
               </div>
 
               {/* Lessons */}
@@ -191,13 +191,15 @@ export default function CoursePage() {
                           <Link
                             key={content.id}
                             href={`/dashboard/lesson/${lesson.id}`}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary-50 hover:bg-primary-100 rounded text-primary-700 hover:text-primary-900 font-semibold transition"
+                            className="flex items-center gap-3 px-4 py-3 min-h-[48px] bg-primary-50 hover:bg-primary-100 rounded text-primary-700 hover:text-primary-900 font-semibold transition text-sm md:text-base"
                           >
-                            {content.type === 'PDF' && '📄'}
-                            {content.type === 'VIDEO' && '🎥'}
-                            {content.type === 'TEXT' && '📝'}
-                            {content.type === 'LINK' && '🔗'}
-                            {content.title}
+                            <span className="shrink-0 text-base">
+                              {content.type === 'PDF' && '📄'}
+                              {content.type === 'VIDEO' && '🎥'}
+                              {content.type === 'TEXT' && '📝'}
+                              {content.type === 'LINK' && '🔗'}
+                            </span>
+                            <span className="line-clamp-2">{content.title}</span>
                           </Link>
                         ))}
                       </div>

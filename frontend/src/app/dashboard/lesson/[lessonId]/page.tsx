@@ -254,9 +254,9 @@ export default function LessonPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">⌛</div>
+          <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-neutral-600">Carregando aula...</p>
         </div>
       </div>
@@ -292,78 +292,110 @@ export default function LessonPage() {
     : '← Voltar'
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Header compacto */}
+      <div className="space-y-1">
         <Link
           href={backHref}
-          className="text-primary-600 hover:text-primary-700 mb-4 inline-block"
+          className="text-sm text-primary-600 hover:text-primary-700 inline-flex items-center gap-1 min-h-[36px]"
         >
           {backLabel}
         </Link>
         {lesson.module && (
-          <p className="text-sm text-neutral-500 mb-1">
-            {lesson.module.name}
-          </p>
+          <p className="text-xs md:text-sm text-neutral-500">{lesson.module.name}</p>
         )}
-        <h1 className="text-3xl font-bold text-primary-900 mb-2">{lesson.name}</h1>
-        <p className="text-neutral-600">{lesson.description}</p>
-        {(prevLessonId || nextLessonId) && (
-          <div className="flex items-center justify-between gap-4">
-            {prevLessonId ? (
-              <Link
-                href={`/dashboard/lesson/${prevLessonId}`}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition"
-              >
-                ← Aula anterior
-              </Link>
-            ) : (
-              <div />
-            )}
-            {nextLessonId ? (
-              <Link
-                href={`/dashboard/lesson/${nextLessonId}`}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition"
-              >
-                Próxima aula →
-              </Link>
-            ) : (
-              <div />
-            )}
-          </div>
+        <h1 className="text-lg md:text-3xl font-bold text-primary-900 leading-tight">
+          {lesson.name}
+        </h1>
+        {lesson.description && (
+          <p className="hidden md:block text-neutral-600 text-sm">{lesson.description}</p>
         )}
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <div className="p-3 md:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
           {error}
         </div>
       )}
 
       {/* Main Content Area */}
-      <div className="grid md:grid-cols-4 gap-6">
-        {/* Content Player */}
-        <div className="md:col-span-3">
+      <div className="flex flex-col md:grid md:grid-cols-4 gap-4 md:gap-6">
+
+        {/* Seletor de conteúdo — barra horizontal no mobile, sidebar no desktop */}
+        <div className="md:col-span-1 md:order-2">
+          <div className="bg-white rounded-lg shadow p-3 md:p-5">
+            <h3 className="font-bold text-neutral-900 mb-2 md:mb-3 text-sm md:text-base">
+              Conteúdo da Aula
+            </h3>
+            {/* Scroll horizontal no mobile, vertical no desktop */}
+            <div className="flex md:flex-col gap-2 overflow-x-auto pb-1 md:pb-0 md:space-y-2 snap-x md:snap-none">
+              {lesson.contents.map((content) => (
+                <button
+                  key={content.id}
+                  onClick={() => setActiveContent(content)}
+                  className={`shrink-0 md:shrink-0 md:w-full text-left px-3 py-2.5 rounded-lg transition min-h-[44px] snap-start cursor-pointer ${
+                    activeContent?.id === content.id
+                      ? 'bg-primary-600 text-white'
+                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <span className="shrink-0">
+                      {content.type === 'PDF' && '📄'}
+                      {content.type === 'VIDEO' && '🎥'}
+                      {content.type === 'TEXT' && '📝'}
+                      {content.type === 'LINK' && '🔗'}
+                    </span>
+                    <span className="line-clamp-2">{content.title}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {completeError && (
+              <p className="mt-3 text-xs text-red-600">{completeError}</p>
+            )}
+            <button
+              onClick={handleMarkComplete}
+              disabled={isCompleting || isCompleted}
+              className={`w-full mt-3 px-4 py-3 rounded-lg font-semibold text-sm transition min-h-[44px] cursor-pointer ${
+                isCompleted
+                  ? 'bg-green-100 text-green-700 cursor-default border border-green-300'
+                  : 'bg-green-600 hover:bg-green-700 text-white disabled:opacity-60'
+              }`}
+            >
+              {isCompleting ? 'Salvando...' : isCompleted ? '✓ Aula concluída' : 'Marcar como concluída'}
+            </button>
+          </div>
+        </div>
+
+        {/* Content Player — ocupa quase toda a tela no mobile */}
+        <div className="md:col-span-3 md:order-1">
           {activeContent && (
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
               {activeContent.type === 'PDF' && (
                 <div className="flex flex-col">
-                  <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-                    <h3 className="font-semibold text-neutral-900">{activeContent.title}</h3>
+                  {/* Toolbar do PDF */}
+                  <div className="bg-white border-b px-3 py-2 md:px-4 md:py-3 flex items-center justify-between gap-2">
+                    <h3 className="font-semibold text-neutral-900 text-sm md:text-base truncate flex-1">
+                      {activeContent.title}
+                    </h3>
                     <button
                       onClick={() => handleDownload(activeContent.id)}
-                      className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded text-sm font-semibold"
+                      className="shrink-0 px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded text-sm font-semibold min-h-[44px] cursor-pointer transition"
                     >
-                      ⬇️ Baixar PDF
+                      ⬇ Baixar PDF
                     </button>
                   </div>
+                  {/* iframe — 70% da tela no mobile, fixo no desktop */}
                   <iframe
                     src={
                       activeContent.url.startsWith('/cursos/')
                         ? `${process.env.NEXT_PUBLIC_API_URL}${activeContent.url.replace('/cursos/', '/api/content/files/')}?token=${(session as any)?.accessToken}`
                         : getGoogleDriveEmbedUrl(activeContent.url)
                     }
-                    className="w-full h-96 md:h-[600px] border-0"
+                    className="w-full border-0"
+                    style={{ height: 'max(65vh, 400px)' }}
                     allow="autoplay"
                     allowFullScreen
                   />
@@ -371,7 +403,7 @@ export default function LessonPage() {
               )}
 
               {activeContent.type === 'VIDEO' && (
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                   <VideoEmbed
                     url={activeContent.url}
                     title={activeContent.title}
@@ -381,24 +413,26 @@ export default function LessonPage() {
               )}
 
               {activeContent.type === 'TEXT' && (
-                <div className="p-6">
-                  <h3 className="font-bold text-lg text-neutral-900 mb-4">
+                <div className="p-4 md:p-6">
+                  <h3 className="font-bold text-base md:text-lg text-neutral-900 mb-3">
                     {activeContent.title}
                   </h3>
-                  <p className="text-neutral-700">{activeContent.description}</p>
+                  <p className="text-neutral-700 text-sm md:text-base leading-relaxed">
+                    {activeContent.description}
+                  </p>
                 </div>
               )}
 
               {activeContent.type === 'LINK' && (
-                <div className="p-6">
-                  <h3 className="font-bold text-lg text-neutral-900 mb-4">
+                <div className="p-4 md:p-6">
+                  <h3 className="font-bold text-base md:text-lg text-neutral-900 mb-4">
                     {activeContent.title}
                   </h3>
                   <a
                     href={activeContent.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-6 py-2 bg-accent-600 hover:bg-accent-700 text-white rounded-lg font-semibold"
+                    className="inline-flex items-center px-6 py-3 bg-accent-600 hover:bg-accent-700 text-white rounded-lg font-semibold min-h-[48px] transition cursor-pointer"
                   >
                     Abrir Link →
                   </a>
@@ -407,53 +441,33 @@ export default function LessonPage() {
             </div>
           )}
         </div>
-
-        {/* Sidebar - Content List */}
-        <div className="md:col-span-1">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="font-bold text-neutral-900 mb-4">Conteúdo da Aula</h3>
-            <div className="space-y-2">
-              {lesson.contents.map((content) => (
-                <button
-                  key={content.id}
-                  onClick={() => setActiveContent(content)}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                    activeContent?.id === content.id
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-900'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {content.type === 'PDF' && '📄'}
-                    {content.type === 'VIDEO' && '🎥'}
-                    {content.type === 'TEXT' && '📝'}
-                    {content.type === 'LINK' && '🔗'}
-                  </div>
-                  <div className="text-sm font-semibold mt-1 line-clamp-2">
-                    {content.title}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Mark as complete button */}
-            {completeError && (
-              <p className="mt-4 text-xs text-red-600">{completeError}</p>
-            )}
-            <button
-              onClick={handleMarkComplete}
-              disabled={isCompleting || isCompleted}
-              className={`w-full mt-4 px-4 py-2 rounded-lg font-semibold text-sm transition ${
-                isCompleted
-                  ? 'bg-green-100 text-green-700 cursor-default border border-green-300'
-                  : 'bg-green-600 hover:bg-green-700 text-white disabled:opacity-60'
-              }`}
-            >
-              {isCompleting ? 'Salvando...' : isCompleted ? '✓ Aula concluída' : 'Marcar aula como concluída'}
-            </button>
-          </div>
-        </div>
       </div>
+
+      {/* Navegação prev/next — compacta, no final */}
+      {(prevLessonId || nextLessonId) && (
+        <div className="flex items-center justify-between gap-3 pt-2">
+          {prevLessonId ? (
+            <Link
+              href={`/dashboard/lesson/${prevLessonId}`}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition min-h-[48px]"
+            >
+              ← Aula anterior
+            </Link>
+          ) : (
+            <div className="flex-1" />
+          )}
+          {nextLessonId ? (
+            <Link
+              href={`/dashboard/lesson/${nextLessonId}`}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition min-h-[48px]"
+            >
+              Próxima aula →
+            </Link>
+          ) : (
+            <div className="flex-1" />
+          )}
+        </div>
+      )}
     </div>
   )
 }

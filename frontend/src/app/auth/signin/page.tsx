@@ -65,7 +65,7 @@ function SignInForm() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-xl p-8">
+        <div className="bg-white rounded-lg shadow-xl p-5 sm:p-8">
           {/* Error Message */}
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
@@ -85,7 +85,7 @@ function SignInForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent text-base"
                 placeholder="seu@email.com"
               />
             </div>
@@ -100,7 +100,7 @@ function SignInForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent text-base"
                 placeholder="Sua senha"
               />
             </div>
@@ -108,7 +108,7 @@ function SignInForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition"
+              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition min-h-[48px] cursor-pointer"
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>
@@ -126,7 +126,7 @@ function SignInForm() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"
+            className="w-full border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

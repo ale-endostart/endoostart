@@ -109,7 +109,7 @@ export default function SignUp() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-xl p-8">
+        <div className="bg-white rounded-lg shadow-xl p-5 sm:p-8">
           {/* Success Message */}
           {success && (
             <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
@@ -126,7 +126,7 @@ export default function SignUp() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
                   Primeiro Nome
@@ -175,7 +175,7 @@ export default function SignUp() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Senha
@@ -268,7 +268,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isLoading || success}
-              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition"
+              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition min-h-[48px] cursor-pointer"
             >
               {isLoading ? 'Criando conta...' : success ? 'Redirecionando...' : 'Criar conta'}
             </button>
