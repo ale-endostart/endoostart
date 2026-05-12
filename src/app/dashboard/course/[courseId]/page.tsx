@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface Content {
@@ -41,6 +41,7 @@ export default function CoursePage() {
   const { data: session, status } = useSession()
   const params = useParams()
   const courseId = params?.courseId as string || ''
+  const router = useRouter()
 
   const [course, setCourse] = useState<Course | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -61,8 +62,7 @@ export default function CoursePage() {
       return
     }
 
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 20000)
+    let cancelled = false
 
     async function fetchCourse() {
       try {
@@ -72,27 +72,31 @@ export default function CoursePage() {
             headers: {
               Authorization: `Bearer ${(session as any).accessToken}`,
             },
-            signal: controller.signal,
           }
         )
+
+        if (cancelled) return
+
+        if (res.status === 401) {
+          router.push('/auth/signin')
+          return
+        }
 
         if (!res.ok) {
           const errData = await res.json().catch(() => null)
           throw new Error(errData?.error || 'Erro ao carregar curso')
         }
         const data = await res.json()
-        setCourse(data)
+        if (!cancelled) setCourse(data)
       } catch (err: any) {
-        if (err.name === 'AbortError') return
-        setError(err.message || 'Erro ao carregar curso')
+        if (!cancelled) setError(err.message || 'Erro ao carregar curso')
       } finally {
-        clearTimeout(timeout)
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     fetchCourse()
-    return () => { controller.abort() }
+    return () => { cancelled = true }
   }, [session, courseId, status])
 
   if (isLoading) {

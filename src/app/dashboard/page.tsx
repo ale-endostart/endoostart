@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 interface Course {
@@ -16,6 +17,7 @@ interface Course {
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
+  const router = useRouter()
   const [courses, setCourses] = useState<Course[]>([])
   const [progress, setProgress] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -36,41 +38,45 @@ export default function Dashboard() {
       return
     }
 
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 20000)
+    let cancelled = false
 
     async function fetchData() {
       try {
         const headers = { Authorization: `Bearer ${accessToken}` }
-        const opts = { headers, signal: controller.signal }
 
         const [coursesRes, progressRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`, opts),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`, opts),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/courses`, { headers }),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/students/progress`, { headers }),
         ])
+
+        if (cancelled) return
+
+        if (coursesRes.status === 401 || progressRes.status === 401) {
+          router.push('/auth/signin')
+          return
+        }
 
         if (coursesRes.ok) {
           const coursesData = await coursesRes.json()
-          setCourses(Array.isArray(coursesData) ? coursesData : [])
+          if (!cancelled) setCourses(Array.isArray(coursesData) ? coursesData : [])
         }
 
         if (progressRes.ok) {
           const progressData = await progressRes.json()
-          setProgress(progressData)
+          if (!cancelled) setProgress(progressData)
         }
       } catch (err: any) {
-        if (err.name !== 'AbortError') {
+        if (!cancelled) {
           console.error('Dashboard fetch error:', err)
           setError('Erro ao carregar dados. Verifique sua conexão.')
         }
       } finally {
-        clearTimeout(timeout)
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     fetchData()
-    return () => { controller.abort() }
+    return () => { cancelled = true }
   }, [session, status])
 
   if (isLoading) {

@@ -79,8 +79,7 @@ export default function LessonPage() {
       return
     }
 
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 20000)
+    let cancelled = false
 
     async function fetchLesson() {
       try {
@@ -93,9 +92,10 @@ export default function LessonPage() {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-            signal: controller.signal,
           }
         )
+
+        if (cancelled) return
 
         if (res.status === 401) {
           router.push('/auth/signin')
@@ -104,14 +104,12 @@ export default function LessonPage() {
 
         if (res.status === 403) {
           const errData = await res.json().catch(() => null)
-          setError(errData?.error || 'Você não tem acesso a esta aula. Verifique sua matrícula.')
-          setIsLoading(false)
+          if (!cancelled) setError(errData?.error || 'Você não tem acesso a esta aula. Verifique sua matrícula.')
           return
         }
 
         if (res.status === 404) {
-          setError('Aula não encontrada.')
-          setIsLoading(false)
+          if (!cancelled) setError('Aula não encontrada.')
           return
         }
 
@@ -121,22 +119,21 @@ export default function LessonPage() {
         }
 
         const data: Lesson = await res.json()
+        if (cancelled) return
         setLesson(data)
 
         if (data.contents && data.contents.length > 0) {
           setActiveContent(data.contents[0])
         }
       } catch (err: any) {
-        if (err.name === 'AbortError') return
-        setError(err.message || 'Erro ao carregar a aula')
+        if (!cancelled) setError(err.message || 'Erro ao carregar a aula')
       } finally {
-        clearTimeout(timeout)
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     fetchLesson()
-    return () => { controller.abort() }
+    return () => { cancelled = true }
   }, [session, lessonId, status])
 
   // Track content view when active content changes
