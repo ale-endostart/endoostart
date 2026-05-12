@@ -117,11 +117,8 @@ export default function LessonPage() {
           setActiveContent(data.contents[0])
         }
       } catch (err: any) {
-        if (err.name === 'AbortError') {
-          setError('Tempo limite excedido. Verifique sua conexão ou tente novamente.')
-        } else {
-          setError(err.message || 'Erro ao carregar a aula')
-        }
+        if (err.name === 'AbortError') return
+        setError(err.message || 'Erro ao carregar a aula')
       } finally {
         clearTimeout(timeout)
         setIsLoading(false)
