@@ -1,7 +1,7 @@
 // Contact Information
 export const CONTACT = {
-  whatsapp: '+55 62 99198-0100',
-  whatsappNumber: '5562991980100',
+  whatsapp: '+55 62 99433-8845',
+  whatsappNumber: '5562994338845',
   email: 'contato@endostart.com.br',
   phone: '(11) 99999-9999',
   location: 'Goiânia, GO',

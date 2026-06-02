@@ -92,7 +92,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
 
             <div className="pt-4 mt-4 border-t border-neutral-200">
               <a
-                href="https://wa.me/5562991980100?text=Olá%2C%20preciso%20de%20suporte%20na%20plataforma"
+                href="https://wa.me/5562994338845?text=Olá%2C%20preciso%20de%20suporte%20na%20plataforma"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"

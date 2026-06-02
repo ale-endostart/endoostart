@@ -120,7 +120,7 @@ export const Footer: React.FC = () => {
               <p>
                 <span className="block text-white font-medium mb-1">WhatsApp</span>
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-brand-gold transition-colors duration-300">
-                  (62) 99198-0100
+                  (62) 99433-8845
                 </a>
               </p>
               <p>

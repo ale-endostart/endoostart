@@ -7,7 +7,7 @@ import Counter from '@/components/landing/Counter'
 // CONSTANTS (server-side — zero JS sent to client)
 // ============================================================
 
-const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5562999999999'
+const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5562994338845'
 const WA_URL = `https://wa.me/${WA_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent('Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART')}`
 
 const WA_SVG =
