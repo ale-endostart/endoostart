@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { WHATSAPP_URL } from '../utils/constants';
+import { LP_CTA_URL } from '../utils/constants';
 
 export const ContactSection: React.FC = () => {
     return (
@@ -29,7 +29,7 @@ export const ContactSection: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {/* WhatsApp Card */}
                     <motion.a
-                        href={WHATSAPP_URL}
+                        href={LP_CTA_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         initial={{ opacity: 0, x: -30 }}

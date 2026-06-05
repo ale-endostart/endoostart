@@ -34,12 +34,13 @@ export const DR_ALESSANDRO = {
 // WhatsApp Message Templates
 export const WHATSAPP_MESSAGES = {
   default: 'Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART',
-  course: (courseName: string) => `Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART`,
-  module: (moduleName: string) => `Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART`,
+  course: (_courseName: string) => `Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART`,
+  module: (_moduleName: string) => `Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART`,
   consultation: 'Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART',
 };
 
 export const WHATSAPP_URL = `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGES.default)}`;
+export const LP_CTA_URL = 'https://inlead.digital/endostart01basico';
 
 // Site Config
 export const SITE_CONFIG = {

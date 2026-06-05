@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import Footer from '../Footer';
+import { LP_CTA_URL } from '../../utils/constants';
 
 interface Highlight {
     icon: React.ReactNode;
@@ -38,13 +39,12 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
     backgroundImage,
     highlights,
     curriculum,
-    whatsappMessage,
     priceDetails,
     exclusiveNote,
     totalPrice,
     installmentPrice,
 }) => {
-    const whatsappUrl = `https://wa.me/5562994338845?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = LP_CTA_URL;
 
     return (
         <>

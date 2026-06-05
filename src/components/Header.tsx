@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { WHATSAPP_URL } from '../utils/constants';
+import { LP_CTA_URL } from '../utils/constants';
 
 interface HeaderProps {
   whatsappMessage?: string;
+  onWhatsAppClick?: () => void;
 }
 
 const navLinks = [
@@ -25,7 +26,7 @@ const navLinks = [
   { href: '/#contato', label: 'Contato' },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ whatsappMessage }) => {
+export const Header: React.FC<HeaderProps> = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [coursesExpanded, setCoursesExpanded] = useState(false);
@@ -49,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({ whatsappMessage }) => {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  const whatsappHref = WHATSAPP_URL;
+  const whatsappHref = LP_CTA_URL;
 
   return (
     <>

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useScrollReveal, variants } from '../hooks/useScrollReveal';
 import MagneticWrapper from './ui/MagneticWrapper';
-import { WHATSAPP_URL } from '../utils/constants';
+import { LP_CTA_URL } from '../utils/constants';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
             </p>
             <MagneticWrapper className="inline-block" strength={0.15}>
               <a
-                href={WHATSAPP_URL}
+                href={LP_CTA_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-10 py-5 bg-brand-gold text-brand-blue rounded-full font-bold text-lg hover:bg-brand-goldHover transition-all duration-300 inline-flex items-center gap-3 animate-pulse-glow"
@@ -119,7 +119,7 @@ export const Footer: React.FC = () => {
             <div className="space-y-3 text-sm">
               <p>
                 <span className="block text-white font-medium mb-1">WhatsApp</span>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-brand-gold transition-colors duration-300">
+                <a href={LP_CTA_URL} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-brand-gold transition-colors duration-300">
                   (62) 99433-8845
                 </a>
               </p>
@@ -137,7 +137,7 @@ export const Footer: React.FC = () => {
               Entre em contato para garantir sua vaga na próxima turma.
             </p>
             <a
-              href={WHATSAPP_URL}
+              href={LP_CTA_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-whatsapp text-sm w-full justify-center"

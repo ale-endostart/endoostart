@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Header from '../components/Header';
-import { WHATSAPP_URL } from '../utils/constants';
+import { LP_CTA_URL } from '../utils/constants';
 import HeroSection from '../components/HeroSection';
 import { WhyEndoStartSection } from '../components/WhyEndoStartSection';
 import { CoursePreviewSection } from '../components/CoursePreviewSection';
@@ -18,7 +18,7 @@ import VideoTeasersSection from '../components/VideoTeasersSection';
 
 export default function Home() {
   const handleWhatsAppClick = () => {
-    window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer');
+    window.open(LP_CTA_URL, '_blank', 'noopener,noreferrer');
   };
 
   return (

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { WHATSAPP_URL } from '../utils/constants';
+import { LP_CTA_URL } from '../utils/constants';
 
 export const CtaFinalSection: React.FC = () => {
-    const whatsappUrl = WHATSAPP_URL;
+    const whatsappUrl = LP_CTA_URL;
 
     return (
         <section id="inscricao" className="py-24 md:py-32 bg-[#01284A] text-white relative overflow-hidden">

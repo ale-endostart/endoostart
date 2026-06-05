@@ -1,14 +1,12 @@
-import React from 'react';
 import Header from '../../components/Header';
 import CinematicCourseLayout from '../../components/layouts/CinematicCourseLayout';
+import { LP_CTA_URL } from '../../utils/constants';
 
 export default function ColonoscopiaPage() {
     const courseWhatsappMessage = 'Olá Equipe EndoStart! Quero me especializar em Colonoscopia. Podem me passar mais informações da próxima turma?';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5562994338845';
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
-        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        window.open(LP_CTA_URL, '_blank', 'noopener,noreferrer');
     };
     const highlights = [
         {

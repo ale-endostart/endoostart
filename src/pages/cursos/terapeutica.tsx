@@ -1,14 +1,12 @@
-import React from 'react';
 import Header from '../../components/Header';
 import CinematicCourseLayout from '../../components/layouts/CinematicCourseLayout';
+import { LP_CTA_URL } from '../../utils/constants';
 
 export default function TerapeuticaPage() {
     const courseWhatsappMessage = 'Olá! Gostaria de ter mais informações sobre a Imersão em Endoscopia Terapêutica.';
 
     const handleWhatsAppClick = () => {
-        const phoneNumber = '5562994338845';
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(courseWhatsappMessage)}`;
-        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        window.open(LP_CTA_URL, '_blank', 'noopener,noreferrer');
     };
     const highlights = [
         {
