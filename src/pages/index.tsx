@@ -11,7 +11,6 @@ import FAQSection from '../components/FAQSection';
 import CtaFinalSection from '../components/CtaFinalSection';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
-import FloatingWhatsApp from '../components/FloatingWhatsApp';
 import DoctorRealitySection from '../components/DoctorRealitySection';
 import TwoPathsSection from '../components/TwoPathsSection';
 import VideoTeasersSection from '../components/VideoTeasersSection';
@@ -72,7 +71,6 @@ export default function Home() {
         </main>
 
         <Footer />
-        <FloatingWhatsApp />
       </div>
     </>
   );

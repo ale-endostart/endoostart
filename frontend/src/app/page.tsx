@@ -671,19 +671,6 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* FLOATING WHATSAPP */}
-      <a
-        href={WA_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-500 hover:bg-emerald-400 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 animate-float-delay"
-        style={{ boxShadow: '0 8px 30px rgba(16,185,129,0.4)' }}
-        aria-label="WhatsApp"
-      >
-        <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path d={WA_SVG} />
-        </svg>
-      </a>
     </>
   )
 }
