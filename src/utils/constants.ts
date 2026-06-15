@@ -40,7 +40,7 @@ export const WHATSAPP_MESSAGES = {
 };
 
 export const WHATSAPP_URL = `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGES.default)}`;
-export const LP_CTA_URL = 'https://inlead.digital/endostart01basico';
+export const LP_CTA_URL = 'https://inlead.digital/endostart-01';
 
 // Site Config
 export const SITE_CONFIG = {
