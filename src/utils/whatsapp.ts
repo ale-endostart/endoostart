@@ -1,4 +1,4 @@
-import { CONTACT, WHATSAPP_MESSAGES } from './constants';
+import { CONTACT, WHATSAPP_MESSAGES, LP_CTA_URL } from './constants';
 
 /**
  * Generate WhatsApp URL with pre-filled message
@@ -7,11 +7,10 @@ import { CONTACT, WHATSAPP_MESSAGES } from './constants';
  * @returns WhatsApp URL
  */
 export function generateWhatsAppURL(
-  message: string,
+  message?: string,
   phoneNumber: string = CONTACT.whatsappNumber
 ): string {
-  const encodedMessage = encodeURIComponent(message);
-  return `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+  return LP_CTA_URL;
 }
 
 /**

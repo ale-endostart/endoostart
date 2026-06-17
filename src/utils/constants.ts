@@ -39,8 +39,8 @@ export const WHATSAPP_MESSAGES = {
   consultation: 'Olá, vim através do site e gostaria de mais informações sobre o curso ENDOSTART',
 };
 
-export const WHATSAPP_URL = `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGES.default)}`;
-export const LP_CTA_URL = 'https://inlead.digital/endostart01basico';
+export const WHATSAPP_URL = LP_CTA_URL;
+export const LP_CTA_URL = 'https://inlead.digital/endostart-01';
 
 // Site Config
 export const SITE_CONFIG = {
