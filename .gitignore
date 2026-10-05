@@ -42,3 +42,7 @@ yarn-error.log*
 .claude/
 dev.db
 .turbo
+
+# Dumps e exports de banco (contem dados de aluno - nunca versionar)
+/backups/
+export-db.js
