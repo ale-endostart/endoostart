@@ -200,7 +200,7 @@ export const CinematicCourseLayout: React.FC<CinematicCourseLayoutProps> = ({
                                 Pronto para se destacar na <span className="text-brand-gold italic">Medicina?</span>
                             </h2>
                             {installmentPrice && (
-                                <div className="mb-10 inline-block rounded-2xl border border-brand-gold/30 bg-brand-gold/5 backdrop-blur-sm px-10 py-6">
+                                <div className="mb-10 w-fit mx-auto rounded-2xl border border-brand-gold/30 bg-brand-gold/5 backdrop-blur-sm px-10 py-6">
                                     <p className="text-white/50 text-sm tracking-widest uppercase mb-1">Investimento</p>
                                     <p className="text-4xl md:text-5xl font-serif font-bold text-brand-gold">{installmentPrice}</p>
                                     {totalPrice && (
