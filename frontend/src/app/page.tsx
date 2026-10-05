@@ -453,7 +453,7 @@ export default function Home() {
                   <div className="mb-8">
                     <span className="text-sm text-gray-400 mr-2">R$</span>
                     <span className="text-6xl sm:text-7xl font-black text-gray-900" style={{ letterSpacing: '-0.04em' }}>
-                      45.000
+                      51.000
                     </span>
                   </div>
 

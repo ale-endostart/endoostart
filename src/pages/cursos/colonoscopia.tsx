@@ -69,8 +69,8 @@ export default function ColonoscopiaPage() {
                 highlights={highlights}
                 curriculum={curriculum}
                 whatsappMessage={courseWhatsappMessage}
-                totalPrice="R$ 45.000"
-                installmentPrice="12x de R$ 3.750"
+                totalPrice="R$ 51.000"
+                installmentPrice="18x de R$ 2.834"
             />
         </>
     );

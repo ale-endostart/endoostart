@@ -54,7 +54,7 @@ export function getCourseSchema(
   courseName: string,
   description: string,
   duration: string,
-  price: string = '45000'
+  price: string = '51000'
 ) {
   return {
     '@context': 'https://schema.org',
